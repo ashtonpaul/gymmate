@@ -1,0 +1,13 @@
+django
+south
+django-debug-toolbar
+six
+sqlparse
+wsgiref
+djangorestframework
+django-rest-swagger
+markdown
+django-filter
+gunicorn
+uwsgi
+fabric
