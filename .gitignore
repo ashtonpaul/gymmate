@@ -1,0 +1,22 @@
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Vagrant
+.vagrant/
+
+# Python
+*.pyc
+*.pyo
+
+# Django
+*.db
+
+# IDE-specific
+*.project
+*.pydevproject
+
+# Node, SASS and Bower
+/.sass-cache/
+/bower_components
+/node_modules
