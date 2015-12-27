@@ -12,3 +12,4 @@ gunicorn
 uwsgi
 fabric
 pyflakes
+flake8
