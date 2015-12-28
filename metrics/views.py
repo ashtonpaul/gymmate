@@ -1,6 +1,11 @@
 from rest_framework import viewsets
-from .models import Metric, MetricType
-from .serializers import MetricSerializer, MetricTypeSerializer
+from .models import Metric, MetricType, MetricTypeGroup
+from .serializers import MetricSerializer, MetricTypeSerializer, MetricTypeGroupSerializer
+
+
+class MetricTypeGroupViewSet(viewsets.ModelViewSet):
+    queryset = MetricTypeGroup.objects.all().order_by('name')
+    serializer_class = MetricTypeGroupSerializer
 
 
 class MetricTypeViewSet(viewsets.ModelViewSet):

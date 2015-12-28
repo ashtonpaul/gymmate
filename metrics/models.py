@@ -4,8 +4,20 @@ from django.db import models
 from accounts.models import AccountUser
 
 
+class MetricTypeGroup(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        ordering = ('name', )
+
+    def __str__(self):
+        return '%s' % (self.name)
+
+
 class MetricType(models.Model):
     created = models.DateTimeField(auto_now_add=True)
+    group = models.ForeignKey(MetricTypeGroup, to_field='name')
     name = models.CharField(max_length=50)
     unit = models.CharField(max_length=10)
 
