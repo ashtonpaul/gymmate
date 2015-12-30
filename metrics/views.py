@@ -20,3 +20,7 @@ class MetricTypeViewSet(viewsets.ModelViewSet):
 class MetricViewSet(viewsets.ModelViewSet):
     queryset = Metric.objects.all().order_by('date')
     serializer_class = MetricSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return Metric.objects.filter(user=user)
