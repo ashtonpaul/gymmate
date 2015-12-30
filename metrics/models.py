@@ -5,7 +5,6 @@ from accounts.models import AccountUser
 
 
 class MetricTypeGroup(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=50, unique=True)
 
     class Meta:
@@ -16,7 +15,6 @@ class MetricTypeGroup(models.Model):
 
 
 class MetricType(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
     group = models.ForeignKey(MetricTypeGroup, to_field='name')
     name = models.CharField(max_length=50)
     unit = models.CharField(max_length=10)
@@ -25,7 +23,7 @@ class MetricType(models.Model):
         ordering = ('name',)
 
     def __str__(self):
-        return '%s' % (self.unit)
+        return '%s - %s' % (self.group, self.unit, )
 
 
 class Metric(models.Model):
