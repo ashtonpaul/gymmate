@@ -1,14 +1,18 @@
 from rest_framework import viewsets
+from rest_framework.permissions import IsAdminUser
+
 from .models import Metric, MetricType, MetricTypeGroup
 from .serializers import MetricSerializer, MetricTypeSerializer, MetricTypeGroupSerializer
 
 
 class MetricTypeGroupViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAdminUser, )
     queryset = MetricTypeGroup.objects.all().order_by('name')
     serializer_class = MetricTypeGroupSerializer
 
 
 class MetricTypeViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAdminUser, )
     queryset = MetricType.objects.all().order_by('name')
     serializer_class = MetricTypeSerializer
 
