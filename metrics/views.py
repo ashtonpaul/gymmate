@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from gymmate.permissions import IsAdminOrReadOnly
 from .models import Metric, MetricType, MetricTypeGroup
 from .serializers import MetricSerializer, MetricTypeSerializer, MetricTypeGroupSerializer
+from accounts.models import AccountUser
 
 
 class MetricTypeGroupViewSet(viewsets.ModelViewSet):
@@ -21,5 +22,12 @@ class MetricViewSet(viewsets.ModelViewSet):
     serializer_class = MetricSerializer
 
     def get_queryset(self):
-        user = self.request.user
-        return Metric.objects.filter(user=user)
+        return Metric.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        user = AccountUser.objects.get(id=self.request.user.id)
+        serializer.save(user=user)
+
+    def perfom_update(self, serializer):
+        user = AccountUser.objects.get(id=self.request.user.id)
+        serializer.save(user=user)
