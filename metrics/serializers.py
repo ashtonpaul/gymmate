@@ -14,8 +14,7 @@ class MetricTypeSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'group', 'name', 'unit',)
 
 
-class MetricSerializer(serializers.HyperlinkedModelSerializer):
+class MetricSerializer(serializers.ModelSerializer):
     class Meta:
         model = Metric
         exclude = ('user',)
-        depth = 1
