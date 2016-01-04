@@ -11,6 +11,3 @@ django-filter
 gunicorn
 uwsgi
 fabric
-pyflakes
-flake8
-MySQL-python
