@@ -4,6 +4,7 @@ from rest_framework.permissions import AllowAny
 from .models import AccountUser
 from .serializers import UserSerializer
 
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -17,7 +18,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return 405 if user tries to delete a profile other than theirs
         """
         instance = self.get_object()
-        if (instance.username==request.user.username):
+        if (instance.username == request.user.username):
             self.perform_destroy(instance)
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
