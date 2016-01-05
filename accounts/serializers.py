@@ -7,4 +7,3 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = AccountUser
         fields = ('id', 'username', 'email', 'first_name', 'last_name',
                   'date_joined', 'last_login', 'is_active', )
-
