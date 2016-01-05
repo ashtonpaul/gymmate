@@ -15,11 +15,26 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         """
-        return 405 if user tries to delete a profile other than theirs
+        return a 405 response if user tries to delete a profile other than theirs
         """
         instance = self.get_object()
         if (instance.username == request.user.username):
             self.perform_destroy(instance)
             return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def update(self, request, *args, **kwargs):
+        """
+        return a 405 response if user tries to update a profile other than theirs
+        """
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        if (instance.username == request.user.username):
+            self.perform_update(serializer)
+            return Response(serializer.data)
         else:
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
