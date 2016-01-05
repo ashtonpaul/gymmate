@@ -2,7 +2,6 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 from .models import AccountUser
 
-
 class AccountTests(APITestCase):
     def setUp(self):
         self.test_user = AccountUser.objects.create_user(username='test', password='test', is_active=True)
