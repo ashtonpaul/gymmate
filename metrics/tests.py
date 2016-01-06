@@ -1,4 +1,5 @@
 from django.db import IntegrityError
+from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase, APIClient
 from accounts.models import AccountUser
@@ -17,17 +18,17 @@ class BaseTestCase(APITestCase):
 
         self.group = self.client.post(reverse('metric-group-list'), {'name': 'test_group'}, format='json')
 
-    def cascade(self):
+    def populate(self):
         """
-        Common base function for testing cascade deletes between models
+        Common base method for populating data for testing between models
         """
         self.last_created_group = MetricTypeGroup.objects.latest('id').id
+        
         self.client.post(reverse('metric-type-list'), {'group': 'test_group', 'name': 'test_type', 'unit': 'test'})
-
         self.last_created_type = MetricType.objects.latest('id').id
+        
         self.client.post(reverse('metric-list'),
                          {'user': self.test_user, 'metric_type': self.last_created_type, 'value': '1'})
-
         self.last_created_metric = Metric.objects.latest('id').id
 
 
@@ -42,7 +43,7 @@ class MetricGroupTypeTest(BaseTestCase):
         """
         If a type group is deleted all associated types and metrics should be deleted too
         """
-        self.cascade()
+        self.populate()
         self.client.delete(reverse('metric-group-detail', args=(self.last_created_group,)))
         self.assertRaises(Metric.DoesNotExist, lambda: Metric.objects.get(id=self.last_created_metric))
 
@@ -52,6 +53,18 @@ class MetricTypeTest(BaseTestCase):
         """
         If a type is deleted all associated metrics should be deleted too
         """
-        self.cascade()
+        self.populate()
         self.client.delete(reverse('metric-type-detail', args=(self.last_created_type,)))
         self.assertRaises(Metric.DoesNotExist, lambda: Metric.objects.get(id=self.last_created_metric))
+
+
+class MetricTest(BaseTestCase):
+    def test_add_metric(self):
+        """
+        Add new metric
+        """
+        group = MetricTypeGroup.objects.create(name='test_add_metric')
+        type = MetricType.objects.create(group=group, name='test', unit='test')
+        response = self.client.post(reverse('metric-list'),
+                                    {'user': self.test_user, 'metric_type': type.id, 'value': '1'})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
