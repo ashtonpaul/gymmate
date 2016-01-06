@@ -7,7 +7,7 @@ from metrics.views import MetricViewSet, MetricTypeViewSet, MetricTypeGroupViewS
 
 
 router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
+router.register(r'users', UserViewSet, 'user')
 router.register(r'metrics', MetricViewSet, 'metric')
 router.register(r'metrics-type', MetricTypeViewSet, 'metric-type')
 router.register(r'metrics-type-group', MetricTypeGroupViewSet, 'metric-group')

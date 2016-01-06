@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase, APIClient
 from .models import AccountUser
 
@@ -17,7 +18,7 @@ class AccountTests(APITestCase):
         Create a profile without authentication
         """
         client = APIClient()
-        response = client.post('/users/', {'username': 'temp'}, format='json')
+        response = client.post(reverse('user-list'), {'username': 'temp'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_delete_other_user(self):
@@ -25,7 +26,7 @@ class AccountTests(APITestCase):
         A user should not be able to delete another user's profile
         """
         user_one = AccountUser.objects.create_user(username='user_one', is_active=True)
-        endpoint = '/users/%d/' % user_one.id
+        endpoint = reverse('user-detail', args=(user_one.id,))
         response = self.client.delete(endpoint, format='json')
         self.assertNotEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -34,6 +35,6 @@ class AccountTests(APITestCase):
         A user should not be able to update another user's profile
         """
         user_one = AccountUser.objects.create_user(username='user_one', is_active=True)
-        endpoint = '/users/%d/' % user_one.id
+        endpoint = reverse('user-detail', args=(user_one.id,))
         response = self.client.put(endpoint, {'username': 'user_one', 'email': 'test@test.com'}, format='json')
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
