@@ -23,10 +23,10 @@ class BaseTestCase(APITestCase):
         Common base method for populating data for testing between models
         """
         self.last_created_group = MetricTypeGroup.objects.latest('id').id
-        
+
         self.client.post(reverse('metric-type-list'), {'group': 'test_group', 'name': 'test_type', 'unit': 'test'})
         self.last_created_type = MetricType.objects.latest('id').id
-        
+
         self.client.post(reverse('metric-list'),
                          {'user': self.test_user, 'metric_type': self.last_created_type, 'value': '1'})
         self.last_created_metric = Metric.objects.latest('id').id
