@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase, APIClient
+from metrics.models import Metric, MetricType, MetricTypeGroup
 from .models import AccountUser
 
 
@@ -38,3 +39,13 @@ class AccountTests(APITestCase):
         endpoint = reverse('user-detail', args=(user_one.id,))
         response = self.client.put(endpoint, {'username': 'user_one', 'email': 'test@test.com'}, format='json')
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_metrics_cascade(self):
+        """
+        Metrics should be deleted when a user account is deleted
+        """
+        group = MetricTypeGroup.objects.create(name='test_metrics_cascade')
+        type = MetricType.objects.create(group=group, name='test', unit='test')
+        metric = Metric.objects.create(user=self.test_user, value='1', metric_type=type)
+        self.client.delete(reverse('user-detail', args=(self.test_user.id,)))
+        self.assertRaises(Metric.DoesNotExist, lambda: Metric.objects.get(id=metric.id))
