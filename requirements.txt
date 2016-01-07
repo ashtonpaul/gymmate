@@ -14,3 +14,4 @@ fabric
 pyflakes
 flake8
 MySQL-python
+coverage
