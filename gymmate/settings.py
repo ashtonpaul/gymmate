@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'accounts',
+    'metrics',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -83,6 +85,9 @@ DATABASES = {
         'PASSWORD': 'django',
         'HOST': 'localhost',
         'PORT': '',
+        'TEST': {
+            'NAME': 'test_database',
+        },
     }
 }
 
@@ -129,6 +134,7 @@ STATIC_URL = '/static/'
 # http://django-rest-framework.com
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
-    'PAGE_SIZE': 10
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated', ),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework.authentication.BasicAuthentication', ),
+    'PAGE_SIZE': None,
 }
