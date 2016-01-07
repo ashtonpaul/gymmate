@@ -20,3 +20,6 @@ Thumbs.db
 /.sass-cache/
 /bower_components
 /node_modules
+
+# Code Coverage
+.coverage
