@@ -148,13 +148,13 @@ class ExerciseTest(BaseTestCase):
         """
         Populate the database with dummy data to use in tests
         """
-        self.client.post(reverse('muscle-list'),{'name':'bicep'})
-        self.client.post(reverse('muscle-list'),{'name':'tricep'})
-        self.client.post(reverse('muscle-list'),{'name':'quadricep'})
-        self.client.post(reverse('equipment-list'),{'name':'barbell'})
-        self.client.post(reverse('equipment-list'),{'name':'dumbbell'})
-        self.client.post(reverse('exercise-category-list'),{'name':'arms'})
-        self.client.post(reverse('exercise-category-list'),{'name':'legs'})
+        self.client.post(reverse('muscle-list'), {'name': 'bicep'})
+        self.client.post(reverse('muscle-list'), {'name': 'tricep'})
+        self.client.post(reverse('muscle-list'), {'name': 'quadricep'})
+        self.client.post(reverse('equipment-list'), {'name': 'barbell'})
+        self.client.post(reverse('equipment-list'), {'name': 'dumbbell'})
+        self.client.post(reverse('exercise-category-list'), {'name': 'arms'})
+        self.client.post(reverse('exercise-category-list'), {'name': 'legs'})
 
     def test_add_exercise(self):
         """
@@ -191,7 +191,7 @@ class ExerciseTest(BaseTestCase):
         """
         Exercise.objects.create(name='squats', description='squat')
         self.create_non_admin_user()
-        
+
         exercise = Exercise.objects.get(name='squats')
         response = self.client.get(reverse('exercise-detail', args=(exercise.id, )))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -205,7 +205,7 @@ class ExerciseTest(BaseTestCase):
 
         self.create_non_admin_user()
         post = self.client.post(reverse('exercise-list'), {'name': 'curl', 'description': 'bicep curl'})
-        put = self.client.put(reverse('exercise-detail', args=(exercise.id,)), {'description' : 'sqaut low'})
+        put = self.client.put(reverse('exercise-detail', args=(exercise.id,)), {'description': 'sqaut low'})
         delete = self.client.delete(reverse('exercise-detail', args=(exercise.id,)))
 
         self.assertEqual(post.status_code, status.HTTP_403_FORBIDDEN)
