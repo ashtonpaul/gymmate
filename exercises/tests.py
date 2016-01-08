@@ -144,18 +144,6 @@ class EquipmentTest(BaseTestCase):
 
 
 class ExerciseTest(BaseTestCase):
-    def populate_data(self):
-        """
-        Populate the database with dummy data to use in tests
-        """
-        self.client.post(reverse('muscle-list'), {'name': 'bicep'})
-        self.client.post(reverse('muscle-list'), {'name': 'tricep'})
-        self.client.post(reverse('muscle-list'), {'name': 'quadricep'})
-        self.client.post(reverse('equipment-list'), {'name': 'barbell'})
-        self.client.post(reverse('equipment-list'), {'name': 'dumbbell'})
-        self.client.post(reverse('exercise-category-list'), {'name': 'arms'})
-        self.client.post(reverse('exercise-category-list'), {'name': 'legs'})
-
     def test_add_exercise(self):
         """
         Ensure an exercise object can be added
@@ -178,7 +166,6 @@ class ExerciseTest(BaseTestCase):
         """
         Ensure an exercise object can be deleted
         """
-        self.populate_data()
         exercise = Exercise.objects.create(name='squats', description='squat')
         response = self.client.delete(reverse('exercise-detail', args=(exercise.id, )))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -200,7 +187,6 @@ class ExerciseTest(BaseTestCase):
         """
         Ensure that a non-admin user can not create, update or delete an exercise
         """
-        self.populate_data()
         exercise = Exercise.objects.create(name='squats', description='squat')
 
         self.create_non_admin_user()
