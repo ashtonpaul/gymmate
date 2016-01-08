@@ -62,6 +62,21 @@ class MuscleTest(BaseTestCase):
         response = self.client.get(reverse('muscle-detail', args=(muscle.id,)))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_non_admin_permissions(self):
+        """
+        Ensure that a non-admin user can not create, update or delete an exercise
+        """
+        muscle = Muscle.objects.create(name='bicep')
+
+        self.create_non_admin_user()
+        post = self.client.post(reverse('muscle-list'), {'name': 'tricep'})
+        put = self.client.put(reverse('muscle-detail', args=(muscle.id,)), {'name': 'quad'})
+        delete = self.client.delete(reverse('muscle-detail', args=(muscle.id,)))
+
+        self.assertEqual(post.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(put.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(delete.status_code, status.HTTP_403_FORBIDDEN)
+
 
 class ExerciseCategoryTest(BaseTestCase):
     def test_add_exercise_category(self):
@@ -102,6 +117,21 @@ class ExerciseCategoryTest(BaseTestCase):
         response = self.client.get(reverse('exercise-category-detail', args=(exercise_category.id, )))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_non_admin_permissions(self):
+        """
+        Ensure that a non-admin user can not create, update or delete an exercise
+        """
+        exercise_category = ExerciseCategory.objects.create(name='arms')
+
+        self.create_non_admin_user()
+        post = self.client.post(reverse('exercise-category-list'), {'name': 'legs'})
+        put = self.client.put(reverse('exercise-category-detail', args=(exercise_category.id,)), {'name': 'torso'})
+        delete = self.client.delete(reverse('exercise-category-detail', args=(exercise_category.id,)))
+
+        self.assertEqual(post.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(put.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(delete.status_code, status.HTTP_403_FORBIDDEN)
+
 
 class EquipmentTest(BaseTestCase):
     def test_add_equipment(self):
@@ -141,6 +171,21 @@ class EquipmentTest(BaseTestCase):
         equipment = Equipment.objects.get(name='barbell')
         response = self.client.get(reverse('equipment-detail', args=(equipment.id, )))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_non_admin_permissions(self):
+        """
+        Ensure that a non-admin user can not create, update or delete an exercise
+        """
+        equipment = Equipment.objects.create(name='barbell')
+
+        self.create_non_admin_user()
+        post = self.client.post(reverse('equipment-list'), {'name': 'dumbbell'})
+        put = self.client.put(reverse('equipment-detail', args=(equipment.id,)), {'name': 'ball'})
+        delete = self.client.delete(reverse('equipment-detail', args=(equipment.id,)))
+
+        self.assertEqual(post.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(put.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(delete.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class ExerciseTest(BaseTestCase):
