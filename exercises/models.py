@@ -38,7 +38,7 @@ class Equipment(models.Model):
 
 class Exercise(models.Model):
     name = models.CharField(max_length=200)
-    category = models.ForeignKey(ExerciseCategory)
+    category = models.ForeignKey(ExerciseCategory, null=True)
     description = models.TextField(max_length=2000, )
     muscles = models.ManyToManyField(Muscle, blank=True, verbose_name="Primary muscles", )
     muscles_secondary = models.ManyToManyField(Muscle, blank=True,

@@ -2,7 +2,7 @@ from rest_framework.reverse import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 from accounts.models import AccountUser
-from .models import Muscle, ExerciseCategory, Equipment
+from .models import Muscle, ExerciseCategory, Equipment, Exercise
 
 
 class BaseTestCase(APITestCase):
@@ -141,3 +141,73 @@ class EquipmentTest(BaseTestCase):
         equipment = Equipment.objects.get(name='barbell')
         response = self.client.get(reverse('equipment-detail', args=(equipment.id, )))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class ExerciseTest(BaseTestCase):
+    def populate_data(self):
+        """
+        Populate the database with dummy data to use in tests
+        """
+        self.client.post(reverse('muscle-list'),{'name':'bicep'})
+        self.client.post(reverse('muscle-list'),{'name':'tricep'})
+        self.client.post(reverse('muscle-list'),{'name':'quadricep'})
+        self.client.post(reverse('equipment-list'),{'name':'barbell'})
+        self.client.post(reverse('equipment-list'),{'name':'dumbbell'})
+        self.client.post(reverse('exercise-category-list'),{'name':'arms'})
+        self.client.post(reverse('exercise-category-list'),{'name':'legs'})
+
+    def test_add_exercise(self):
+        """
+        Ensure an exercise object can be added
+        """
+        response = self.client.post(reverse('exercise-list'), {'name': 'squats', 'description': 'squat'})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Exercise.objects.count(), 1)
+        self.assertEqual(Exercise.objects.get().name, 'squats')
+
+    def test_update_exercise(self):
+        """
+        Ensure an equipment object can be updated by an admin user
+        """
+        exercise = Exercise.objects.create(name='squats', description='squat')
+        self.client.patch(reverse('exercise-detail', args=(exercise.id, )), {'name': 'leg squats'})
+        exercise_updated = Exercise.objects.get(id=exercise.id)
+        self.assertEqual(exercise_updated.name, 'leg squats')
+
+    def test_delete_exercise(self):
+        """
+        Ensure an exercise object can be deleted
+        """
+        self.populate_data()
+        exercise = Exercise.objects.create(name='squats', description='squat')
+        response = self.client.delete(reverse('exercise-detail', args=(exercise.id, )))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Exercise.objects.count(), 0)
+        self.assertRaises(Exercise.DoesNotExist, lambda: Exercise.objects.get(name='squats'))
+
+    def test_get_exercise(self):
+        """
+        Ensure an exercise object can be retrieved by a non admin user
+        """
+        Exercise.objects.create(name='squats', description='squat')
+        self.create_non_admin_user()
+        
+        exercise = Exercise.objects.get(name='squats')
+        response = self.client.get(reverse('exercise-detail', args=(exercise.id, )))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_non_admin_permissions(self):
+        """
+        Ensure that a non-admin user can not create, update or delete an exercise
+        """
+        self.populate_data()
+        exercise = Exercise.objects.create(name='squats', description='squat')
+
+        self.create_non_admin_user()
+        post = self.client.post(reverse('exercise-list'), {'name': 'curl', 'description': 'bicep curl'})
+        put = self.client.put(reverse('exercise-detail', args=(exercise.id,)), {'description' : 'sqaut low'})
+        delete = self.client.delete(reverse('exercise-detail', args=(exercise.id,)))
+
+        self.assertEqual(post.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(put.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(delete.status_code, status.HTTP_403_FORBIDDEN)
