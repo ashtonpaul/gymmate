@@ -47,6 +47,17 @@ class MetricGroupTypeTest(BaseTestCase):
         self.client.delete(reverse('metric-group-detail', args=(self.last_created_group,)))
         self.assertRaises(Metric.DoesNotExist, lambda: Metric.objects.get(id=self.last_created_metric))
 
+    def test_delete_non_admin(self):
+        """
+        Non-admin users do not have permission to delete metric type groups
+        """
+        self.populate()
+        non_admin = AccountUser.objects.create_user(username='non_admin', password='pass', is_active=True)
+        client = APIClient()
+        client.force_authenticate(user=non_admin)
+        response = client.delete(reverse('metric-group-detail', args=(self.last_created_group, )))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
 
 class MetricTypeTest(BaseTestCase):
     def test_metric_type_cascade(self):
@@ -56,6 +67,17 @@ class MetricTypeTest(BaseTestCase):
         self.populate()
         self.client.delete(reverse('metric-type-detail', args=(self.last_created_type,)))
         self.assertRaises(Metric.DoesNotExist, lambda: Metric.objects.get(id=self.last_created_metric))
+
+    def test_delete_non_admin(self):
+        """
+        Non-admin users do not have permission to delete metric type
+        """
+        self.populate()
+        non_admin = AccountUser.objects.create_user(username='non_admin', password='pass', is_active=True)
+        client = APIClient()
+        client.force_authenticate(user=non_admin)
+        response = client.delete(reverse('metric-type-detail', args=(self.last_created_type, )))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class MetricTest(BaseTestCase):
