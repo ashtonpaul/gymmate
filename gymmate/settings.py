@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts',
     'metrics',
     'exercises',
+    'workouts',
 ]
 
 MIDDLEWARE_CLASSES = [
