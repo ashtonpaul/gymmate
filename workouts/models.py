@@ -39,10 +39,10 @@ class Progress(models.Model):
     exercise = models.ForeignKey(Exercise, null=False)
     user = models.ForeignKey(AccountUser, null=False)
     date = models.DateField(auto_now_add=False)
-    duration = models.IntegerField()
-    Sets = models.IntegerField()
-    reps = models.IntegerField()
-    weight = models.IntegerField()
+    duration = models.IntegerField(null=True)
+    sets = models.IntegerField(null=True)
+    reps = models.IntegerField(null=True)
+    weight = models.IntegerField(null=True)
 
     class Meta:
         ordering = ['date', 'exercise']

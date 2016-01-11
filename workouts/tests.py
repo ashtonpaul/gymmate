@@ -1,9 +1,13 @@
-from rest_framework.reverse import reverse
+import datetime
+
 from rest_framework import status
+from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase, APIClient
+
 from accounts.models import AccountUser
 from exercises.models import Exercise
-from .models import DayOfWeek, Routine
+
+from .models import DayOfWeek, Routine, Progress
 
 
 class BaseTestCase(APITestCase):
@@ -63,11 +67,12 @@ class DayOfWeekTest(BaseTestCase):
 
 class RoutineTest(BaseTestCase):
     def test_routine_unicode(self):
-        routine = Routine.objects.create(user=self.test_user, name='mondays')
+        routine = Routine.objects.create(user=self.test_user, name='mondays', )
         self.assertEqual(str(routine), 'mondays')
 
-    def test_add_routine(self):
-        exercise = Exercise.objects.create(name='squats', description='squat')
+    def test_add_routine_non_admin(self):
+        exercise = Exercise.objects.create(name='squats', description='squat', )
+        self.create_non_admin_user()
         response = self.client.post(
             reverse('routine-list'),
             {'name': 'mondays', 'exercises': '%d' % exercise.id}
@@ -76,13 +81,84 @@ class RoutineTest(BaseTestCase):
         self.assertEqual(Routine.objects.count(), 1)
         self.assertEqual(Routine.objects.get().name, 'mondays')
 
-    def test_delete_routine(self):
-        routine = Routine.objects.create(user=self.test_user, name='mondays')
+    def test_delete_routine_non_admin(self):
+        self.create_non_admin_user()
+        routine = Routine.objects.create(user=self.non_admin_user, name='mondays', )
         response = self.client.delete(reverse('routine-detail', args=(routine.id,)))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_delete_routine_non_admin(self):
+    def test_update_routine_non_admin(self):
+        exercise = Exercise.objects.create(name='squats', description='squat', )
         self.create_non_admin_user()
-        routine = Routine.objects.create(user=self.non_admin_user, name='mondays')
-        response = self.client.delete(reverse('routine-detail', args=(routine.id,)))
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        routine = Routine.objects.create(user=self.non_admin_user, name='mondays', )
+        response = self.client.put(
+            reverse('routine-detail', args=(routine.id,)), {'name': 'tuesdays', 'exercises': '%d' % exercise.id}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Routine.objects.count(), 1)
+
+    def test_permissions(self):
+        """
+        Ensure a user can't delete or update another user's routines
+        """
+        exercise = Exercise.objects.create(name='squats', description='squat', )
+        routine = Routine.objects.create(user=self.test_user, name='mondays', )
+        self.create_non_admin_user()
+
+        delete = self.client.delete(reverse('routine-detail', args=(routine.id,)))
+        put = self.client.put(
+            reverse('routine-detail', args=(routine.id,)), {'name': 'tuesdays', 'exercises': '%d' % exercise.id}
+        )
+
+        self.assertEqual(delete.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(put.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class PublicRoutineTest(BaseTestCase):
+    def test_get_public_routine_list(self):
+        exercise = Exercise.objects.create(name='squats', description='squat', )
+        self.client.post(
+            reverse('routine-list'),
+            {'name': 'mondays', 'exercises': '%d' % exercise.id, 'is_public': True}
+        )
+        self.client.post(
+            reverse('routine-list'),
+            {'name': 'mondays', 'exercises': '%d' % exercise.id, 'is_public': False}
+        )
+        response = self.client.get(reverse('public-routine-list'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Routine.objects.count(), 2)
+        self.assertEqual(Routine.objects.filter(is_public=True).count(), 1)
+
+    def test_get_public_routine_detail(self):
+        exercise = Exercise.objects.create(name='squats', description='squat', )
+        self.client.post(
+            reverse('routine-list'),
+            {'name': 'mondays', 'exercises': '%d' % exercise.id, 'is_public': True}
+        )
+        routine = Routine.objects.get()
+        response = self.client.get(reverse('public-routine-detail', args=(routine.id,)))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_permissions(self):
+        exercise = Exercise.objects.create(name='squats', description='squat', )
+        self.client.post(reverse('routine-list'), {'name': 'mondays', 'exercises': '%d' % exercise.id})
+        routine = Routine.objects.get(name='mondays')
+
+        post = self.client.post(reverse('public-routine-list'),  {'name': 'tuesdays', 'exercises': '%d' % exercise.id})
+        delete = self.client.delete(reverse('public-routine-detail', args=(routine.id,)))
+        put = self.client.put(
+            reverse('public-routine-detail', args=(routine.id,)),
+            {'name': 'wednesdays', 'exercises': '%d' % exercise.id}
+        )
+
+        self.assertEqual(post.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(delete.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(put.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+class ProgressTest(BaseTestCase):
+    def test_progress_unicode(self):
+        exercise = Exercise.objects.create(name='squats', description='squat', )
+        progress = Progress.objects.create(user=self.test_user, exercise=exercise, date=datetime.date.today())
+        self.assertEqual(str(progress), 'squats - %s' % (progress.date.strftime('%m/%d/%Y')))
