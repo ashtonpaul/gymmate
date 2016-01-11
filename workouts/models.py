@@ -1,9 +1,13 @@
 from django.db import models
+
 from exercises.models import Exercise
 from accounts.models import AccountUser
 
 
 class DayOfWeek(models.Model):
+    """
+    Days of the week
+    """
     day = models.CharField(max_length=9, blank=False, null=False)
 
     def __str__(self):
@@ -11,6 +15,9 @@ class DayOfWeek(models.Model):
 
 
 class Routine(models.Model):
+    """
+    Allow users to group exercises into routines
+    """
     user = models.ForeignKey(AccountUser)
     name = models.CharField(max_length=100, blank=False)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -26,6 +33,9 @@ class Routine(models.Model):
 
 
 class Progress(models.Model):
+    """
+    Track user progress for exercises completed
+    """
     exercise = models.ForeignKey(Exercise, null=False)
     user = models.ForeignKey(AccountUser, null=False)
     date = models.DateField(auto_now_add=False)
