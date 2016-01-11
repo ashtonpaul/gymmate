@@ -11,7 +11,7 @@ class DayOfWeekSerializer(serializers.ModelSerializer):
         model = DayOfWeek
 
 
-class PublicRoutineSerializer(serializers.ModelSerializer):    
+class PublicRoutineSerializer(serializers.ModelSerializer):
     """
     Publically shared routines serializer
     """
