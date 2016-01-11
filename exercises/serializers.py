@@ -5,7 +5,6 @@ from .models import Muscle, ExerciseCategory, Equipment, Exercise
 class MuscleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Muscle
-        fields = ('id', 'name', 'is_front', )
 
 
 class ExerciseCategorySerializer(serializers.ModelSerializer):
