@@ -4,8 +4,8 @@ from django.db import models
 
 
 class Muscle(models.Model):
-    name = models.CharField(max_length=50, blank=False, help_text="Muscle name e.g biceps", )
     latin_name = models.CharField(max_length=50, blank=True, help_text="Latin representation", )
+    name = models.CharField(max_length=50, blank=True, help_text="Muscle name e.g biceps", )
     is_front = models.BooleanField(default=True)
 
     class Meta:
