@@ -26,6 +26,9 @@ class PublicRoutineViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'head', 'options']
 
     def get_queryset(self):
+        """
+        Filter all routines that are marked for public viewing
+        """
         return Routine.objects.filter(is_public=True)
 
 
