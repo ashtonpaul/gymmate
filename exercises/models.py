@@ -45,6 +45,7 @@ class Exercise(models.Model):
                                                related_name='secondary_muscles', verbose_name="Secondary muscles", )
     equipment = models.ManyToManyField(Equipment, blank=True, )
     date_created = models.DateTimeField(auto_now_add=True)
+    is_cardio = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['name', ]
