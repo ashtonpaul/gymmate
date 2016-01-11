@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from gymmate.permissions import IsAdminOrReadOnly
 from accounts.models import AccountUser
 
-from .serializers import DayOfWeekSerializer, RoutineSerializer, ProgressSerializer
+from .serializers import DayOfWeekSerializer, PublicRoutineSerializer, RoutineSerializer, ProgressSerializer
 from .models import DayOfWeek, Routine, Progress
 
 
@@ -22,7 +22,7 @@ class PublicRoutineViewSet(viewsets.ModelViewSet):
     List/Details of publically shared routines
     """
     queryset = Routine.objects.all()
-    serializer_class = RoutineSerializer
+    serializer_class = PublicRoutineSerializer
     http_method_names = ['get', 'head', 'options']
 
     def get_queryset(self):

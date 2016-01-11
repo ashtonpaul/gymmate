@@ -11,6 +11,15 @@ class DayOfWeekSerializer(serializers.ModelSerializer):
         model = DayOfWeek
 
 
+class PublicRoutineSerializer(serializers.ModelSerializer):    
+    """
+    Publically shared routines serializer
+    """
+    class Meta:
+        model = Routine
+        fields = ('id', 'user', 'name', 'date_created', 'exercises', 'days')
+
+
 class RoutineSerializer(serializers.ModelSerializer):
     """
     User custom routine serializer
