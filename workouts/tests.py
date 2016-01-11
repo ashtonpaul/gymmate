@@ -25,6 +25,10 @@ class BaseTestCase(APITestCase):
 
 
 class DayOfWeekTest(BaseTestCase):
+    def test_day_unicode(self):
+        day = DayOfWeek.objects.create(day='monday')
+        self.assertEqual(str(day), 'monday')
+
     def test_add_day(self):
         response = self.client.post(reverse('dayofweek-list'), {'day': 'monday'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -48,7 +52,7 @@ class DayOfWeekTest(BaseTestCase):
     def test_permissions(self):
         day = DayOfWeek.objects.create(day='sunday')
         self.create_non_admin_user()
-        add = self.client.post(reverse('dayofweek-list'), {'day':'monday'})
+        add = self.client.post(reverse('dayofweek-list'), {'day': 'monday'})
         delete = self.client.delete(reverse('dayofweek-detail', args=(day.id, )))
         put = self.client.put(reverse('dayofweek-detail', args=(day.id, )), {'day': 'tuesday'})
 
@@ -58,6 +62,10 @@ class DayOfWeekTest(BaseTestCase):
 
 
 class RoutineTest(BaseTestCase):
+    def test_routine_unicode(self):
+        routine = Routine.objects.create(user=self.test_user, name='mondays')
+        self.assertEqual(str(routine), 'mondays')
+
     def test_add_routine(self):
         exercise = Exercise.objects.create(name='squats', description='squat')
         response = self.client.post(
@@ -67,3 +75,14 @@ class RoutineTest(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Routine.objects.count(), 1)
         self.assertEqual(Routine.objects.get().name, 'mondays')
+
+    def test_delete_routine(self):
+        routine = Routine.objects.create(user=self.test_user, name='mondays')
+        response = self.client.delete(reverse('routine-detail', args=(routine.id,)))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_routine_non_admin(self):
+        self.create_non_admin_user()
+        routine = Routine.objects.create(user=self.non_admin_user, name='mondays')
+        response = self.client.delete(reverse('routine-detail', args=(routine.id,)))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
