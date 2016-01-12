@@ -109,9 +109,13 @@ class RoutineTest(BaseTestCase):
         put = self.client.put(
             reverse('routine-detail', args=(routine.id,)), {'name': 'tuesdays', 'exercises': '%d' % exercise.id}
         )
+        patch = self.client.patch(
+            reverse('routine-detail', args=(routine.id,)), {'name': 'wednesdays'}
+        )
 
         self.assertEqual(delete.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(put.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(patch.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class PublicRoutineTest(BaseTestCase):
@@ -147,14 +151,19 @@ class PublicRoutineTest(BaseTestCase):
 
         post = self.client.post(reverse('public-routine-list'),  {'name': 'tuesdays', 'exercises': '%d' % exercise.id})
         delete = self.client.delete(reverse('public-routine-detail', args=(routine.id,)))
+        patch = self.client.patch(
+            reverse('public-routine-detail', args=(routine.id,)),
+            {'name': 'wednesdays'}
+        )
         put = self.client.put(
             reverse('public-routine-detail', args=(routine.id,)),
-            {'name': 'wednesdays', 'exercises': '%d' % exercise.id}
+            {'name': 'thursdays', 'exercises': '%d' % exercise.id}
         )
 
         self.assertEqual(post.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         self.assertEqual(delete.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         self.assertEqual(put.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(patch.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class ProgressTest(BaseTestCase):
