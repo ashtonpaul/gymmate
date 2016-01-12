@@ -1,5 +1,7 @@
 import datetime
 
+from django.db import IntegrityError
+
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase, APIClient
@@ -30,43 +32,74 @@ class BaseTestCase(APITestCase):
 
 class DayOfWeekTest(BaseTestCase):
     def test_day_unicode(self):
+        """
+        Test unicode string represenation of the day of the week
+        """
         day = DayOfWeek.objects.create(day='monday')
         self.assertEqual(str(day), 'monday')
 
     def test_add_day(self):
+        """
+        Add a day of the week by an admin user
+        """
         response = self.client.post(reverse('dayofweek-list'), {'day': 'monday'})
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(DayOfWeek.objects.count(), 1)
         self.assertEqual(DayOfWeek.objects.get().day, 'monday')
 
     def test_delete_day(self):
+        """
+        Delete a day of the week by an admin user
+        """
         day = DayOfWeek.objects.create(day='monday')
         response = self.client.delete(reverse('dayofweek-detail', args=(day.id, )))
+
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(DayOfWeek.objects.count(), 0)
         self.assertRaises(DayOfWeek.DoesNotExist, lambda: DayOfWeek.objects.get(id=day.id))
 
     def test_update_day(self):
+        """
+        Put and patch method on an object by admin user
+        """
         day = DayOfWeek.objects.create(day='monday')
         self.client.put(reverse('dayofweek-detail', args=(day.id, )), {'day': 'tuesday'})
         day_updated = DayOfWeek.objects.get(id=day.id)
+
         self.assertEqual(day_updated.day, 'tuesday')
         self.assertEqual(DayOfWeek.objects.count(), 1)
 
+    def test_unique(self):
+        """
+        Ensure that all values for day of week are unique
+        """
+        self.client.post(reverse('dayofweek-list'), {'day': 'monday'})
+        self.assertRaises(IntegrityError, lambda: DayOfWeek.objects.create(day='monday'))
+
     def test_permissions(self):
+        """
+        Non-admin users are forbidden to perform non-safe methods on objects
+        """
         day = DayOfWeek.objects.create(day='sunday')
         self.create_non_admin_user()
+
         add = self.client.post(reverse('dayofweek-list'), {'day': 'monday'})
         delete = self.client.delete(reverse('dayofweek-detail', args=(day.id, )))
         put = self.client.put(reverse('dayofweek-detail', args=(day.id, )), {'day': 'tuesday'})
+        patch = self.client.patch(reverse('dayofweek-detail', args=(day.id, )), {'day': 'tuesday'})
 
         self.assertEqual(add.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(delete.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(put.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(patch.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class RoutineTest(BaseTestCase):
     def test_routine_unicode(self):
+        """
+        Test unicode string represenation of the routine
+        """
         routine = Routine.objects.create(user=self.test_user, name='mondays', )
         self.assertEqual(str(routine), 'mondays')
 
@@ -168,6 +201,9 @@ class PublicRoutineTest(BaseTestCase):
 
 class ProgressTest(BaseTestCase):
     def test_progress_unicode(self):
+        """
+        Test unicode string represenation of the progress entry
+        """
         exercise = Exercise.objects.create(name='squats', description='squat', )
         progress = Progress.objects.create(user=self.test_user, exercise=exercise, date=datetime.date.today())
         self.assertEqual(str(progress), 'squats - %s' % (progress.date.strftime('%m/%d/%Y')))

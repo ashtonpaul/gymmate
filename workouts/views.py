@@ -1,5 +1,4 @@
-from rest_framework import viewsets, status
-from rest_framework.response import Response
+from rest_framework import viewsets
 
 from gymmate.permissions import IsAdminOrReadOnly
 from accounts.models import AccountUser

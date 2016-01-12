@@ -8,7 +8,7 @@ class DayOfWeek(models.Model):
     """
     Days of the week
     """
-    day = models.CharField(max_length=9, blank=False, null=False)
+    day = models.CharField(max_length=9, blank=False, null=False, unique=True)
 
     def __str__(self):
         return self.day
