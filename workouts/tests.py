@@ -13,21 +13,25 @@ from .models import DayOfWeek, Routine, Progress
 
 
 class BaseTestCase(APITestCase):
+    # Test user accounts
+    user_admin = 'admin'
+    user_basic = 'user'
+
     def setUp(self):
         """
         Set up user for authentication to run tests
         """
-        self.test_user = AccountUser.objects.create_user(username='test', password='test', is_active=True,
-                                                         is_staff=True, is_superuser=True)
-        self.client = APIClient()
-        self.client.force_authenticate(user=self.test_user)
+        AccountUser.objects.create_user(username=self.user_admin, is_active=True, is_staff=True)
+        AccountUser.objects.create_user(username=self.user_basic, is_active=True)
 
-    def create_non_admin_user(self):
+        self.client = APIClient()
+
+    def authenticate(self, username=None):
         """
-        Create a non admin user for use in various tests
+        Method to authenticate and switch currently logged in user
         """
-        self.non_admin_user = AccountUser.objects.create_user(username='non_admin', password='test', is_active=True, )
-        self.client.force_authenticate(user=self.non_admin_user)
+        self.user = AccountUser.objects.get(username=username)
+        self.client.force_authenticate(user=self.user)
 
 
 class DayOfWeekTest(BaseTestCase):
@@ -42,6 +46,7 @@ class DayOfWeekTest(BaseTestCase):
         """
         Add a day of the week by an admin user
         """
+        self.authenticate(self.user_admin)
         response = self.client.post(reverse('dayofweek-list'), {'day': 'monday'})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -52,8 +57,9 @@ class DayOfWeekTest(BaseTestCase):
         """
         Delete a day of the week by an admin user
         """
+        self.authenticate(self.user_admin)
         day = DayOfWeek.objects.create(day='monday')
-        response = self.client.delete(reverse('dayofweek-detail', args=(day.id, )))
+        response = self.client.delete(reverse('dayofweek-detail', args=(day.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(DayOfWeek.objects.count(), 0)
@@ -64,6 +70,7 @@ class DayOfWeekTest(BaseTestCase):
         Put and patch method on an object by admin user
         """
         day = DayOfWeek.objects.create(day='monday')
+        self.authenticate(self.user_admin)
         self.client.put(reverse('dayofweek-detail', args=(day.id, )), {'day': 'tuesday'})
         day_updated = DayOfWeek.objects.get(id=day.id)
 
@@ -74,6 +81,7 @@ class DayOfWeekTest(BaseTestCase):
         """
         Ensure that all values for day of week are unique
         """
+        self.authenticate(self.user_admin)
         self.client.post(reverse('dayofweek-list'), {'day': 'monday'})
         self.assertRaises(IntegrityError, lambda: DayOfWeek.objects.create(day='monday'))
 
@@ -82,8 +90,8 @@ class DayOfWeekTest(BaseTestCase):
         Non-admin users are forbidden to perform non-safe methods on objects
         """
         day = DayOfWeek.objects.create(day='sunday')
-        self.create_non_admin_user()
 
+        self.authenticate(self.user_basic)
         add = self.client.post(reverse('dayofweek-list'), {'day': 'monday'})
         delete = self.client.delete(reverse('dayofweek-detail', args=(day.id, )))
         put = self.client.put(reverse('dayofweek-detail', args=(day.id, )), {'day': 'tuesday'})
@@ -100,34 +108,57 @@ class RoutineTest(BaseTestCase):
         """
         Test unicode string represenation of the routine
         """
-        routine = Routine.objects.create(user=self.test_user, name='mondays', )
+        self.authenticate(self.user_admin)
+        routine = Routine.objects.create(user=self.user, name='mondays', )
         self.assertEqual(str(routine), 'mondays')
 
     def test_add_routine_non_admin(self):
+        """
+        Ensure non-admin users can add exercise routines
+        """
         exercise = Exercise.objects.create(name='squats', description='squat', )
-        self.create_non_admin_user()
+
+        self.authenticate(self.user_basic)
         response = self.client.post(
             reverse('routine-list'),
             {'name': 'mondays', 'exercises': '%d' % exercise.id}
         )
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Routine.objects.count(), 1)
         self.assertEqual(Routine.objects.get().name, 'mondays')
 
     def test_delete_routine_non_admin(self):
-        self.create_non_admin_user()
-        routine = Routine.objects.create(user=self.non_admin_user, name='mondays', )
+        """
+        Delete method test for exercise routines by non-admin users
+        """
+        self.authenticate(self.user_basic)
+        routine = Routine.objects.create(user=self.user, name='mondays', )
         response = self.client.delete(reverse('routine-detail', args=(routine.id,)))
+
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Routine.objects.count(), 0)
 
     def test_update_routine_non_admin(self):
+        """
+        Ensuer put/patch methods are available for non-admin users
+        """
         exercise = Exercise.objects.create(name='squats', description='squat', )
-        self.create_non_admin_user()
-        routine = Routine.objects.create(user=self.non_admin_user, name='mondays', )
-        response = self.client.put(
-            reverse('routine-detail', args=(routine.id,)), {'name': 'tuesdays', 'exercises': '%d' % exercise.id}
+
+        self.authenticate(self.user_basic)
+        routine = Routine.objects.create(user=self.user, name='mondays', )
+
+        patch = self.client.patch(reverse('routine-detail', args=(routine.id,)), {'name': 'tuesdays'})
+        patched_routine = Routine.objects.get(id=routine.id)
+
+        put = self.client.put(
+            reverse('routine-detail', args=(routine.id,)), {'name': 'sundays', 'exercises': '%d' % exercise.id}
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(put.status_code, status.HTTP_200_OK)
+        self.assertEqual(patch.status_code, status.HTTP_200_OK)
+        self.assertEqual(patched_routine.name, 'tuesdays')
+        self.assertEqual(Routine.objects.get().name, 'sundays')
         self.assertEqual(Routine.objects.count(), 1)
 
     def test_permissions(self):
@@ -135,15 +166,15 @@ class RoutineTest(BaseTestCase):
         Ensure a user can't delete or update another user's routines
         """
         exercise = Exercise.objects.create(name='squats', description='squat', )
-        routine = Routine.objects.create(user=self.test_user, name='mondays', )
-        self.create_non_admin_user()
 
+        self.authenticate(self.user_admin)
+        routine = Routine.objects.create(user=self.user, name='mondays', )
+
+        self.authenticate(self.user_basic)
         delete = self.client.delete(reverse('routine-detail', args=(routine.id,)))
+        patch = self.client.patch(reverse('routine-detail', args=(routine.id,)), {'name': 'wednesdays'})
         put = self.client.put(
             reverse('routine-detail', args=(routine.id,)), {'name': 'tuesdays', 'exercises': '%d' % exercise.id}
-        )
-        patch = self.client.patch(
-            reverse('routine-detail', args=(routine.id,)), {'name': 'wednesdays'}
         )
 
         self.assertEqual(delete.status_code, status.HTTP_404_NOT_FOUND)
@@ -153,34 +184,38 @@ class RoutineTest(BaseTestCase):
 
 class PublicRoutineTest(BaseTestCase):
     def test_get_public_routine_list(self):
-        exercise = Exercise.objects.create(name='squats', description='squat', )
-        self.client.post(
-            reverse('routine-list'),
-            {'name': 'mondays', 'exercises': '%d' % exercise.id, 'is_public': True}
-        )
-        self.client.post(
-            reverse('routine-list'),
-            {'name': 'mondays', 'exercises': '%d' % exercise.id, 'is_public': False}
-        )
+        """
+        Ensure a list of all publicly shared routines is avilable to all users
+        """
+        self.authenticate(self.user_admin)
+        Routine.objects.create(user=self.user, name='mondays', is_public=True)
+        Routine.objects.create(user=self.user, name='tuesdays', is_public=False)
+        Routine.objects.create(user=self.user, name='wednesdays', is_public=False)
+
+        self.authenticate(self.user_basic)
         response = self.client.get(reverse('public-routine-list'))
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(Routine.objects.count(), 2)
+        self.assertEqual(Routine.objects.count(), 3)
         self.assertEqual(Routine.objects.filter(is_public=True).count(), 1)
 
     def test_get_public_routine_detail(self):
-        exercise = Exercise.objects.create(name='squats', description='squat', )
-        self.client.post(
-            reverse('routine-list'),
-            {'name': 'mondays', 'exercises': '%d' % exercise.id, 'is_public': True}
-        )
-        routine = Routine.objects.get()
+        """
+        Details of a publicly shared routine is available
+        """
+        self.authenticate(self.user_admin)
+        routine = Routine.objects.create(user=self.user, name='mondays', is_public=True)
         response = self.client.get(reverse('public-routine-detail', args=(routine.id,)))
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_permissions(self):
+        """
+        Test Read-only permissions by other users
+        """
+        self.authenticate(self.user_admin)
         exercise = Exercise.objects.create(name='squats', description='squat', )
-        self.client.post(reverse('routine-list'), {'name': 'mondays', 'exercises': '%d' % exercise.id})
-        routine = Routine.objects.get(name='mondays')
+        routine = Routine.objects.create(user=self.user, name='mondays', is_public=True)
 
         post = self.client.post(reverse('public-routine-list'),  {'name': 'tuesdays', 'exercises': '%d' % exercise.id})
         delete = self.client.delete(reverse('public-routine-detail', args=(routine.id,)))
@@ -204,26 +239,34 @@ class ProgressTest(BaseTestCase):
         """
         Test unicode string represenation of the progress entry
         """
+        self.authenticate(self.user_admin)
         exercise = Exercise.objects.create(name='squats', description='squat', )
-        progress = Progress.objects.create(user=self.test_user, exercise=exercise, date=datetime.date.today())
+        progress = Progress.objects.create(user=self.user, exercise=exercise, date=datetime.date.today())
         self.assertEqual(str(progress), 'squats - %s' % (progress.date.strftime('%m/%d/%Y')))
 
     def test_add_progress_non_admin(self):
+        """
+        Add a progress entry by a non-admin user_admin
+        """
         exercise = Exercise.objects.create(name='squats', description='squat', )
-        self.create_non_admin_user()
+
+        self.authenticate(self.user_basic)
         response = self.client.post(
             reverse('progress-list'),
-            {'user': self.non_admin_user.id, 'exercise': exercise.id, 'duration': '767', 'date': datetime.date.today()}
+            {'user': self.user.id, 'exercise': exercise.id, 'duration': '767', 'date': datetime.date.today()}
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Progress.objects.count(), 1)
         self.assertEqual(Progress.objects.get().duration, 767)
 
     def test_delete_progress_non_admin(self):
+        """
+        Ability to delete a progress entry by a non-admin user
+        """
         exercise = Exercise.objects.create(name='squats', description='squat', )
 
-        self.create_non_admin_user()
-        progress = Progress.objects.create(user=self.non_admin_user, exercise=exercise, date=datetime.date.today())
+        self.authenticate(self.user_basic)
+        progress = Progress.objects.create(user=self.user, exercise=exercise, date=datetime.date.today())
         response = self.client.delete(reverse('progress-detail', args=(progress.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -231,10 +274,15 @@ class ProgressTest(BaseTestCase):
         self.assertRaises(Progress.DoesNotExist, lambda: Progress.objects.get(id=progress.id))
 
     def test_delete_by_other_user(self):
+        """
+        Ensure a non-admin user can't delete another user's progress entry
+        """
         exercise = Exercise.objects.create(name='squats', description='squat', )
-        progress = Progress.objects.create(user=self.test_user, exercise=exercise, date=datetime.date.today())
 
-        self.create_non_admin_user()
+        self.authenticate(self.user_admin)
+        progress = Progress.objects.create(user=self.user, exercise=exercise, date=datetime.date.today())
+
+        self.authenticate(self.user_basic)
         response = self.client.delete(reverse('progress-detail', args=(progress.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -242,10 +290,13 @@ class ProgressTest(BaseTestCase):
         self.assertTrue(Progress.objects.get(id=progress.id))
 
     def test_update_progress_non_admin(self):
+        """
+        Ensure a non-admin user can patch and put on their progress entry
+        """
         exercise = Exercise.objects.create(name='squats', description='squat', )
 
-        self.create_non_admin_user()
-        progress = Progress.objects.create(user=self.non_admin_user, exercise=exercise,
+        self.authenticate(self.user_basic)
+        progress = Progress.objects.create(user=self.user, exercise=exercise,
                                            date=datetime.date.today(), duration=767)
         put = self.client.put(
             reverse('progress-detail', args=(progress.id,)),
@@ -261,20 +312,28 @@ class ProgressTest(BaseTestCase):
         self.assertEqual(Progress.objects.get().duration, 214)
         self.assertEqual(Progress.objects.count(), 1)
 
-    def test_permissions(self):
+    def test_update_by_other_user(self):
+        """
+        Ensure a user can't delete another user's progress entry
+        """
+        self.authenticate(self.user_admin)
         exercise = Exercise.objects.create(name='squats', description='squat', )
-        progress = Progress.objects.create(user=self.test_user, exercise=exercise,
-                                           date=datetime.date.today(), duration=767)
+        progress = Progress.objects.create(user=self.user, exercise=exercise, date=datetime.date.today(), duration=767)
 
-        self.create_non_admin_user()
+        self.authenticate(self.user_basic)
+        patch = self.client.patch(
+            reverse('progress-detail', args=(progress.id,)),
+            {'duration': '214'}
+        )
+        patched_progress = Progress.objects.get(id=progress.id)
 
-        delete = self.client.delete(reverse('progress-detail', args=(progress.id,)))
         put = self.client.put(
             reverse('progress-detail', args=(progress.id,)),
             {'duration': '940', 'date': datetime.date.today(), 'exercise': exercise.id}
         )
-        patch = self.client.patch(reverse('progress-detail', args=(progress.id,)), {'duration': '214'})
 
-        self.assertEqual(delete.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(put.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(patch.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertNotEqual(patched_progress, 214)
+        self.assertEqual(progress.duration, 767)
+        self.assertEqual(Progress.objects.count(), 1)
