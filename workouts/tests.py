@@ -230,6 +230,6 @@ class ProgressTest(BaseTestCase):
         )
         patch = self.client.patch(reverse('progress-detail', args=(progress.id,)), {'duration': '214'})
 
-        print delete
-        print put
-        print patch
+        self.assertEqual(delete.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(put.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(patch.status_code, status.HTTP_404_NOT_FOUND)
