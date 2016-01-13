@@ -10,16 +10,32 @@ from .models import Metric, MetricType, MetricTypeGroup
 
 
 class BaseTestCase(APITestCase):
+   # Test user accounts
+    user_admin = 'admin'
+    user_basic = 'user'
+
     def setUp(self):
         """
         Set up user for authentication to run tests
         """
+        AccountUser.objects.create_user(username=self.user_admin, is_active=True, is_staff=True)
+        AccountUser.objects.create_user(username=self.user_basic, is_active=True)
+
+        self.client = APIClient()
+
         self.test_user = AccountUser.objects.create_user(username='test', password='test', is_active=True,
                                                          is_staff=True, is_superuser=True)
-        self.client = APIClient()
         self.client.force_authenticate(user=self.test_user)
 
         self.group = self.client.post(reverse('metric-group-list'), {'name': 'test_group'}, format='json')
+    
+    def authenticate(self, username=None):
+        """
+        Method to authenticate and switch currently logged in user
+        """
+        self.user = AccountUser.objects.get(username=username)
+        self.client.force_authenticate(user=self.user)
+        return self.user
 
     def populate(self):
         """
@@ -40,6 +56,8 @@ class MetricGroupTypeTest(BaseTestCase):
         """
         Ensure that metric type group names are unique
         """
+        self.authenticate(self.user_admin)        
+        self.group = self.client.post(reverse('metric-group-list'), {'name': 'test_group'}, format='json')
         self.assertRaises(IntegrityError, lambda: MetricTypeGroup.objects.create(name='test_group'))
 
     def test_metric_group_cascade(self):
