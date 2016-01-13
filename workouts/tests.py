@@ -32,6 +32,7 @@ class BaseTestCase(APITestCase):
         """
         self.user = AccountUser.objects.get(username=username)
         self.client.force_authenticate(user=self.user)
+        return self.user
 
 
 class DayOfWeekTest(BaseTestCase):
