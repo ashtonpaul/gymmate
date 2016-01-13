@@ -1,9 +1,10 @@
-from __future__ import unicode_literals
-
 from django.db import models
 
 
 class Muscle(models.Model):
+    """
+    Model for muscles storing location and latin name also
+    """
     latin_name = models.CharField(max_length=50, blank=True, help_text="Latin representation", )
     name = models.CharField(max_length=50, blank=True, help_text="Muscle name e.g biceps", )
     is_front = models.BooleanField(default=True)
@@ -16,6 +17,9 @@ class Muscle(models.Model):
 
 
 class ExerciseCategory(models.Model):
+    """
+    Different exercise categories to subclass exercises
+    """
     name = models.CharField(max_length=50, blank=False, )
 
     class Meta:
@@ -27,6 +31,9 @@ class ExerciseCategory(models.Model):
 
 
 class Equipment(models.Model):
+    """
+    Equipment that can usually be found in a gym
+    """
     name = models.CharField(max_length=100, blank=False, )
 
     class Meta:
@@ -38,6 +45,9 @@ class Equipment(models.Model):
 
 
 class Exercise(models.Model):
+    """
+    Exercise model with details about exercises that can be performed
+    """
     name = models.CharField(max_length=200)
     category = models.ForeignKey(ExerciseCategory, null=True)
     description = models.TextField(max_length=2000, )

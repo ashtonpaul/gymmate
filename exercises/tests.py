@@ -1,7 +1,9 @@
-from rest_framework.reverse import reverse
 from rest_framework import status
+from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase, APIClient
+
 from accounts.models import AccountUser
+
 from .models import Muscle, ExerciseCategory, Equipment, Exercise
 
 
@@ -24,6 +26,13 @@ class BaseTestCase(APITestCase):
 
 
 class MuscleTest(BaseTestCase):
+    def test_muscle_unicode(self):
+        """
+        Test unicode string represenation of a muscle
+        """
+        muscle = Muscle.objects.create(name='biceps')
+        self.assertEqual(str(muscle), 'biceps')
+
     def test_add_muscle(self):
         """
         Ensure a muscle object can be added by an admin user
@@ -79,6 +88,13 @@ class MuscleTest(BaseTestCase):
 
 
 class ExerciseCategoryTest(BaseTestCase):
+    def test_exercise_category_unicode(self):
+        """
+        Test unicode string represenation of an exercise category
+        """
+        exercise_category = ExerciseCategory.objects.create(name='arms')
+        self.assertEqual(str(exercise_category), 'arms')
+
     def test_add_exercise_category(self):
         """
         Ensure an exercise category object can be added by an admin user
@@ -134,6 +150,13 @@ class ExerciseCategoryTest(BaseTestCase):
 
 
 class EquipmentTest(BaseTestCase):
+    def test_equipment_unicode(self):
+        """
+        Test unicode string represenation of equipment
+        """
+        equipment = Equipment.objects.create(name='dumbbell')
+        self.assertEqual(str(equipment), 'dumbbell')
+
     def test_add_equipment(self):
         """
         Ensure an equipment object can be added by an admin user
@@ -189,6 +212,13 @@ class EquipmentTest(BaseTestCase):
 
 
 class ExerciseTest(BaseTestCase):
+    def test_exercise_unicode(self):
+        """
+        Test unicode string represenation of an exercise
+        """
+        exercise = Exercise.objects.create(name='squats', description='squat')
+        self.assertEqual(str(exercise), 'squats')
+
     def test_add_exercise(self):
         """
         Ensure an exercise object can be added
