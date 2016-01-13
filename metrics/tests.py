@@ -2,35 +2,13 @@ from django.db import IntegrityError
 
 from rest_framework import status
 from rest_framework.reverse import reverse
-from rest_framework.test import APITestCase, APIClient
 
-from accounts.models import AccountUser
+from gymmate.tests import BaseTestCase
 
 from .models import Metric, MetricType, MetricTypeGroup
 
 
-class BaseTestCase(APITestCase):
-    # Test user accounts
-    user_admin = 'admin'
-    user_basic = 'user'
-
-    def setUp(self):
-        """
-        Set up user for authentication to run tests
-        """
-        AccountUser.objects.create_user(username=self.user_admin, is_active=True, is_staff=True)
-        AccountUser.objects.create_user(username=self.user_basic, is_active=True)
-
-        self.client = APIClient()
-
-    def authenticate(self, username=None):
-        """
-        Method to authenticate and switch currently logged in user
-        """
-        self.user = AccountUser.objects.get(username=username)
-        self.client.force_authenticate(user=self.user)
-        return self.user
-
+class MetricsTestCase(BaseTestCase):
     def populate(self):
         """
         Common base method for populating data for testing between models
@@ -48,7 +26,7 @@ class BaseTestCase(APITestCase):
         self.last_created_metric = Metric.objects.latest('id').id
 
 
-class MetricGroupTypeTest(BaseTestCase):
+class MetricGroupTypeTest(MetricsTestCase):
     def test_unique_metric_group(self):
         """
         Ensure that metric type group names are unique
@@ -77,7 +55,7 @@ class MetricGroupTypeTest(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
-class MetricTypeTest(BaseTestCase):
+class MetricTypeTest(MetricsTestCase):
     def test_metric_type_cascade(self):
         """
         If a type is deleted all associated metrics should be deleted too
@@ -98,7 +76,7 @@ class MetricTypeTest(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
-class MetricTest(BaseTestCase):
+class MetricTest(MetricsTestCase):
     def test_add_metric(self):
         """
         Add new metric

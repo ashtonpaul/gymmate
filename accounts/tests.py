@@ -1,33 +1,9 @@
 from rest_framework import status
 from rest_framework.reverse import reverse
-from rest_framework.test import APITestCase, APIClient
+from rest_framework.test import APIClient
 
+from gymmate.tests import BaseTestCase
 from metrics.models import Metric, MetricType, MetricTypeGroup
-
-from .models import AccountUser
-
-
-class BaseTestCase(APITestCase):
-    # Test user accounts
-    user_admin = 'admin'
-    user_basic = 'user'
-
-    def setUp(self):
-        """
-        Set up user for authentication to run tests
-        """
-        AccountUser.objects.create_user(username=self.user_admin, is_active=True, is_staff=True)
-        AccountUser.objects.create_user(username=self.user_basic, is_active=True)
-
-        self.client = APIClient()
-
-    def authenticate(self, username=None):
-        """
-        Method to authenticate and switch currently logged in user
-        """
-        self.user = AccountUser.objects.get(username=username)
-        self.client.force_authenticate(user=self.user)
-        return self.user
 
 
 class AccountTests(BaseTestCase):
