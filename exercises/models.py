@@ -4,7 +4,8 @@ from django.db import models
 
 
 class Muscle(models.Model):
-    name = models.CharField(max_length=50, blank=False, help_text="Latin representation", )
+    latin_name = models.CharField(max_length=50, blank=True, help_text="Latin representation", )
+    name = models.CharField(max_length=50, blank=True, help_text="Muscle name e.g biceps", )
     is_front = models.BooleanField(default=True)
 
     class Meta:
@@ -45,6 +46,10 @@ class Exercise(models.Model):
                                                related_name='secondary_muscles', verbose_name="Secondary muscles", )
     equipment = models.ManyToManyField(Equipment, blank=True, )
     date_created = models.DateTimeField(auto_now_add=True)
+    is_cardio = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['name', ]
+
+    def __str__(self):
+        return self.name

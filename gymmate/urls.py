@@ -5,6 +5,7 @@ from rest_framework import routers
 from accounts.views import UserViewSet
 from metrics.views import MetricViewSet, MetricTypeViewSet, MetricTypeGroupViewSet
 from exercises.views import MuscleViewSet, ExerciseCategoryViewSet, EquipmentViewSet, ExerciseViewSet
+from workouts.views import DayOfWeekViewSet, PublicRoutineViewSet, RoutineViewSet, ProrgressViewSet
 
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet, 'user')
@@ -15,6 +16,10 @@ router.register(r'exercises', ExerciseViewSet, 'exercise')
 router.register(r'exercise-categories', ExerciseCategoryViewSet, 'exercise-category')
 router.register(r'muscles', MuscleViewSet, 'muscle')
 router.register(r'equipment', EquipmentViewSet, 'equipment')
+router.register(r'daysofweek', DayOfWeekViewSet, 'dayofweek')
+router.register(r'routines', RoutineViewSet, 'routine')
+router.register(r'public-routines', PublicRoutineViewSet, 'public-routine')
+router.register(r'progress', ProrgressViewSet, 'progress')
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
