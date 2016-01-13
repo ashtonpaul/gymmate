@@ -1,10 +1,12 @@
-from __future__ import unicode_literals
-
 from django.db import models
+
 from accounts.models import AccountUser
 
 
 class MetricTypeGroup(models.Model):
+    """
+    Parent group for each metric type
+    """
     name = models.CharField(max_length=50, unique=True)
 
     class Meta:
@@ -15,6 +17,9 @@ class MetricTypeGroup(models.Model):
 
 
 class MetricType(models.Model):
+    """
+    Type of metric to be measured
+    """
     group = models.ForeignKey(MetricTypeGroup, to_field='name')
     name = models.CharField(max_length=50)
     unit = models.CharField(max_length=10)
@@ -27,6 +32,9 @@ class MetricType(models.Model):
 
 
 class Metric(models.Model):
+    """
+    Metric model to store user biometric measurements
+    """
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(AccountUser, to_field='username')
     value = models.FloatField(blank=False)
