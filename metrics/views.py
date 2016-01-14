@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 from gymmate.permissions import IsAdminOrReadOnly
 from accounts.models import AccountUser
@@ -29,6 +30,7 @@ class MetricViewSet(viewsets.ModelViewSet):
     """
     User body measurment viewset
     """
+    permission_classes = (IsAuthenticated, )
     queryset = Metric.objects.all().order_by('date')
     serializer_class = MetricSerializer
 

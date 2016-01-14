@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from gymmate.permissions import IsAdminOrReadOnly
 from accounts.models import AccountUser
@@ -20,6 +21,7 @@ class PublicRoutineViewSet(viewsets.ModelViewSet):
     """
     List/Details of publically shared routines
     """
+    permission_classes = (AllowAny, )
     queryset = Routine.objects.all()
     serializer_class = PublicRoutineSerializer
     http_method_names = ['get', 'head', 'options']
@@ -35,6 +37,7 @@ class RoutineViewSet(viewsets.ModelViewSet):
     """
     List/Detail of a user's routine(s)
     """
+    permission_classes = (IsAuthenticated, )
     queryset = Routine.objects.all()
     serializer_class = RoutineSerializer
 
@@ -63,6 +66,7 @@ class ProrgressViewSet(viewsets.ModelViewSet):
     """
     List/Detail of a user's workout progression
     """
+    permission_classes = (IsAuthenticated, )
     queryset = Progress.objects.all()
     serializer_class = ProgressSerializer
 
