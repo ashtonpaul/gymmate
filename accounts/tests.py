@@ -26,7 +26,7 @@ class AccountTests(BaseTestCase):
 
     def test_create_another_user(self):
         """
-        A user should not be able to create another account
+        A non-admin user should not be able to create another account
         """
         self.authenticate(self.user_basic)
         response = self.client.post(
