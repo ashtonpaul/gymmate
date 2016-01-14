@@ -25,8 +25,23 @@ class AccountTests(BaseTestCase):
         Create a profile without previous authentication
         """
         client = APIClient()
-        response = client.post(reverse('user-list'), {'username': 'temp'})
+        response = client.post(reverse('user-list'), {'username': 'temp', 'email': 'test@test.com'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_unique_user(self):
+        """
+        Ensure two users can't have the same user and/or email
+        """
+        self.authenticate(self.user_basic)
+
+        client = APIClient()
+        username = client.post(reverse('user-list'), {'username': 'user', 'email': 'username@test.com'})
+        email = client.post(reverse('user-list'), {'username': 'user', 'email': 'email@test.com'})
+
+        self.assertEqual(username.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(email.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(AccountUser.objects.get(id=self.user.id).username, 'user')
+        self.assertEqual(AccountUser.objects.get(id=self.user.id).email, 'user@test.com')
 
     def test_create_another_user(self):
         """
@@ -48,7 +63,10 @@ class AccountTests(BaseTestCase):
         patched_user = AccountUser.objects.get(id=self.user.id)
 
         self.authenticate(patched_user.username)
-        put = self.client.put(reverse('user-detail', args=(self.user.id,)), {'username': 'updated'})
+        put = self.client.put(
+            reverse('user-detail', args=(self.user.id,)),
+            {'username': 'updated', 'email': 'update@test.com'}
+        )
         updated_user = AccountUser.objects.get(id=self.user.id)
 
         self.assertEqual(patch.status_code, status.HTTP_200_OK)
@@ -63,7 +81,7 @@ class AccountTests(BaseTestCase):
         user = self.authenticate(self.user_basic)
         count_before_delete = AccountUser.objects.count()
         response = self.client.delete(reverse('user-detail', args=(self.user.id,)))
-        
+
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertRaises(AccountUser.DoesNotExist, lambda: AccountUser.objects.get(id=user.id))
         self.assertEqual(count_before_delete, 2)
@@ -105,7 +123,7 @@ class AccountTests(BaseTestCase):
         metric = Metric.objects.create(user=self.user, value='75', metric_type=type)
 
         self.client.delete(reverse('user-detail', args=(self.user.id,)))
-        
+
         self.assertEqual(Metric.objects.count(), 0)
         self.assertRaises(Metric.DoesNotExist, lambda: Metric.objects.get(id=metric.id))
 
@@ -135,4 +153,3 @@ class AccountTests(BaseTestCase):
         self.assertEqual(count_before_delete, 1)
         self.assertRaises(Progress.DoesNotExist, lambda: Progress.objects.get(id=progress.id))
         self.assertEqual(Progress.objects.count(), 0)
-

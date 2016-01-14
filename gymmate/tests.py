@@ -15,8 +15,13 @@ class BaseTestCase(APITestCase):
         """
         Set up user for authentication to run tests
         """
-        AccountUser.objects.create_user(username=self.user_admin, is_active=True, is_staff=True)
-        AccountUser.objects.create_user(username=self.user_basic, is_active=True)
+        AccountUser.objects.create_user(
+            username=self.user_admin,
+            email='admin@test.com',
+            is_active=True,
+            is_staff=True
+        )
+        AccountUser.objects.create_user(username=self.user_basic, email='user@test.com', is_active=True)
 
         self.client = APIClient()
 
