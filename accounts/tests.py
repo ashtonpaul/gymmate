@@ -25,10 +25,10 @@ class AccountTests(BaseTestCase):
         Test get methods on user list and detail views
         """
         self.authenticate(self.user_basic)
-        response = self.client.get(reverse('user-list'))
+        user_list = self.client.get(reverse('user-list'))
         get = self.client.get(reverse('user-detail', args=(self.user.id,)))
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(user_list.status_code, status.HTTP_200_OK)
         self.assertEqual(get.status_code, status.HTTP_200_OK)
 
     def test_create_user(self):
@@ -85,6 +85,7 @@ class AccountTests(BaseTestCase):
         self.assertEqual(patched_user.username, 'patched')
         self.assertEqual(put.status_code, status.HTTP_200_OK)
         self.assertEqual(updated_user.username, 'updated')
+        self.assertEqual(AccountUser.objects.count(), 2)
 
     def test_delete_account(self):
         """

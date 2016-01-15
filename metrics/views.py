@@ -46,10 +46,3 @@ class MetricViewSet(viewsets.ModelViewSet):
         """
         user = AccountUser.objects.get(id=self.request.user.id)
         serializer.save(user=user)
-
-    def perfom_update(self, serializer):
-        """
-        Automatically assign requesting user to models user field
-        """
-        user = AccountUser.objects.get(id=self.request.user.id)
-        serializer.save(user=user)

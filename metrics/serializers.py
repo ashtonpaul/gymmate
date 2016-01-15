@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Metric, MetricType, MetricTypeGroup
 
 
-class MetricTypeGroupSerializer(serializers.HyperlinkedModelSerializer):
+class MetricTypeGroupSerializer(serializers.ModelSerializer):
     """
     Measurement group type serializer
     """
@@ -12,7 +12,7 @@ class MetricTypeGroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'name',)
 
 
-class MetricTypeSerializer(serializers.HyperlinkedModelSerializer):
+class MetricTypeSerializer(serializers.ModelSerializer):
     """
     Metric type serializer
     """

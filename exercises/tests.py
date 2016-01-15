@@ -45,11 +45,13 @@ class MuscleTest(BaseTestCase):
         muscle = Muscle.objects.create(name='bicep')
 
         self.authenticate(self.user_admin)
-        self.client.put(reverse('muscle-detail', args=(muscle.id, )), {'name': 'tricep'})
+        put = self.client.put(reverse('muscle-detail', args=(muscle.id, )), {'name': 'tricep'})
         muscle_put = Muscle.objects.get(id=muscle.id)
-        self.client.patch(reverse('muscle-detail', args=(muscle.id, )), {'name': 'chest'})
+        patch = self.client.patch(reverse('muscle-detail', args=(muscle.id, )), {'name': 'chest'})
         muscle_patch = Muscle.objects.get(id=muscle.id)
 
+        self.assertEqual(patch.status_code, status.HTTP_200_OK)
+        self.assertEqual(put.status_code, status.HTTP_200_OK)
         self.assertEqual(muscle_put.name, 'tricep')
         self.assertEqual(muscle_patch.name, 'chest')
         self.assertEqual(Muscle.objects.count(), 1)
@@ -63,9 +65,11 @@ class MuscleTest(BaseTestCase):
 
         self.authenticate(self.user_basic)
         muscle = Muscle.objects.get(name='bicep')
-        response = self.client.get(reverse('muscle-detail', args=(muscle.id,)))
+        muscle_list = self.client.get(reverse('muscle-list'))
+        detail = self.client.get(reverse('muscle-detail', args=(muscle.id,)))
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(muscle_list.status_code, status.HTTP_200_OK)
+        self.assertEqual(detail.status_code, status.HTTP_200_OK)
 
     def test_non_admin_permissions(self):
         """
@@ -123,10 +127,20 @@ class ExerciseCategoryTest(BaseTestCase):
         exercise_category = ExerciseCategory.objects.create(name='arms')
 
         self.authenticate(self.user_admin)
-        self.client.put(reverse('exercise-category-detail', args=(exercise_category.id, )), {'name': 'legs'})
+        put = self.client.put(reverse('exercise-category-detail', args=(exercise_category.id, )), {'name': 'legs'})
         exercise_category_updated = ExerciseCategory.objects.get(id=exercise_category.id)
 
+        patch = self.client.patch(
+            reverse('exercise-category-detail', args=(exercise_category.id, )),
+            {'name': 'chest'}
+        )
+        exercise_category_patched = ExerciseCategory.objects.get(id=exercise_category.id)
+
+        self.assertEqual(patch.status_code, status.HTTP_200_OK)
+        self.assertEqual(put.status_code, status.HTTP_200_OK)
         self.assertEqual(exercise_category_updated.name, 'legs')
+        self.assertEqual(exercise_category_patched.name, 'chest')
+        self.assertEqual(ExerciseCategory.objects.count(), 1)
 
     def test_get_exercise_category(self):
         """
@@ -197,10 +211,16 @@ class EquipmentTest(BaseTestCase):
         equipment = Equipment.objects.create(name='barbell')
 
         self.authenticate(self.user_admin)
-        self.client.put(reverse('equipment-detail', args=(equipment.id, )), {'name': 'dumbbell'})
+        put = self.client.put(reverse('equipment-detail', args=(equipment.id, )), {'name': 'dumbbell'})
         equipment_updated = Equipment.objects.get(id=equipment.id)
+        patch = self.client.patch(reverse('equipment-detail', args=(equipment.id, )), {'name': 'mat'})
+        equipment_patched = Equipment.objects.get(id=equipment.id)
 
+        self.assertEqual(patch.status_code, status.HTTP_200_OK)
+        self.assertEqual(put.status_code, status.HTTP_200_OK)
+        self.assertEqual(equipment_patched.name, 'mat')
         self.assertEqual(equipment_updated.name, 'dumbbell')
+        self.assertEqual(Equipment.objects.count(), 1)
 
     def test_get_equipment(self):
         """
@@ -211,9 +231,11 @@ class EquipmentTest(BaseTestCase):
 
         self.authenticate(self.user_basic)
         equipment = Equipment.objects.get(name='barbell')
-        response = self.client.get(reverse('equipment-detail', args=(equipment.id, )))
+        equipment_listing = self.client.get(reverse('equipment-list'))
+        detail = self.client.get(reverse('equipment-detail', args=(equipment.id, )))
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(equipment_listing.status_code, status.HTTP_200_OK)
+        self.assertEqual(detail.status_code, status.HTTP_200_OK)
 
     def test_non_admin_permissions(self):
         """
@@ -256,10 +278,16 @@ class ExerciseTest(BaseTestCase):
         """
         self.authenticate(self.user_admin)
         exercise = Exercise.objects.create(name='squats', description='squat')
-        self.client.patch(reverse('exercise-detail', args=(exercise.id, )), {'name': 'leg squats'})
+        patch = self.client.patch(reverse('exercise-detail', args=(exercise.id, )), {'name': 'leg squats'})
+        exercise_patched = Exercise.objects.get(id=exercise.id)
+        put = self.client.patch(reverse('exercise-detail', args=(exercise.id, )), {'name': 'bench press'})
         exercise_updated = Exercise.objects.get(id=exercise.id)
 
-        self.assertEqual(exercise_updated.name, 'leg squats')
+        self.assertEqual(patch.status_code, status.HTTP_200_OK)
+        self.assertEqual(put.status_code, status.HTTP_200_OK)
+        self.assertEqual(exercise_updated.name, 'bench press')
+        self.assertEqual(exercise_patched.name, 'leg squats')
+        self.assertEqual(Exercise.objects.count(), 1)
 
     def test_delete_exercise(self):
         """
@@ -281,9 +309,11 @@ class ExerciseTest(BaseTestCase):
 
         self.authenticate(self.user_basic)
         exercise = Exercise.objects.get(name='squats')
-        response = self.client.get(reverse('exercise-detail', args=(exercise.id, )))
+        exercise_list = self.client.get(reverse('exercise-list'))
+        detail = self.client.get(reverse('exercise-detail', args=(exercise.id, )))
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(exercise_list.status_code, status.HTTP_200_OK)
+        self.assertEqual(detail.status_code, status.HTTP_200_OK)
 
     def test_non_admin_permissions(self):
         """

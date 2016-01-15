@@ -19,6 +19,18 @@ class DayOfWeekTest(BaseTestCase):
         day = DayOfWeek.objects.create(day='monday')
         self.assertEqual(str(day), 'monday')
 
+    def test_get_dayofweek(self):
+        """
+        Ensure that the days of the way are available
+        """
+        self.authenticate(self.user_admin)
+        day = DayOfWeek.objects.create(day='monday')
+        day_list = self.client.get(reverse('dayofweek-list'))
+        detail = self.client.get(reverse('dayofweek-detail', args=(day.id,)))
+
+        self.assertEqual(day_list.status_code, status.HTTP_200_OK)
+        self.assertEqual(detail.status_code, status.HTTP_200_OK)
+
     def test_add_day(self):
         """
         Add a day of the week by an admin user
@@ -46,12 +58,19 @@ class DayOfWeekTest(BaseTestCase):
         """
         Put and patch method on an object by admin user
         """
-        day = DayOfWeek.objects.create(day='monday')
         self.authenticate(self.user_admin)
-        self.client.put(reverse('dayofweek-detail', args=(day.id, )), {'day': 'tuesday'})
+        day = DayOfWeek.objects.create(day='monday')
+
+        put = self.client.put(reverse('dayofweek-detail', args=(day.id, )), {'day': 'tuesday'})
         day_updated = DayOfWeek.objects.get(id=day.id)
 
+        patch = self.client.patch(reverse('dayofweek-detail', args=(day.id, )), {'day': 'wednesday'})
+        day_patched = DayOfWeek.objects.get(id=day.id)
+
+        self.assertEqual(put.status_code, status.HTTP_200_OK)
+        self.assertEqual(patch.status_code, status.HTTP_200_OK)
         self.assertEqual(day_updated.day, 'tuesday')
+        self.assertEqual(day_patched.day, 'wednesday')
         self.assertEqual(DayOfWeek.objects.count(), 1)
 
     def test_unique(self):
@@ -88,6 +107,19 @@ class RoutineTest(BaseTestCase):
         self.authenticate(self.user_admin)
         routine = Routine.objects.create(user=self.user, name='mondays', )
         self.assertEqual(str(routine), 'mondays')
+
+    def test_get_routine(self):
+        """
+        Ensure a routine can be retrieved by an admin user
+        """
+        self.authenticate(self.user_basic)
+
+        routine = Routine.objects.create(user=self.user, name='mondays', is_public=True)
+        routine_list = self.client.get(reverse('public-routine-list'))
+        detail = self.client.get(reverse('public-routine-detail', args=(routine.id,)))
+
+        self.assertEqual(routine_list.status_code, status.HTTP_200_OK)
+        self.assertEqual(detail.status_code, status.HTTP_200_OK)
 
     def test_add_routine_non_admin(self):
         """
@@ -183,9 +215,11 @@ class PublicRoutineTest(BaseTestCase):
         """
         self.authenticate(self.user_admin)
         routine = Routine.objects.create(user=self.user, name='mondays', is_public=True)
-        response = self.client.get(reverse('public-routine-detail', args=(routine.id,)))
+        public_routine_list = self.client.get(reverse('public-routine-list'))
+        detail = self.client.get(reverse('public-routine-detail', args=(routine.id,)))
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(public_routine_list.status_code, status.HTTP_200_OK)
+        self.assertEqual(detail.status_code, status.HTTP_200_OK)
 
     def test_permissions(self):
         """
@@ -221,6 +255,21 @@ class ProgressTest(BaseTestCase):
         exercise = Exercise.objects.create(name='squats', description='squat', )
         progress = Progress.objects.create(user=self.user, exercise=exercise, date=datetime.date.today())
         self.assertEqual(str(progress), 'squats - %s' % (progress.date.strftime('%m/%d/%Y')))
+
+    def test_get_progress(self):
+        """
+        Ensure that a user can retrieve their progress entries
+        """
+        self.authenticate(self.user_admin)
+        exercise = Exercise.objects.create(name='squats', description='squat', )
+
+        self.authenticate(self.user_basic)
+        progress = Progress.objects.create(user=self.user, exercise=exercise, date=datetime.date.today())
+        progress_list = self.client.get(reverse('progress-list'))
+        detail = self.client.get(reverse('progress-detail', args=(progress.id,)))
+
+        self.assertEqual(progress_list.status_code, status.HTTP_200_OK)
+        self.assertEqual(detail.status_code, status.HTTP_200_OK)
 
     def test_add_progress_non_admin(self):
         """

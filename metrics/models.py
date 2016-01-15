@@ -20,7 +20,7 @@ class MetricType(models.Model):
     """
     Type of metric to be measured
     """
-    group = models.ForeignKey(MetricTypeGroup, to_field='name')
+    group = models.ForeignKey(MetricTypeGroup)
     name = models.CharField(max_length=50)
     unit = models.CharField(max_length=10)
 
