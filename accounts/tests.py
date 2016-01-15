@@ -50,7 +50,7 @@ class AccountTests(BaseTestCase):
         self.authenticate(self.user_basic)
         response = self.client.post(
             reverse('user-list'),
-            {'username': 'test'}
+            {'username': 'test', 'email': 'test@test.com'}
         )
         self.assertNotEqual(response.status_code, status.HTTP_201_CREATED)
 
