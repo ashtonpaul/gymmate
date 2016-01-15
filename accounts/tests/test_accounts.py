@@ -9,7 +9,7 @@ from metrics.models import Metric, MetricType, MetricTypeGroup
 from exercises.models import Exercise
 from workouts.models import Routine, Progress
 
-from .models import AccountUser
+from accounts.models import AccountUser
 
 
 class AccountTests(BaseTestCase):
