@@ -20,6 +20,7 @@ class Routine(models.Model):
     """
     user = models.ForeignKey(AccountUser)
     name = models.CharField(max_length=100, blank=False)
+    description = models.TextField(max_length=300, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     exercises = models.ManyToManyField(Exercise)
     days = models.ManyToManyField(DayOfWeek, blank=True)
