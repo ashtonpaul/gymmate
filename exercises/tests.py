@@ -46,9 +46,13 @@ class MuscleTest(BaseTestCase):
 
         self.authenticate(self.user_admin)
         self.client.put(reverse('muscle-detail', args=(muscle.id, )), {'name': 'tricep'})
-        muscle_updated = Muscle.objects.get(id=muscle.id)
+        muscle_put = Muscle.objects.get(id=muscle.id)
+        self.client.patch(reverse('muscle-detail', args=(muscle.id, )), {'name': 'chest'})
+        muscle_patch = Muscle.objects.get(id=muscle.id)
 
-        self.assertEqual(muscle_updated.name, 'tricep')
+        self.assertEqual(muscle_put.name, 'tricep')
+        self.assertEqual(muscle_patch.name, 'chest')
+        self.assertEqual(Muscle.objects.count(), 1)
 
     def test_get_muscle(self):
         """
@@ -72,10 +76,12 @@ class MuscleTest(BaseTestCase):
         self.authenticate(self.user_basic)
         post = self.client.post(reverse('muscle-list'), {'name': 'tricep'})
         put = self.client.put(reverse('muscle-detail', args=(muscle.id,)), {'name': 'quad'})
+        patch = self.client.patch(reverse('muscle-detail', args=(muscle.id,)), {'name': 'quad'})
         delete = self.client.delete(reverse('muscle-detail', args=(muscle.id,)))
 
         self.assertEqual(post.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(put.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(patch.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(delete.status_code, status.HTTP_403_FORBIDDEN)
 
 
@@ -131,9 +137,11 @@ class ExerciseCategoryTest(BaseTestCase):
 
         self.authenticate(self.user_basic)
         exercise_category = ExerciseCategory.objects.get(name='arms')
-        response = self.client.get(reverse('exercise-category-detail', args=(exercise_category.id, )))
+        detail = self.client.get(reverse('exercise-category-detail', args=(exercise_category.id, )))
+        listing = self.client.get(reverse('exercise-category-list'))
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(detail.status_code, status.HTTP_200_OK)
+        self.assertEqual(listing.status_code, status.HTTP_200_OK)
 
     def test_non_admin_permissions(self):
         """

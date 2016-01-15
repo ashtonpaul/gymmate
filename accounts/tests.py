@@ -20,6 +20,17 @@ class AccountTests(BaseTestCase):
         user = AccountUser.objects.create_user(username='test', is_active=True)
         self.assertEqual(str(user), 'test')
 
+    def test_get_user(self):
+        """
+        Test get methods on user list and detail views
+        """
+        self.authenticate(self.user_basic)
+        response = self.client.get(reverse('user-list'))
+        get = self.client.get(reverse('user-detail', args=(self.user.id,)))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(get.status_code, status.HTTP_200_OK)
+
     def test_create_user(self):
         """
         Create a profile without previous authentication
@@ -27,6 +38,7 @@ class AccountTests(BaseTestCase):
         client = APIClient()
         response = client.post(reverse('user-list'), {'username': 'temp', 'email': 'test@test.com'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(AccountUser.objects.count(), 3)
 
     def test_unique_user(self):
         """

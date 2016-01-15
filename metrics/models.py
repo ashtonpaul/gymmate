@@ -28,7 +28,7 @@ class MetricType(models.Model):
         ordering = ('name',)
 
     def __str__(self):
-        return '%s - %s' % (self.group, self.unit, )
+        return '%s' % (self.unit, )
 
 
 class Metric(models.Model):
@@ -42,3 +42,6 @@ class Metric(models.Model):
 
     class Meta:
         ordering = ('date',)
+
+    def __str__(self):
+        return ('%s - %s%s' % (self.date.strftime('%m/%d/%Y'), str(self.value), self.metric_type))

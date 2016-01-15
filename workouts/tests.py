@@ -115,6 +115,7 @@ class RoutineTest(BaseTestCase):
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Routine.objects.count(), 0)
+        self.assertRaises(Routine.DoesNotExist, lambda: Routine.objects.get(id=routine.id))
 
     def test_update_routine_non_admin(self):
         """

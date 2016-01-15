@@ -1,3 +1,5 @@
+import time
+
 from django.db import IntegrityError
 
 from rest_framework import status
@@ -27,6 +29,21 @@ class MetricsTestCase(BaseTestCase):
 
 
 class MetricGroupTypeTest(MetricsTestCase):
+    def test_group_type_unicode(self):
+        """
+        Test unicode string representation for metric group
+        """
+        group = MetricTypeGroup.objects.create(name='height')
+        self.assertEqual(str(group), 'height')
+
+    def test_add_metric_group(self):
+        self.authenticate(self.user_admin)
+        response = self.client.post(reverse('metric-group-list'), {'name': 'weight'})
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(MetricTypeGroup.objects.count(), 1)
+        self.assertEqual(MetricTypeGroup.objects.get().name, 'weight')
+
     def test_unique_metric_group(self):
         """
         Ensure that metric type group names are unique
@@ -44,6 +61,20 @@ class MetricGroupTypeTest(MetricsTestCase):
 
         self.assertRaises(Metric.DoesNotExist, lambda: Metric.objects.get(id=self.last_created_metric))
 
+    def test_delete_metric(self):
+        """
+        Ensure an admin can delete a metric group
+        """
+        self.populate()
+        response = self.client.delete(reverse('metric-group-detail', args=(self.last_created_group, )))
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(MetricTypeGroup.objects.count(), 0)
+        self.assertRaises(
+            MetricTypeGroup.DoesNotExist,
+            lambda: MetricTypeGroup.objects.get(id=self.last_created_group)
+        )
+
     def test_delete_non_admin(self):
         """
         Non-admin users do not have permission to delete metric type groups
@@ -56,6 +87,40 @@ class MetricGroupTypeTest(MetricsTestCase):
 
 
 class MetricTypeTest(MetricsTestCase):
+    def test_metric_unicode(self):
+        """
+        Test unicode string representation for metric type
+        """
+        group = MetricTypeGroup.objects.create(name='weight')
+        metric_type = MetricType.objects.create(name='pounds', unit='lbs', group=group)
+        self.assertEqual(str(metric_type), 'lbs')
+
+    def test_add_metric_type(self):
+        """
+        Ability to add a metric type test by admin
+        """
+        self.authenticate(self.user_admin)
+        group = MetricTypeGroup.objects.create(name='weight')
+        response = self.client.post(
+            reverse('metric-type-list'),
+            {'name': 'pounds', 'unit': 'lbs', 'group': group.name}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(MetricType.objects.count(), 1)
+        self.assertEqual(MetricType.objects.get().name, 'pounds')
+
+    def test_delete_metric(self):
+        """
+        Ensure an admin can delete a metric type
+        """
+        self.populate()
+        response = self.client.delete(reverse('metric-type-detail', args=(self.last_created_type,)))
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(MetricType.objects.count(), 0)
+        self.assertRaises(MetricType.DoesNotExist, lambda: MetricType.objects.get(id=self.last_created_type))
+
     def test_metric_type_cascade(self):
         """
         If a type is deleted all associated metrics should be deleted too
@@ -77,6 +142,18 @@ class MetricTypeTest(MetricsTestCase):
 
 
 class MetricTest(MetricsTestCase):
+    def test_metric_unicode(self):
+        """
+        Test unicode string representation for metric entry
+        """
+        self.authenticate(self.user_basic)
+
+        group = MetricTypeGroup.objects.create(name='height')
+        type = MetricType.objects.create(group=group, name='inch', unit='in')
+        metric = Metric.objects.create(user=self.user, metric_type=type, value='75')
+
+        self.assertEqual(str(metric), '%s - 75in' % time.strftime('%m/%d/%Y'))
+
     def test_add_metric(self):
         """
         Add new metric
@@ -86,6 +163,19 @@ class MetricTest(MetricsTestCase):
 
         self.authenticate(self.user_basic)
         response = self.client.post(reverse('metric-list'),
-                                    {'user': self.user, 'metric_type': type.id, 'value': '1'})
+                                    {'user': self.user, 'metric_type': type.id, 'value': '75'})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Metric.objects.count(), 1)
+        self.assertEqual(Metric.objects.get().value, 75)
+
+    def test_delete_metric(self):
+        """
+        Ensure a user can delete a metric entry
+        """
+        self.populate()
+        response = self.client.delete(reverse('metric-detail', args=(self.last_created_metric,)))
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Metric.objects.count(), 0)
+        self.assertRaises(Metric.DoesNotExist, lambda: Metric.objects.get(id=self.last_created_metric))
