@@ -34,6 +34,7 @@ class MetricGroupTypeTest(MetricsTestCase):
         Ensure a metric group can be retrieved by an admin user
         """
         self.populate()
+        self.authenticate(self.user_basic)
         group_list = self.client.get(reverse('metric-group-list'))
         detail = self.client.get(reverse('metric-group-detail', args=(self.group.id,)))
 
@@ -81,15 +82,19 @@ class MetricGroupTypeTest(MetricsTestCase):
             lambda: MetricTypeGroup.objects.get(id=self.group.id)
         )
 
-    def test_delete_non_admin(self):
+    def test_permissions(self):
         """
-        Non-admin users do not have permission to delete metric type groups
+        Non-admin users do not have permission to alter metric type groups
         """
         self.populate()
         self.authenticate(self.user_basic)
-        response = self.client.delete(reverse('metric-group-detail', args=(self.group.id, )))
+        delete = self.client.delete(reverse('metric-group-detail', args=(self.group.id, )))
+        put = self.client.put(reverse('metric-group-detail', args=(self.group.id, )), {'name': 'inches'})
+        patch = self.client.patch(reverse('metric-group-detail', args=(self.group.id, )), {'name': 'inches'})
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(delete.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(put.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(patch.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_update_metric_group(self):
         """
@@ -124,6 +129,7 @@ class MetricTypeTest(MetricsTestCase):
         Ensure a metric type can be retrieved by an admin user
         """
         self.populate()
+        self.authenticate(self.user_basic)
         type_list = self.client.get(reverse('metric-type-list'))
         detail = self.client.get(reverse('metric-type-detail', args=(self.type.id,)))
 
@@ -165,15 +171,19 @@ class MetricTypeTest(MetricsTestCase):
 
         self.assertRaises(Metric.DoesNotExist, lambda: Metric.objects.get(id=self.metric.id))
 
-    def test_delete_non_admin(self):
+    def test_permissions(self):
         """
-        Non-admin users do not have permission to delete metric type
+        Non-admin users do not have permission to alter metric type
         """
         self.populate()
         self.authenticate(self.user_basic)
-        response = self.client.delete(reverse('metric-type-detail', args=(self.type.id, )))
+        delete = self.client.delete(reverse('metric-type-detail', args=(self.type.id, )))
+        put = self.client.put(reverse('metric-type-detail', args=(self.type.id, )), {'name': 'pounds'})
+        patch = self.client.patch(reverse('metric-type-detail', args=(self.type.id, )), {'name': 'pounds'})
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(delete.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(put.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(patch.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_update_metric_type(self):
         """
@@ -265,3 +275,20 @@ class MetricTest(MetricsTestCase):
         self.assertEqual(patched_value, 76)
         self.assertEqual(updated_value, 77)
         self.assertEqual(Metric.objects.count(), 1)
+
+    def test_permissions(self):
+        """
+        Ensure a user cannot access/alter another user's metric entries
+        """
+        self.populate()
+        self.authenticate(self.user_basic)
+
+        get = self.client.get(reverse('metric-detail', args=(self.metric.id,)))
+        delete = self.client.delete(reverse('metric-detail', args=(self.metric.id,)))
+        put = self.client.put(reverse('metric-detail', args=(self.metric.id,)), {'value': '76'})
+        patch = self.client.patch(reverse('metric-detail', args=(self.metric.id,)), {'value': '77'})
+
+        self.assertEqual(get.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(delete.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(put.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(patch.status_code, status.HTTP_404_NOT_FOUND)
