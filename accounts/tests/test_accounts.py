@@ -65,9 +65,9 @@ class AccountTests(BaseTestCase):
         self.authenticate(self.user_basic)
         response = self.client.post(
             reverse('user-list'),
-            {'username': 'test', 'email': 'test@test.com'}
+            {'username': 'test', 'password': 'test', 'email': 'test@test.com'}
         )
-        self.assertNotEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_update_user(self):
         """
@@ -111,7 +111,7 @@ class AccountTests(BaseTestCase):
         self.authenticate(self.user_basic)
 
         response = self.client.delete(reverse('user-detail', args=(user.id,)))
-        self.assertNotEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_update_another_user(self):
         """
