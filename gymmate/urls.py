@@ -35,3 +35,8 @@ urlpatterns = [
 urlpatterns += [
     url(r'^admin/', include(admin.site.urls)),
 ]
+
+# Documentaton  views for API
+urlpatterns += [
+    url(r'^docs/', include('rest_framework_swagger.urls')),
+]
