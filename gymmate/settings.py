@@ -127,6 +127,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
 # Django REST framework (API)
 # http://django-rest-framework.com
 
@@ -134,4 +135,19 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny', ),
     'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework.authentication.TokenAuthentication',),
     'PAGE_SIZE': None,
+}
+
+
+# Django rest framework settings
+# http://django-rest-swagger.readthedocs.org/en/latest/settings.html
+
+SWAGGER_SETTINGS = {
+    'api_version': '0.5',
+    'info': {
+        'contact': 'ashton@ashtonpaul.com',
+        'description': 'The gym goers best friend. Quickly track '
+                       'your workout and progress when you go workout. '
+                       'This provides as the documentation for the endpoints.',
+        'title': 'GymMate',
+    },
 }
