@@ -38,5 +38,5 @@ urlpatterns += [
 
 # Documentaton  views for API
 urlpatterns += [
-    url(r'^docs/', include('rest_framework_swagger.urls')),
+    url(r'^docs/', include('rest_framework_swagger.urls', namespace='rest_framework_swagger')),
 ]
