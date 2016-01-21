@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'metrics',
     'exercises',
     'workouts',
+    'oauth2_provider',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -133,8 +134,8 @@ STATIC_URL = '/static/'
 # http://django-rest-framework.com
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny', ),
-    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework.authentication.TokenAuthentication',),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated', ),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('oauth2_provider.ext.rest_framework.OAuth2Authentication',),
     'PAGE_SIZE': None,
 }
 
@@ -163,4 +164,11 @@ def show_toolbar(request):
 
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+}
+
+# this is the list of available scopes
+# https://django-oauth-toolkit.readthedocs.org/en/latest/rest-framework/getting_started.html
+
+OAUTH2_PROVIDER = {
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope', }
 }

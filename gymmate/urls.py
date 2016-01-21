@@ -40,3 +40,8 @@ urlpatterns += [
 urlpatterns += [
     url(r'^docs/', include('rest_framework_swagger.urls', namespace='rest_framework_swagger')),
 ]
+
+# Oauth endpoint
+urlpatterns += [
+    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+]
