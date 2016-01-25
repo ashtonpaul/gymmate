@@ -1,7 +1,16 @@
+from datetime import timedelta
+
+from django.utils import timezone
+
 from rest_framework.test import APITestCase, APIClient
+
+from oauth2_provider.models import AccessToken, get_application_model
 
 from accounts.models import AccountUser
 from metrics.models import Metric, MetricType, MetricTypeGroup
+
+
+Application = get_application_model()
 
 
 class BaseTestCase(APITestCase):
@@ -16,7 +25,7 @@ class BaseTestCase(APITestCase):
         """
         Set up user for authentication to run tests
         """
-        AccountUser.objects.create_user(
+        app_owner = AccountUser.objects.create_user(
             username=self.user_admin,
             email='admin@test.com',
             is_active=True,
@@ -24,14 +33,36 @@ class BaseTestCase(APITestCase):
         )
         AccountUser.objects.create_user(username=self.user_basic, email='user@test.com', is_active=True)
 
+        self.application = Application.objects.create(
+            name="Test Application",
+            redirect_uris="http://localhost",
+            user=app_owner,
+            client_type=Application.CLIENT_PUBLIC,
+            authorization_grant_type=Application.GRANT_PASSWORD,
+        )
+
         self.client = APIClient()
+
+    def create_authorization_header(self, token):
+        return "Bearer {0}".format(token)
 
     def authenticate(self, username=None):
         """
         Method to authenticate and switch currently logged in user
         """
         self.user = AccountUser.objects.get(username=username)
-        self.client.force_authenticate(user=self.user)
+
+        self.access_token = AccessToken.objects.create(
+            user=self.user,
+            scope='read write',
+            expires=timezone.now() + timedelta(seconds=300),
+            token=username,
+            application=self.application
+        )
+
+        self.auth = self.create_authorization_header(self.access_token.token)
+        self.client.credentials(HTTP_AUTHORIZATION=self.auth)
+
         return self.user
 
 
