@@ -9,7 +9,8 @@ from oauth2_provider.models import AccessToken, get_application_model
 from accounts.models import AccountUser
 from metrics.models import Metric, MetricType, MetricTypeGroup
 
-
+# Return the Application model that is active in this project.
+# http://bit.do/bKFJB
 Application = get_application_model()
 
 
@@ -44,6 +45,9 @@ class BaseTestCase(APITestCase):
         self.client = APIClient()
 
     def create_authorization_header(self, token):
+        """
+        Format token to be accepted in header 
+        """
         return "Bearer {0}".format(token)
 
     def authenticate(self, username=None):
@@ -67,6 +71,9 @@ class BaseTestCase(APITestCase):
 
 
 class MetricsTestCase(BaseTestCase):
+    """
+    Base test case for user metrics
+    """
     def populate(self):
         """
         Common base method for populating data for testing between models
