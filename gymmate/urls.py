@@ -2,7 +2,6 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from rest_framework import routers
-from rest_framework.authtoken import views
 
 from accounts.views import UserViewSet, SignUpViewSet
 from metrics.views import MetricViewSet, MetricTypeViewSet, MetricTypeGroupViewSet
@@ -29,7 +28,6 @@ router.register(r'users', UserViewSet, 'user')
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^api-token-auth/', views.obtain_auth_token),
 ]
 
 # Login and logout views for the browsable API

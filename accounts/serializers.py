@@ -2,7 +2,6 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from .models import AccountUser
-from rest_framework.authtoken.models import Token
 
 
 class BaseAccountSerializer(serializers.HyperlinkedModelSerializer):
@@ -24,9 +23,6 @@ class BaseAccountSerializer(serializers.HyperlinkedModelSerializer):
         )
         user.set_password(validated_data['password'])
         user.save()
-
-        # Create auth token
-        Token.objects.create(user=user)
         return user
 
 
