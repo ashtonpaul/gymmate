@@ -17,7 +17,7 @@ class BaseAccountSerializer(serializers.HyperlinkedModelSerializer):
 
         user = AccountUser(
             email=validated_data['email'],
-            username=validated_data['username'],
+            username=validated_data['email'],
             first_name=first_name,
             last_name=last_name
         )
@@ -44,7 +44,9 @@ class SignUpSerializer(BaseAccountSerializer):
     """
     Sign up serializer for applications
     """
+    email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=AccountUser.objects.all())])
+
     class Meta:
         model = AccountUser
-        fields = ('username', 'password', 'email')
+        fields = ('email', 'password')
         write_only_fields = ('password',)
