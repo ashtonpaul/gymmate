@@ -37,8 +37,8 @@ class AccountTests(BaseTestCase):
         """
         client = APIClient()
         response = client.post(
-            reverse('user-list'),
-            {'username': 'temp', 'password': 'temp', 'email': 'test@test.com'}
+            reverse('signup-list'),
+            {'email': 'test@test.com', 'password': 'temp',}
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(AccountUser.objects.count(), 3)
@@ -50,8 +50,8 @@ class AccountTests(BaseTestCase):
         self.authenticate(self.user_basic)
 
         client = APIClient()
-        username = client.post(reverse('user-list'), {'username': 'user', 'email': 'username@test.com'})
-        email = client.post(reverse('user-list'), {'username': 'user', 'email': 'email@test.com'})
+        username = client.post(reverse('signup-list'), {'username': 'user', 'email': 'username@test.com'})
+        email = client.post(reverse('signup-list'), {'username': 'user', 'email': 'email@test.com'})
 
         self.assertEqual(username.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(email.status_code, status.HTTP_400_BAD_REQUEST)
