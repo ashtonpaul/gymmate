@@ -5,20 +5,10 @@ from .models import AccountUser
 from rest_framework.authtoken.models import Token
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class BaseAccountSerializer(serializers.HyperlinkedModelSerializer):
     """
-    Generic user serializer
+    Base user account serializer
     """
-    username = serializers.CharField(required=True, validators=[UniqueValidator(queryset=AccountUser.objects.all())])
-    email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=AccountUser.objects.all())])
-
-    class Meta:
-        model = AccountUser
-
-        fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name', 'date_joined', 'last_login',)
-        read_only_fields = ('date_joined', 'last_login')
-        extra_kwargs = {'password': {'write_only': True}}
-
     def create(self, validated_data):
         """
         Custom create function to include token creation and password hashing
@@ -38,3 +28,27 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         # Create auth token
         Token.objects.create(user=user)
         return user
+
+
+class UserSerializer(BaseAccountSerializer):
+    """
+    Generic user serializer
+    """
+    username = serializers.CharField(required=True, validators=[UniqueValidator(queryset=AccountUser.objects.all())])
+    email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=AccountUser.objects.all())])
+
+    class Meta:
+        model = AccountUser
+        fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name', 'date_joined', 'last_login',)
+        read_only_fields = ('date_joined', 'last_login')
+        extra_kwargs = {'password': {'write_only': True}}
+
+
+class SignUpSerializer(BaseAccountSerializer):
+    """
+    Sign up serializer for applications
+    """
+    class Meta:
+        model = AccountUser
+        fields = ('username', 'password', 'email')
+        write_only_fields = ('password',)

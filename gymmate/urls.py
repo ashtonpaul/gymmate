@@ -4,7 +4,7 @@ from django.contrib import admin
 from rest_framework import routers
 from rest_framework.authtoken import views
 
-from accounts.views import UserViewSet
+from accounts.views import UserViewSet, SignUpViewSet
 from metrics.views import MetricViewSet, MetricTypeViewSet, MetricTypeGroupViewSet
 from exercises.views import MuscleViewSet, ExerciseCategoryViewSet, EquipmentViewSet, ExerciseViewSet
 from workouts.views import DayOfWeekViewSet, PublicRoutineViewSet, RoutineViewSet, ProrgressViewSet
@@ -21,6 +21,7 @@ router.register(r'muscles', MuscleViewSet, 'muscle')
 router.register(r'progress', ProrgressViewSet, 'progress')
 router.register(r'public-routines', PublicRoutineViewSet, 'public-routine')
 router.register(r'routines', RoutineViewSet, 'routine')
+router.register(r'signup', SignUpViewSet, 'signup')
 router.register(r'users', UserViewSet, 'user')
 
 # Wire up our API using automatic URL routing.
