@@ -58,7 +58,7 @@ class BaseTestCase(APITestCase):
 
         self.access_token = AccessToken.objects.create(
             user=self.user,
-            scope='read write',
+            scope='read write exercises metrics workouts',
             expires=timezone.now() + timedelta(seconds=300),
             token=username,
             application=self.application
