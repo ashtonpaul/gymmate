@@ -36,7 +36,7 @@ class Metric(models.Model):
     Metric model to store user biometric measurements
     """
     date = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(AccountUser, to_field='username')
+    user = models.ForeignKey(AccountUser)
     value = models.FloatField(blank=False)
     metric_type = models.ForeignKey(MetricType)
 

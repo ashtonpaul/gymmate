@@ -1,3 +1,5 @@
+from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope
+
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
@@ -12,7 +14,8 @@ class DayOfWeekViewSet(viewsets.ModelViewSet):
     """
     Generic class view to show days of week
     """
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = [IsAdminOrReadOnly, TokenHasReadWriteScope]
+    required_scopes = ['workouts']
     queryset = DayOfWeek.objects.all()
     serializer_class = DayOfWeekSerializer
 
@@ -21,7 +24,8 @@ class PublicRoutineViewSet(viewsets.ModelViewSet):
     """
     List/Details of publically shared routines
     """
-    permission_classes = (AllowAny, )
+    permission_classes = [AllowAny, TokenHasReadWriteScope]
+    required_scopes = ['workouts']
     queryset = Routine.objects.all()
     serializer_class = PublicRoutineSerializer
     http_method_names = ['get', 'head', 'options']
@@ -37,7 +41,8 @@ class RoutineViewSet(viewsets.ModelViewSet):
     """
     List/Detail of a user's routine(s)
     """
-    permission_classes = (IsAuthenticated, )
+    permission_classes = [IsAuthenticated,  TokenHasReadWriteScope]
+    required_scopes = ['workouts']
     queryset = Routine.objects.all()
     serializer_class = RoutineSerializer
 
@@ -66,7 +71,8 @@ class ProrgressViewSet(viewsets.ModelViewSet):
     """
     List/Detail of a user's workout progression
     """
-    permission_classes = (IsAuthenticated, )
+    permission_classes = [IsAuthenticated,  TokenHasReadWriteScope]
+    required_scopes = ['workouts']
     queryset = Progress.objects.all()
     serializer_class = ProgressSerializer
 

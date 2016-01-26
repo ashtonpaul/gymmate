@@ -1,3 +1,5 @@
+from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope
+
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
@@ -12,7 +14,8 @@ class MetricTypeGroupViewSet(viewsets.ModelViewSet):
     """
     List/Detail for Measurement group types
     """
-    permission_classes = (IsAdminOrReadOnly, )
+    permission_classes = [IsAdminOrReadOnly, TokenHasReadWriteScope]
+    required_scopes = ['metrics']
     queryset = MetricTypeGroup.objects.all().order_by('name')
     serializer_class = MetricTypeGroupSerializer
 
@@ -21,7 +24,8 @@ class MetricTypeViewSet(viewsets.ModelViewSet):
     """
     List/Detail for Metric Types
     """
-    permission_classes = (IsAdminOrReadOnly, )
+    permission_classes = [IsAdminOrReadOnly, TokenHasReadWriteScope]
+    required_scopes = ['metrics']
     queryset = MetricType.objects.all().order_by('name')
     serializer_class = MetricTypeSerializer
 
@@ -30,7 +34,8 @@ class MetricViewSet(viewsets.ModelViewSet):
     """
     User body measurment viewset
     """
-    permission_classes = (IsAuthenticated, )
+    permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
+    required_scopes = ['metrics']
     queryset = Metric.objects.all().order_by('date')
     serializer_class = MetricSerializer
 

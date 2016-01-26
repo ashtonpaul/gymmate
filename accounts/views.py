@@ -1,16 +1,20 @@
+from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope
+
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
+from gymmate.permissions import IsCreateOnly
+
 from .models import AccountUser
-from .serializers import UserSerializer
+from .serializers import UserSerializer, SignUpSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows users to be viewed
     """
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny, TokenHasReadWriteScope)
     queryset = AccountUser.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
 
@@ -52,3 +56,13 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         else:
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+class SignUpViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint to allow users to sign up
+    """
+    permission_classes = (IsCreateOnly, )
+    queryset = AccountUser.objects.all()
+    serializer_class = SignUpSerializer
+    http_method_names = ['post', 'head', 'options']

@@ -37,11 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
     'rest_framework',
+    'rest_framework_swagger',
     'accounts',
     'metrics',
     'exercises',
     'workouts',
+    'oauth2_provider',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -60,7 +63,7 @@ ROOT_URLCONF = 'gymmate.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,16 +84,9 @@ WSGI_APPLICATION = 'gymmate.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django',
-        'USER': 'django',
-        'PASSWORD': 'django',
-        'HOST': 'localhost',
-        'PORT': '',
-        'TEST': {
-            'NAME': 'test_database',
-        },
-    }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'sqlite3.db',
+    },
 }
 
 
@@ -132,11 +128,54 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
 # Django REST framework (API)
 # http://django-rest-framework.com
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny', ),
-    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework.authentication.BasicAuthentication', ),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated', ),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('oauth2_provider.ext.rest_framework.OAuth2Authentication',),
+    'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer',),
     'PAGE_SIZE': None,
+}
+
+
+# Django rest framework settings
+# http://django-rest-swagger.readthedocs.org/en/latest/settings.html
+
+SWAGGER_SETTINGS = {
+    'exclude_namespaces': 'auth',
+    'api_version': '0.5',
+    'info': {
+        'contact': 'ashton@ashtonpaul.com',
+        'description': 'The gym goers best friend. Quickly track '
+                       'your workout and progress when you go workout. '
+                       'This provides as the documentation for the endpoints.',
+        'title': 'GymMate',
+    },
+}
+
+
+# Set callable toolbar callback to shor Django debug toolbar
+# https://stackoverflow.com/questions/10517765/django-debug-toolbar-not-showing-up/10518040#10518040
+
+def show_toolbar(request):
+    return True
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+}
+
+# this is the list of available scopes
+# https://django-oauth-toolkit.readthedocs.org/en/latest/rest-framework/getting_started.html
+
+OAUTH2_PROVIDER = {
+    'SCOPES': {
+        'read': 'Read scope',
+        'write': 'Write scope',
+        'exercises': 'Exercise scope',
+        'metrics': 'Metric scope',
+        'workouts': 'Workout scope',
+    },
+    'ACCESS_TOKEN_EXPIRE_SECONDS': 36000
 }

@@ -36,7 +36,10 @@ class AccountTests(BaseTestCase):
         Create a profile without previous authentication
         """
         client = APIClient()
-        response = client.post(reverse('user-list'), {'username': 'temp', 'email': 'test@test.com'})
+        response = client.post(
+            reverse('signup-list'),
+            {'email': 'test@test.com', 'password': 'temp', }
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(AccountUser.objects.count(), 3)
 
@@ -47,8 +50,8 @@ class AccountTests(BaseTestCase):
         self.authenticate(self.user_basic)
 
         client = APIClient()
-        username = client.post(reverse('user-list'), {'username': 'user', 'email': 'username@test.com'})
-        email = client.post(reverse('user-list'), {'username': 'user', 'email': 'email@test.com'})
+        username = client.post(reverse('signup-list'), {'username': 'user', 'email': 'username@test.com'})
+        email = client.post(reverse('signup-list'), {'username': 'user', 'email': 'email@test.com'})
 
         self.assertEqual(username.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(email.status_code, status.HTTP_400_BAD_REQUEST)
@@ -62,9 +65,9 @@ class AccountTests(BaseTestCase):
         self.authenticate(self.user_basic)
         response = self.client.post(
             reverse('user-list'),
-            {'username': 'test', 'email': 'test@test.com'}
+            {'username': 'test', 'password': 'test', 'email': 'test@test.com'}
         )
-        self.assertNotEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_update_user(self):
         """
@@ -77,7 +80,7 @@ class AccountTests(BaseTestCase):
         self.authenticate(patched_user.username)
         put = self.client.put(
             reverse('user-detail', args=(self.user.id,)),
-            {'username': 'updated', 'email': 'update@test.com'}
+            {'username': 'updated', 'password': 'test', 'email': 'update@test.com'}
         )
         updated_user = AccountUser.objects.get(id=self.user.id)
 
@@ -108,7 +111,7 @@ class AccountTests(BaseTestCase):
         self.authenticate(self.user_basic)
 
         response = self.client.delete(reverse('user-detail', args=(user.id,)))
-        self.assertNotEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_update_another_user(self):
         """
