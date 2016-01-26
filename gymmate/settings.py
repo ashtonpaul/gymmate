@@ -174,6 +174,8 @@ OAUTH2_PROVIDER = {
         'read': 'Read scope',
         'write': 'Write scope',
         'exercises': 'Exercise scope',
+        'metrics': 'Metric scope',
+        'workouts': 'Workout scope',
     },
     'ACCESS_TOKEN_EXPIRE_SECONDS': 36000
 }
