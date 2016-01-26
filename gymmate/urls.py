@@ -24,18 +24,16 @@ router.register(r'signup', SignUpViewSet, 'signup')
 router.register(r'users', UserViewSet, 'user')
 
 # Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
 
-# Login and logout views for the browsable API
+# Administrative panel
 urlpatterns += [
     url(r'^admin/', include(admin.site.urls)),
 ]
 
-# Documentaton  views for API
+# Documentaton views for API
 urlpatterns += [
     url(r'^docs/', include('rest_framework_swagger.urls', namespace='rest_framework_swagger')),
 ]
