@@ -1,3 +1,5 @@
+from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope
+
 from rest_framework import viewsets
 
 from gymmate.permissions import IsAdminOrReadOnly
@@ -10,7 +12,8 @@ class MuscleViewSet(viewsets.ModelViewSet):
     """
     List/Detail of all available muscles
     """
-    permission_classes = (IsAdminOrReadOnly, )
+    permission_classes = [IsAdminOrReadOnly, TokenHasReadWriteScope]
+    required_scopes = ['exercises']
     queryset = Muscle.objects.all()
     serializer_class = MuscleSerializer
 
@@ -19,7 +22,8 @@ class ExerciseCategoryViewSet(viewsets.ModelViewSet):
     """
     List/Detail of all exercises groups/categories
     """
-    permission_classes = (IsAdminOrReadOnly, )
+    permission_classes = [IsAdminOrReadOnly, TokenHasReadWriteScope]
+    required_scopes = ['exercises']
     queryset = ExerciseCategory.objects.all()
     serializer_class = ExerciseCategorySerializer
 
@@ -28,7 +32,8 @@ class EquipmentViewSet(viewsets.ModelViewSet):
     """
     List/Detail eqiupment in the gym
     """
-    permission_classes = (IsAdminOrReadOnly, )
+    permission_classes = [IsAdminOrReadOnly, TokenHasReadWriteScope]
+    required_scopes = ['exercises']
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
 
@@ -37,6 +42,7 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     """
     List/Detail all the exercises able to be performed
     """
-    permission_classes = (IsAdminOrReadOnly, )
+    permission_classes = [IsAdminOrReadOnly, TokenHasReadWriteScope]
+    required_scopes = ['exercises']
     queryset = Exercise.objects.all()
     serializer_class = ExerciseSerializer

@@ -170,6 +170,10 @@ DEBUG_TOOLBAR_CONFIG = {
 # https://django-oauth-toolkit.readthedocs.org/en/latest/rest-framework/getting_started.html
 
 OAUTH2_PROVIDER = {
-    'SCOPES': {'read': 'Read scope', 'write': 'Write scope', },
+    'SCOPES': {
+        'read': 'Read scope',
+        'write': 'Write scope',
+        'exercises': 'Exercise scope',
+    },
     'ACCESS_TOKEN_EXPIRE_SECONDS': 36000
 }
