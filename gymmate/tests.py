@@ -46,7 +46,7 @@ class BaseTestCase(APITestCase):
 
     def create_authorization_header(self, token):
         """
-        Format token to be accepted in header 
+        Format token to be accepted in header
         """
         return "Bearer {0}".format(token)
 

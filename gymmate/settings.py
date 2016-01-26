@@ -173,4 +173,3 @@ OAUTH2_PROVIDER = {
     'SCOPES': {'read': 'Read scope', 'write': 'Write scope', },
     'ACCESS_TOKEN_EXPIRE_SECONDS': 36000
 }
-

@@ -38,7 +38,7 @@ class AccountTests(BaseTestCase):
         client = APIClient()
         response = client.post(
             reverse('signup-list'),
-            {'email': 'test@test.com', 'password': 'temp',}
+            {'email': 'test@test.com', 'password': 'temp', }
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(AccountUser.objects.count(), 3)
