@@ -35,7 +35,7 @@ class MetricViewSet(viewsets.ModelViewSet):
     User body measurment viewset
     """
     permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
-    required_scopes = ['metrics']    
+    required_scopes = ['metrics']
     queryset = Metric.objects.all().order_by('date')
     serializer_class = MetricSerializer
 
