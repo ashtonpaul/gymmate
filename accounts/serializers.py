@@ -31,7 +31,12 @@ class UserSerializer(BaseAccountSerializer):
     Generic user serializer
     """
     username = serializers.CharField(required=True, validators=[UniqueValidator(queryset=AccountUser.objects.all())])
-    email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=AccountUser.objects.all())])
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(
+            queryset=AccountUser.objects.all(),
+            message='Email already in use by another account')]
+    )
 
     class Meta:
         model = AccountUser
@@ -44,7 +49,12 @@ class SignUpSerializer(BaseAccountSerializer):
     """
     Sign up serializer for applications
     """
-    email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=AccountUser.objects.all())])
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(
+            queryset=AccountUser.objects.all(),
+            message='Email already in use by another account')]
+    )
 
     class Meta:
         model = AccountUser
