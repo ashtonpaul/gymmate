@@ -6,7 +6,7 @@ class Muscle(models.Model):
     Model for muscles storing location and latin name also
     """
     latin_name = models.CharField(max_length=50, blank=True, help_text="Latin representation", )
-    name = models.CharField(max_length=50, blank=True, help_text="Muscle name e.g biceps", )
+    name = models.CharField(max_length=50, blank=False, help_text="Muscle name e.g biceps", )
     is_front = models.BooleanField(default=True)
 
     class Meta:
