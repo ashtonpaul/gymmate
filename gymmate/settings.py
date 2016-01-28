@@ -144,8 +144,8 @@ REST_FRAMEWORK = {
 # http://django-rest-swagger.readthedocs.org/en/latest/settings.html
 
 SWAGGER_SETTINGS = {
-    'exclude_namespaces': 'auth',
     'api_version': '0.5',
+    'api_key': '',
     'info': {
         'contact': 'ashton@ashtonpaul.com',
         'description': 'The gym goers best friend. Quickly track '
@@ -153,6 +153,7 @@ SWAGGER_SETTINGS = {
                        'This provides as the documentation for the endpoints.',
         'title': 'GymMate',
     },
+    'token_type': 'Bearer'
 }
 
 
