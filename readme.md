@@ -2,11 +2,11 @@ The gym goers best friend. Quickly track your workout and progress when you go w
 
 get token
 =========
-curl -L -X POST -d "grant_type=password&client_id=<your_client_id>&username=<username>&password=<password>” http://<url>/o/token 
+curl -L -X POST -d "grant_type=password&client_id=<your_client_id>&username=<username>&password=<password>” http://<url>/o/token/
 
 use token
 =========
-curl -L -H "Authorization: Bearer <token>“ -X GET http://<url>/<endpoint>
+curl -L -H "Authorization: Bearer <token>“ -X GET http://<url>/<endpoint>/
 
 refresh token
 =============
