@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from gymmate.validators import FutureDateValidator
+
 from .models import DayOfWeek, Routine, Progress
 
 
@@ -33,6 +35,8 @@ class ProgressSerializer(serializers.ModelSerializer):
     """
     User progress serializer
     """
+    date = serializers.DateField(validators=[FutureDateValidator()])
+
     class Meta:
         model = Progress
         exclude = ('user', )

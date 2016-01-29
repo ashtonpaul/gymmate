@@ -1,0 +1,19 @@
+from datetime import date
+
+from rest_framework import serializers
+
+
+class FutureDateValidator(object):
+    """
+    Validate that a date is not in the future
+    """
+    def __init__(self, message=None):
+        if not message:
+            self.message = 'Future dates are not allowed'
+        else:
+            self.message = message
+
+    def __call__(self, value):
+        if value > date.today():
+            print self.message
+            raise serializers.ValidationError(self.message)
