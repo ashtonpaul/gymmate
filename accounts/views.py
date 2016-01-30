@@ -1,4 +1,3 @@
-import django_filters
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope
 
 from rest_framework import status, viewsets, filters
