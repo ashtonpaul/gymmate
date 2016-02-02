@@ -5,6 +5,7 @@ from rest_framework import viewsets
 from gymmate.permissions import IsAdminOrReadOnly
 
 from .models import Muscle, ExerciseCategory, Equipment, Exercise
+from .filters import MuscleFilter, ExerciseCategoryFilter, EquipmentFilter, ExerciseFilter
 from .serializers import MuscleSerializer, ExerciseCategorySerializer, EquipmentSerializer, ExerciseSerializer
 
 
@@ -16,6 +17,7 @@ class MuscleViewSet(viewsets.ModelViewSet):
     required_scopes = ['exercises']
     queryset = Muscle.objects.all()
     serializer_class = MuscleSerializer
+    filter_class = MuscleFilter
 
 
 class ExerciseCategoryViewSet(viewsets.ModelViewSet):
@@ -26,6 +28,7 @@ class ExerciseCategoryViewSet(viewsets.ModelViewSet):
     required_scopes = ['exercises']
     queryset = ExerciseCategory.objects.all()
     serializer_class = ExerciseCategorySerializer
+    filter_class = ExerciseCategoryFilter
 
 
 class EquipmentViewSet(viewsets.ModelViewSet):
@@ -36,6 +39,7 @@ class EquipmentViewSet(viewsets.ModelViewSet):
     required_scopes = ['exercises']
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
+    filter_class = EquipmentFilter
 
 
 class ExerciseViewSet(viewsets.ModelViewSet):
@@ -46,3 +50,4 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     required_scopes = ['exercises']
     queryset = Exercise.objects.all()
     serializer_class = ExerciseSerializer
+    filter_class = ExerciseFilter
