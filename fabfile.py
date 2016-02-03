@@ -23,7 +23,7 @@ def deploy(project_name=None):
         run("rm -rf {0}".format(project_name))
         run("virtualenv {0}_env".format(project_name))
         run("source {0}_env/bin/activate".format(project_name))
-        run("git clone git@bitbucket.org:ashtonpaul/{0}.git".format(project_name))
+        run("git clone -b develop git@bitbucket.org:ashtonpaul/{0}.git".format(project_name))
         run("{0}_env/bin/pip install -r {0}/requirements.txt".format(project_name))
         run("python {0}/manage.py migrate".format(project_name))
         disconnect_all()
