@@ -5,7 +5,7 @@ from rest_framework.reverse import reverse
 
 from gymmate.tests import BaseTestCase
 from exercises.models import Exercise
-from workouts.models import Progress
+from ..models import Progress
 
 
 class ProgressTest(BaseTestCase):

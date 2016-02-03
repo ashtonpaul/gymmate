@@ -5,7 +5,7 @@ from rest_framework.reverse import reverse
 
 from gymmate.tests import MetricsTestCase
 
-from metrics.models import Metric, MetricTypeGroup
+from ..models import Metric, MetricTypeGroup
 
 
 class MetricGroupTypeTest(MetricsTestCase):
