@@ -15,6 +15,7 @@ env.hosts = ["staging.dnsdynamic.com"]
 env.user = "pi"
 env.password = "fuckdying1"
 
+
 def deploy(project_name=None):
     sudo("apt-get install -y libmysqlclient-dev")
     with cd(code_path):
@@ -24,4 +25,5 @@ def deploy(project_name=None):
         run("source {0}_env/bin/activate".format(project_name))
         run("git clone git@bitbucket.org:ashtonpaul/{0}.git".format(project_name))
         run("{0}_env/bin/pip install -r {0}/requirements.txt".format(project_name))
+        run("python {0}/manage.py migrate".format(project_name))
         disconnect_all()
