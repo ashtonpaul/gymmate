@@ -7,6 +7,7 @@ from gymmate.permissions import IsAdminOrReadOnly
 from accounts.models import AccountUser
 
 from .serializers import DayOfWeekSerializer, PublicRoutineSerializer, RoutineSerializer, ProgressSerializer
+from .filters import DayOfWeekFilter, RoutineFilter, ProgressFilter
 from .models import DayOfWeek, Routine, Progress
 
 
@@ -18,6 +19,7 @@ class DayOfWeekViewSet(viewsets.ModelViewSet):
     required_scopes = ['workouts']
     queryset = DayOfWeek.objects.all()
     serializer_class = DayOfWeekSerializer
+    filter_class = DayOfWeekFilter
 
 
 class PublicRoutineViewSet(viewsets.ModelViewSet):
@@ -28,6 +30,7 @@ class PublicRoutineViewSet(viewsets.ModelViewSet):
     required_scopes = ['workouts']
     queryset = Routine.objects.all()
     serializer_class = PublicRoutineSerializer
+    filter_class = RoutineFilter
     http_method_names = ['get', 'head', 'options']
 
     def get_queryset(self):
@@ -45,6 +48,7 @@ class RoutineViewSet(viewsets.ModelViewSet):
     required_scopes = ['workouts']
     queryset = Routine.objects.all()
     serializer_class = RoutineSerializer
+    filter_class = RoutineFilter
 
     def get_queryset(self):
         """
@@ -75,6 +79,7 @@ class ProrgressViewSet(viewsets.ModelViewSet):
     required_scopes = ['workouts']
     queryset = Progress.objects.all()
     serializer_class = ProgressSerializer
+    filter_class = ProgressFilter
 
     def get_queryset(self):
         """

@@ -7,6 +7,7 @@ from gymmate.permissions import IsAdminOrReadOnly
 from accounts.models import AccountUser
 
 from .models import Metric, MetricType, MetricTypeGroup
+from .filters import MetricFilter, MetricTypeFilter, MetricTypeGroupFilter
 from .serializers import MetricSerializer, MetricTypeSerializer, MetricTypeGroupSerializer
 
 
@@ -18,6 +19,7 @@ class MetricTypeGroupViewSet(viewsets.ModelViewSet):
     required_scopes = ['metrics']
     queryset = MetricTypeGroup.objects.all().order_by('name')
     serializer_class = MetricTypeGroupSerializer
+    filter_class = MetricTypeGroupFilter
 
 
 class MetricTypeViewSet(viewsets.ModelViewSet):
@@ -28,6 +30,7 @@ class MetricTypeViewSet(viewsets.ModelViewSet):
     required_scopes = ['metrics']
     queryset = MetricType.objects.all().order_by('name')
     serializer_class = MetricTypeSerializer
+    filter_class = MetricTypeFilter
 
 
 class MetricViewSet(viewsets.ModelViewSet):
@@ -38,6 +41,7 @@ class MetricViewSet(viewsets.ModelViewSet):
     required_scopes = ['metrics']
     queryset = Metric.objects.all().order_by('date')
     serializer_class = MetricSerializer
+    filter_class = MetricFilter
 
     def get_queryset(self):
         """

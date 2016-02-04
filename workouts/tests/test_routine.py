@@ -3,7 +3,7 @@ from rest_framework.reverse import reverse
 
 from gymmate.tests import BaseTestCase
 from exercises.models import Exercise
-from workouts.models import Routine
+from ..models import Routine
 
 
 class RoutineTest(BaseTestCase):

@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 
 from gymmate.tests import BaseTestCase
-from exercises.models import ExerciseCategory
+from ..models import ExerciseCategory
 
 
 class ExerciseCategoryTest(BaseTestCase):

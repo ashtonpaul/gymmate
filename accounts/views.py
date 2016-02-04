@@ -7,6 +7,7 @@ from rest_framework.permissions import AllowAny
 from gymmate.permissions import IsCreateOnly
 
 from .models import AccountUser
+from .filters import UserFilter
 from .serializers import UserSerializer, SignUpSerializer
 
 
@@ -17,6 +18,7 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (AllowAny, TokenHasReadWriteScope)
     queryset = AccountUser.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
+    filter_class = UserFilter
 
     def create(self, request, *args, **kwargs):
         """
