@@ -3,10 +3,11 @@ from django.contrib import admin
 
 from rest_framework import routers
 
-from accounts.views import UserViewSet, SignUpViewSet
-from metrics.views import MetricViewSet, MetricTypeViewSet, MetricTypeGroupViewSet
-from exercises.views import MuscleViewSet, ExerciseCategoryViewSet, EquipmentViewSet, ExerciseViewSet
-from workouts.views import DayOfWeekViewSet, PublicRoutineViewSet, RoutineViewSet, ProrgressViewSet
+from apps.accounts.views import UserViewSet, SignUpViewSet
+from apps.metrics.views import MetricViewSet, MetricTypeViewSet, MetricTypeGroupViewSet
+from apps.exercises.views import MuscleViewSet, ExerciseCategoryViewSet, EquipmentViewSet, ExerciseViewSet
+from apps.workouts.views import DayOfWeekViewSet, PublicRoutineViewSet, RoutineViewSet, ProrgressViewSet
+
 
 router = routers.DefaultRouter()
 router.register(r'daysofweek', DayOfWeekViewSet, 'dayofweek')

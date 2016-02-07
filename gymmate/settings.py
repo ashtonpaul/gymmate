@@ -41,11 +41,11 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'rest_framework_swagger',
-    'accounts',
-    'metrics',
-    'exercises',
-    'workouts',
     'oauth2_provider',
+    'apps.accounts',
+    'apps.metrics',
+    'apps.exercises',
+    'apps.workouts',
 ]
 
 MIDDLEWARE_CLASSES = [
