@@ -26,8 +26,8 @@ class MetricTest(MetricsTestCase):
         Ensure a metric can be retrieved by a user
         """
         self.populate()
-        metric_list = self.client.get(reverse('metric-list'))
-        detail = self.client.get(reverse('metric-detail', args=(self.metric.id,)))
+        metric_list = self.client.get(reverse('v1:metric-list'))
+        detail = self.client.get(reverse('v1:metric-detail', args=(self.metric.id,)))
 
         self.assertEqual(metric_list.status_code, status.HTTP_200_OK)
         self.assertEqual(detail.status_code, status.HTTP_200_OK)
@@ -40,7 +40,7 @@ class MetricTest(MetricsTestCase):
         type = MetricType.objects.create(group=group, name='test', unit='test')
 
         self.authenticate(self.user_basic)
-        response = self.client.post(reverse('metric-list'),
+        response = self.client.post(reverse('v1:metric-list'),
                                     {'user': self.user, 'metric_type': type.id, 'value': '75'})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -52,7 +52,7 @@ class MetricTest(MetricsTestCase):
         Ensure a user can delete a metric entry
         """
         self.populate()
-        response = self.client.delete(reverse('metric-detail', args=(self.metric.id,)))
+        response = self.client.delete(reverse('v1:metric-detail', args=(self.metric.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Metric.objects.count(), 0)
@@ -63,11 +63,11 @@ class MetricTest(MetricsTestCase):
         Ensure a user can put/patch update on an existing metric entry
         """
         self.populate()
-        patch = self.client.patch(reverse('metric-detail', args=(self.metric.id,)), {'value': '76'})
+        patch = self.client.patch(reverse('v1:metric-detail', args=(self.metric.id,)), {'value': '76'})
         patched_value = Metric.objects.get(id=self.metric.id).value
 
         put = self.client.put(
-            reverse('metric-detail', args=(self.metric.id,)),
+            reverse('v1:metric-detail', args=(self.metric.id,)),
             {'value': '77', 'metric_type': self.type.id}
         )
         updated_value = Metric.objects.get(id=self.metric.id).value
@@ -85,10 +85,10 @@ class MetricTest(MetricsTestCase):
         self.populate()
         self.authenticate(self.user_basic)
 
-        get = self.client.get(reverse('metric-detail', args=(self.metric.id,)))
-        delete = self.client.delete(reverse('metric-detail', args=(self.metric.id,)))
-        put = self.client.put(reverse('metric-detail', args=(self.metric.id,)), {'value': '76'})
-        patch = self.client.patch(reverse('metric-detail', args=(self.metric.id,)), {'value': '77'})
+        get = self.client.get(reverse('v1:metric-detail', args=(self.metric.id,)))
+        delete = self.client.delete(reverse('v1:metric-detail', args=(self.metric.id,)))
+        put = self.client.put(reverse('v1:metric-detail', args=(self.metric.id,)), {'value': '76'})
+        patch = self.client.patch(reverse('v1:metric-detail', args=(self.metric.id,)), {'value': '77'})
 
         self.assertEqual(get.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(delete.status_code, status.HTTP_404_NOT_FOUND)

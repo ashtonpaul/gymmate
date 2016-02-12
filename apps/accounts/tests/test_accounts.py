@@ -25,8 +25,8 @@ class AccountTests(BaseTestCase):
         Test get methods on user list and detail views
         """
         self.authenticate(self.user_basic)
-        user_list = self.client.get(reverse('user-list'))
-        get = self.client.get(reverse('user-detail', args=(self.user.id,)))
+        user_list = self.client.get(reverse('v1:user-list'))
+        get = self.client.get(reverse('v1:user-detail', args=(self.user.id,)))
 
         self.assertEqual(user_list.status_code, status.HTTP_200_OK)
         self.assertEqual(get.status_code, status.HTTP_200_OK)
@@ -37,7 +37,7 @@ class AccountTests(BaseTestCase):
         """
         client = APIClient()
         response = client.post(
-            reverse('signup-list'),
+            reverse('v1:signup-list'),
             {'email': 'test@test.com', 'password': 'temp', }
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -50,8 +50,8 @@ class AccountTests(BaseTestCase):
         self.authenticate(self.user_basic)
 
         client = APIClient()
-        username = client.post(reverse('signup-list'), {'username': 'user', 'email': 'username@test.com'})
-        email = client.post(reverse('signup-list'), {'username': 'user', 'email': 'email@test.com'})
+        username = client.post(reverse('v1:signup-list'), {'username': 'user', 'email': 'username@test.com'})
+        email = client.post(reverse('v1:signup-list'), {'username': 'user', 'email': 'email@test.com'})
 
         self.assertEqual(username.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(email.status_code, status.HTTP_400_BAD_REQUEST)
@@ -64,7 +64,7 @@ class AccountTests(BaseTestCase):
         """
         self.authenticate(self.user_basic)
         response = self.client.post(
-            reverse('user-list'),
+            reverse('v1:user-list'),
             {'username': 'test', 'password': 'test', 'email': 'test@test.com'}
         )
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -74,12 +74,12 @@ class AccountTests(BaseTestCase):
         A user should be able to update their account
         """
         self.authenticate(self.user_basic)
-        patch = self.client.patch(reverse('user-detail', args=(self.user.id,)), {'username': 'patched'})
+        patch = self.client.patch(reverse('v1:user-detail', args=(self.user.id,)), {'username': 'patched'})
         patched_user = AccountUser.objects.get(id=self.user.id)
 
         self.authenticate(patched_user.username)
         put = self.client.put(
-            reverse('user-detail', args=(self.user.id,)),
+            reverse('v1:user-detail', args=(self.user.id,)),
             {'username': 'updated', 'password': 'test', 'email': 'update@test.com'}
         )
         updated_user = AccountUser.objects.get(id=self.user.id)
@@ -96,7 +96,7 @@ class AccountTests(BaseTestCase):
         """
         user = self.authenticate(self.user_basic)
         count_before_delete = AccountUser.objects.count()
-        response = self.client.delete(reverse('user-detail', args=(self.user.id,)))
+        response = self.client.delete(reverse('v1:user-detail', args=(self.user.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertRaises(AccountUser.DoesNotExist, lambda: AccountUser.objects.get(id=user.id))
@@ -110,7 +110,7 @@ class AccountTests(BaseTestCase):
         user = self.authenticate(self.user_admin)
         self.authenticate(self.user_basic)
 
-        response = self.client.delete(reverse('user-detail', args=(user.id,)))
+        response = self.client.delete(reverse('v1:user-detail', args=(user.id,)))
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_update_another_user(self):
@@ -121,10 +121,10 @@ class AccountTests(BaseTestCase):
         self.authenticate(self.user_basic)
 
         put = self.client.put(
-            reverse('user-detail', args=(user.id,)),
+            reverse('v1:user-detail', args=(user.id,)),
             {'username': 'user_one', 'email': 'test@test.com'}
         )
-        patch = self.client.patch(reverse('user-detail', args=(user.id,)), {'username': 'user_two'})
+        patch = self.client.patch(reverse('v1:user-detail', args=(user.id,)), {'username': 'user_two'})
 
         self.assertNotEqual(put.status_code, status.HTTP_200_OK)
         self.assertNotEqual(patch.status_code, status.HTTP_200_OK)
@@ -138,7 +138,7 @@ class AccountTests(BaseTestCase):
         type = MetricType.objects.create(group=group, name='inches', unit='in.')
         metric = Metric.objects.create(user=self.user, value='75', metric_type=type)
 
-        self.client.delete(reverse('user-detail', args=(self.user.id,)))
+        self.client.delete(reverse('v1:user-detail', args=(self.user.id,)))
 
         self.assertEqual(Metric.objects.count(), 0)
         self.assertRaises(Metric.DoesNotExist, lambda: Metric.objects.get(id=metric.id))
@@ -151,7 +151,7 @@ class AccountTests(BaseTestCase):
         routine = Routine.objects.create(user=self.user, name='mondays', )
         count_before_delete = Routine.objects.count()
 
-        self.client.delete(reverse('routine-detail', args=(routine.id,)))
+        self.client.delete(reverse('v1:routine-detail', args=(routine.id,)))
         self.assertEqual(count_before_delete, 1)
         self.assertRaises(Routine.DoesNotExist, lambda: Routine.objects.get(id=routine.id))
         self.assertEqual(Routine.objects.count(), 0)
@@ -165,7 +165,7 @@ class AccountTests(BaseTestCase):
         progress = Progress.objects.create(user=self.user, exercise=exercise, date=datetime.date.today())
         count_before_delete = Progress.objects.count()
 
-        self.client.delete(reverse('progress-detail', args=(progress.id,)))
+        self.client.delete(reverse('v1:progress-detail', args=(progress.id,)))
         self.assertEqual(count_before_delete, 1)
         self.assertRaises(Progress.DoesNotExist, lambda: Progress.objects.get(id=progress.id))
         self.assertEqual(Progress.objects.count(), 0)

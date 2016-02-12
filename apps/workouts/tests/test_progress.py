@@ -28,8 +28,8 @@ class ProgressTest(BaseTestCase):
 
         self.authenticate(self.user_basic)
         progress = Progress.objects.create(user=self.user, exercise=exercise, date=datetime.date.today())
-        progress_list = self.client.get(reverse('progress-list'))
-        detail = self.client.get(reverse('progress-detail', args=(progress.id,)))
+        progress_list = self.client.get(reverse('v1:progress-list'))
+        detail = self.client.get(reverse('v1:progress-detail', args=(progress.id,)))
 
         self.assertEqual(progress_list.status_code, status.HTTP_200_OK)
         self.assertEqual(detail.status_code, status.HTTP_200_OK)
@@ -42,7 +42,7 @@ class ProgressTest(BaseTestCase):
 
         self.authenticate(self.user_basic)
         response = self.client.post(
-            reverse('progress-list'),
+            reverse('v1:progress-list'),
             {'user': self.user.id, 'exercise': exercise.id, 'duration': '767', 'date': datetime.date.today()}
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -57,7 +57,7 @@ class ProgressTest(BaseTestCase):
 
         self.authenticate(self.user_basic)
         progress = Progress.objects.create(user=self.user, exercise=exercise, date=datetime.date.today())
-        response = self.client.delete(reverse('progress-detail', args=(progress.id,)))
+        response = self.client.delete(reverse('v1:progress-detail', args=(progress.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Progress.objects.count(), 0)
@@ -73,7 +73,7 @@ class ProgressTest(BaseTestCase):
         progress = Progress.objects.create(user=self.user, exercise=exercise, date=datetime.date.today())
 
         self.authenticate(self.user_basic)
-        response = self.client.delete(reverse('progress-detail', args=(progress.id,)))
+        response = self.client.delete(reverse('v1:progress-detail', args=(progress.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(Progress.objects.count(), 1)
@@ -89,12 +89,12 @@ class ProgressTest(BaseTestCase):
         progress = Progress.objects.create(user=self.user, exercise=exercise,
                                            date=datetime.date.today(), duration=767)
         put = self.client.put(
-            reverse('progress-detail', args=(progress.id,)),
+            reverse('v1:progress-detail', args=(progress.id,)),
             {'duration': '940', 'date': datetime.date.today(), 'exercise': exercise.id}
         )
         put_duration = Progress.objects.get().duration
 
-        patch = self.client.patch(reverse('progress-detail', args=(progress.id,)), {'duration': '214'})
+        patch = self.client.patch(reverse('v1:progress-detail', args=(progress.id,)), {'duration': '214'})
 
         self.assertEqual(put.status_code, status.HTTP_200_OK)
         self.assertEqual(patch.status_code, status.HTTP_200_OK)
@@ -112,13 +112,13 @@ class ProgressTest(BaseTestCase):
 
         self.authenticate(self.user_basic)
         patch = self.client.patch(
-            reverse('progress-detail', args=(progress.id,)),
+            reverse('v1:progress-detail', args=(progress.id,)),
             {'duration': '214'}
         )
         patched_progress = Progress.objects.get(id=progress.id)
 
         put = self.client.put(
-            reverse('progress-detail', args=(progress.id,)),
+            reverse('v1:progress-detail', args=(progress.id,)),
             {'duration': '940', 'date': datetime.date.today(), 'exercise': exercise.id}
         )
 

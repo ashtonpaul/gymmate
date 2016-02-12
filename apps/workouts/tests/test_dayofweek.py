@@ -22,8 +22,8 @@ class DayOfWeekTest(BaseTestCase):
         """
         self.authenticate(self.user_admin)
         day = DayOfWeek.objects.create(day='monday')
-        day_list = self.client.get(reverse('dayofweek-list'))
-        detail = self.client.get(reverse('dayofweek-detail', args=(day.id,)))
+        day_list = self.client.get(reverse('v1:dayofweek-list'))
+        detail = self.client.get(reverse('v1:dayofweek-detail', args=(day.id,)))
 
         self.assertEqual(day_list.status_code, status.HTTP_200_OK)
         self.assertEqual(detail.status_code, status.HTTP_200_OK)
@@ -33,7 +33,7 @@ class DayOfWeekTest(BaseTestCase):
         Add a day of the week by an admin user
         """
         self.authenticate(self.user_admin)
-        response = self.client.post(reverse('dayofweek-list'), {'day': 'monday'})
+        response = self.client.post(reverse('v1:dayofweek-list'), {'day': 'monday'})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(DayOfWeek.objects.count(), 1)
@@ -45,7 +45,7 @@ class DayOfWeekTest(BaseTestCase):
         """
         self.authenticate(self.user_admin)
         day = DayOfWeek.objects.create(day='monday')
-        response = self.client.delete(reverse('dayofweek-detail', args=(day.id,)))
+        response = self.client.delete(reverse('v1:dayofweek-detail', args=(day.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(DayOfWeek.objects.count(), 0)
@@ -58,10 +58,10 @@ class DayOfWeekTest(BaseTestCase):
         self.authenticate(self.user_admin)
         day = DayOfWeek.objects.create(day='monday')
 
-        put = self.client.put(reverse('dayofweek-detail', args=(day.id, )), {'day': 'tuesday'})
+        put = self.client.put(reverse('v1:dayofweek-detail', args=(day.id, )), {'day': 'tuesday'})
         day_updated = DayOfWeek.objects.get(id=day.id)
 
-        patch = self.client.patch(reverse('dayofweek-detail', args=(day.id, )), {'day': 'wednesday'})
+        patch = self.client.patch(reverse('v1:dayofweek-detail', args=(day.id, )), {'day': 'wednesday'})
         day_patched = DayOfWeek.objects.get(id=day.id)
 
         self.assertEqual(put.status_code, status.HTTP_200_OK)
@@ -75,7 +75,7 @@ class DayOfWeekTest(BaseTestCase):
         Ensure that all values for day of week are unique
         """
         self.authenticate(self.user_admin)
-        self.client.post(reverse('dayofweek-list'), {'day': 'monday'})
+        self.client.post(reverse('v1:dayofweek-list'), {'day': 'monday'})
         self.assertRaises(IntegrityError, lambda: DayOfWeek.objects.create(day='monday'))
 
     def test_permissions(self):
@@ -85,10 +85,10 @@ class DayOfWeekTest(BaseTestCase):
         day = DayOfWeek.objects.create(day='sunday')
 
         self.authenticate(self.user_basic)
-        add = self.client.post(reverse('dayofweek-list'), {'day': 'monday'})
-        delete = self.client.delete(reverse('dayofweek-detail', args=(day.id, )))
-        put = self.client.put(reverse('dayofweek-detail', args=(day.id, )), {'day': 'tuesday'})
-        patch = self.client.patch(reverse('dayofweek-detail', args=(day.id, )), {'day': 'tuesday'})
+        add = self.client.post(reverse('v1:dayofweek-list'), {'day': 'monday'})
+        delete = self.client.delete(reverse('v1:dayofweek-detail', args=(day.id, )))
+        put = self.client.put(reverse('v1:dayofweek-detail', args=(day.id, )), {'day': 'tuesday'})
+        patch = self.client.patch(reverse('v1:dayofweek-detail', args=(day.id, )), {'day': 'tuesday'})
 
         self.assertEqual(add.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(delete.status_code, status.HTTP_403_FORBIDDEN)

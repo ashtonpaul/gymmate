@@ -19,7 +19,7 @@ class ExerciseTest(BaseTestCase):
         Ensure an exercise object can be added
         """
         self.authenticate(self.user_admin)
-        response = self.client.post(reverse('exercise-list'), {'name': 'squats', 'description': 'squat'})
+        response = self.client.post(reverse('v1:exercise-list'), {'name': 'squats', 'description': 'squat'})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Exercise.objects.count(), 1)
@@ -31,9 +31,9 @@ class ExerciseTest(BaseTestCase):
         """
         self.authenticate(self.user_admin)
         exercise = Exercise.objects.create(name='squats', description='squat')
-        patch = self.client.patch(reverse('exercise-detail', args=(exercise.id, )), {'name': 'leg squats'})
+        patch = self.client.patch(reverse('v1:exercise-detail', args=(exercise.id, )), {'name': 'leg squats'})
         exercise_patched = Exercise.objects.get(id=exercise.id)
-        put = self.client.patch(reverse('exercise-detail', args=(exercise.id, )), {'name': 'bench press'})
+        put = self.client.patch(reverse('v1:exercise-detail', args=(exercise.id, )), {'name': 'bench press'})
         exercise_updated = Exercise.objects.get(id=exercise.id)
 
         self.assertEqual(patch.status_code, status.HTTP_200_OK)
@@ -48,7 +48,7 @@ class ExerciseTest(BaseTestCase):
         """
         self.authenticate(self.user_admin)
         exercise = Exercise.objects.create(name='squats', description='squat')
-        response = self.client.delete(reverse('exercise-detail', args=(exercise.id, )))
+        response = self.client.delete(reverse('v1:exercise-detail', args=(exercise.id, )))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Exercise.objects.count(), 0)
@@ -62,8 +62,8 @@ class ExerciseTest(BaseTestCase):
 
         self.authenticate(self.user_basic)
         exercise = Exercise.objects.get(name='squats')
-        exercise_list = self.client.get(reverse('exercise-list'))
-        detail = self.client.get(reverse('exercise-detail', args=(exercise.id, )))
+        exercise_list = self.client.get(reverse('v1:exercise-list'))
+        detail = self.client.get(reverse('v1:exercise-detail', args=(exercise.id, )))
 
         self.assertEqual(exercise_list.status_code, status.HTTP_200_OK)
         self.assertEqual(detail.status_code, status.HTTP_200_OK)
@@ -75,9 +75,9 @@ class ExerciseTest(BaseTestCase):
         exercise = Exercise.objects.create(name='squats', description='squat')
 
         self.authenticate(self.user_basic)
-        post = self.client.post(reverse('exercise-list'), {'name': 'curl', 'description': 'bicep curl'})
-        put = self.client.put(reverse('exercise-detail', args=(exercise.id,)), {'description': 'sqaut low'})
-        delete = self.client.delete(reverse('exercise-detail', args=(exercise.id,)))
+        post = self.client.post(reverse('v1:exercise-list'), {'name': 'curl', 'description': 'bicep curl'})
+        put = self.client.put(reverse('v1:exercise-detail', args=(exercise.id,)), {'description': 'sqaut low'})
+        delete = self.client.delete(reverse('v1:exercise-detail', args=(exercise.id,)))
 
         self.assertEqual(post.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(put.status_code, status.HTTP_403_FORBIDDEN)

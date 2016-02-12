@@ -21,8 +21,8 @@ class MetricTypeTest(MetricsTestCase):
         """
         self.populate()
         self.authenticate(self.user_basic)
-        type_list = self.client.get(reverse('metric-type-list'))
-        detail = self.client.get(reverse('metric-type-detail', args=(self.type.id,)))
+        type_list = self.client.get(reverse('v1:metric-type-list'))
+        detail = self.client.get(reverse('v1:metric-type-detail', args=(self.type.id,)))
 
         self.assertEqual(type_list.status_code, status.HTTP_200_OK)
         self.assertEqual(detail.status_code, status.HTTP_200_OK)
@@ -33,7 +33,7 @@ class MetricTypeTest(MetricsTestCase):
         """
         self.populate()
         response = self.client.post(
-            reverse('metric-type-list'),
+            reverse('v1:metric-type-list'),
             {'group': self.group.id, 'name': 'pounds', 'unit': 'lbs'}
         )
         type = MetricType.objects.get(unit='lbs')
@@ -47,7 +47,7 @@ class MetricTypeTest(MetricsTestCase):
         Ensure an admin can delete a metric type
         """
         self.populate()
-        response = self.client.delete(reverse('metric-type-detail', args=(self.type.id,)))
+        response = self.client.delete(reverse('v1:metric-type-detail', args=(self.type.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(MetricType.objects.count(), 0)
@@ -58,7 +58,7 @@ class MetricTypeTest(MetricsTestCase):
         If a type is deleted all associated metrics should be deleted too
         """
         self.populate()
-        self.client.delete(reverse('metric-type-detail', args=(self.type.id,)))
+        self.client.delete(reverse('v1:metric-type-detail', args=(self.type.id,)))
 
         self.assertRaises(Metric.DoesNotExist, lambda: Metric.objects.get(id=self.metric.id))
 
@@ -68,9 +68,9 @@ class MetricTypeTest(MetricsTestCase):
         """
         self.populate()
         self.authenticate(self.user_basic)
-        delete = self.client.delete(reverse('metric-type-detail', args=(self.type.id, )))
-        put = self.client.put(reverse('metric-type-detail', args=(self.type.id, )), {'name': 'pounds'})
-        patch = self.client.patch(reverse('metric-type-detail', args=(self.type.id, )), {'name': 'pounds'})
+        delete = self.client.delete(reverse('v1:metric-type-detail', args=(self.type.id, )))
+        put = self.client.put(reverse('v1:metric-type-detail', args=(self.type.id, )), {'name': 'pounds'})
+        patch = self.client.patch(reverse('v1:metric-type-detail', args=(self.type.id, )), {'name': 'pounds'})
 
         self.assertEqual(delete.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(put.status_code, status.HTTP_403_FORBIDDEN)
@@ -82,12 +82,12 @@ class MetricTypeTest(MetricsTestCase):
         """
         self.populate()
         put = self.client.put(
-            reverse('metric-type-detail', args=(self.type.id,)),
+            reverse('v1:metric-type-detail', args=(self.type.id,)),
             {'name': 'pounds', 'unit': 'lbs', 'group': self.group.id}
         )
         updated_value = MetricType.objects.get(id=self.type.id).unit
 
-        patch = self.client.patch(reverse('metric-type-detail', args=(self.type.id,)), {'unit': 'kg'})
+        patch = self.client.patch(reverse('v1:metric-type-detail', args=(self.type.id,)), {'unit': 'kg'})
         patched_value = MetricType.objects.get(id=self.type.id).unit
 
         self.assertEqual(patch.status_code, status.HTTP_200_OK)

@@ -26,7 +26,7 @@ router.register(r'users', UserViewSet, 'user')
 
 # Wire up our API using automatic URL routing.
 urlpatterns = [
-    url(r'^', include(router.urls)),
+    url(r'^v1/', include(router.urls, namespace='v1')),
 ]
 
 # Administrative panel

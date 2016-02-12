@@ -22,8 +22,8 @@ class MetricGroupTypeTest(MetricsTestCase):
         """
         self.populate()
         self.authenticate(self.user_basic)
-        group_list = self.client.get(reverse('metric-group-list'))
-        detail = self.client.get(reverse('metric-group-detail', args=(self.group.id,)))
+        group_list = self.client.get(reverse('v1:metric-group-list'))
+        detail = self.client.get(reverse('v1:metric-group-detail', args=(self.group.id,)))
 
         self.assertEqual(group_list.status_code, status.HTTP_200_OK)
         self.assertEqual(detail.status_code, status.HTTP_200_OK)
@@ -33,7 +33,7 @@ class MetricGroupTypeTest(MetricsTestCase):
         Ability to add a metric group type by an admin
         """
         self.authenticate(self.user_admin)
-        response = self.client.post(reverse('metric-group-list'), {'name': 'weight'})
+        response = self.client.post(reverse('v1:metric-group-list'), {'name': 'weight'})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(MetricTypeGroup.objects.count(), 1)
@@ -44,7 +44,7 @@ class MetricGroupTypeTest(MetricsTestCase):
         Ensure that metric type group names are unique
         """
         self.authenticate(self.user_admin)
-        self.client.post(reverse('metric-group-list'), {'name': 'test_group'})
+        self.client.post(reverse('v1:metric-group-list'), {'name': 'test_group'})
         self.assertRaises(IntegrityError, lambda: MetricTypeGroup.objects.create(name='test_group'))
 
     def test_metric_group_cascade(self):
@@ -52,7 +52,7 @@ class MetricGroupTypeTest(MetricsTestCase):
         If a type group is deleted all associated types and metrics should be deleted too
         """
         self.populate()
-        self.client.delete(reverse('metric-group-detail', args=(self.group.id,)))
+        self.client.delete(reverse('v1:metric-group-detail', args=(self.group.id,)))
         self.assertRaises(Metric.DoesNotExist, lambda: Metric.objects.get(id=self.metric.id))
 
     def test_delete_metric(self):
@@ -60,7 +60,7 @@ class MetricGroupTypeTest(MetricsTestCase):
         Ensure an admin can delete a metric group
         """
         self.populate()
-        response = self.client.delete(reverse('metric-group-detail', args=(self.group.id, )))
+        response = self.client.delete(reverse('v1:metric-group-detail', args=(self.group.id, )))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(MetricTypeGroup.objects.count(), 0)
@@ -75,9 +75,9 @@ class MetricGroupTypeTest(MetricsTestCase):
         """
         self.populate()
         self.authenticate(self.user_basic)
-        delete = self.client.delete(reverse('metric-group-detail', args=(self.group.id, )))
-        put = self.client.put(reverse('metric-group-detail', args=(self.group.id, )), {'name': 'inches'})
-        patch = self.client.patch(reverse('metric-group-detail', args=(self.group.id, )), {'name': 'inches'})
+        delete = self.client.delete(reverse('v1:metric-group-detail', args=(self.group.id, )))
+        put = self.client.put(reverse('v1:metric-group-detail', args=(self.group.id, )), {'name': 'inches'})
+        patch = self.client.patch(reverse('v1:metric-group-detail', args=(self.group.id, )), {'name': 'inches'})
 
         self.assertEqual(delete.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(put.status_code, status.HTTP_403_FORBIDDEN)
@@ -89,10 +89,10 @@ class MetricGroupTypeTest(MetricsTestCase):
         """
         self.populate()
 
-        put = self.client.put(reverse('metric-group-detail', args=(self.group.id,)), {'name': 'weight'})
+        put = self.client.put(reverse('v1:metric-group-detail', args=(self.group.id,)), {'name': 'weight'})
         updated_value = MetricTypeGroup.objects.get(id=self.group.id).name
 
-        patch = self.client.patch(reverse('metric-group-detail', args=(self.group.id,)), {'name': 'height'})
+        patch = self.client.patch(reverse('v1:metric-group-detail', args=(self.group.id,)), {'name': 'height'})
         patched_value = MetricTypeGroup.objects.get(id=self.group.id).name
 
         self.assertEqual(patch.status_code, status.HTTP_200_OK)

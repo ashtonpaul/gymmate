@@ -23,8 +23,8 @@ class RoutineTest(BaseTestCase):
         self.authenticate(self.user_basic)
 
         routine = Routine.objects.create(user=self.user, name='mondays', is_public=True)
-        routine_list = self.client.get(reverse('public-routine-list'))
-        detail = self.client.get(reverse('public-routine-detail', args=(routine.id,)))
+        routine_list = self.client.get(reverse('v1:public-routine-list'))
+        detail = self.client.get(reverse('v1:public-routine-detail', args=(routine.id,)))
 
         self.assertEqual(routine_list.status_code, status.HTTP_200_OK)
         self.assertEqual(detail.status_code, status.HTTP_200_OK)
@@ -37,7 +37,7 @@ class RoutineTest(BaseTestCase):
 
         self.authenticate(self.user_basic)
         response = self.client.post(
-            reverse('routine-list'),
+            reverse('v1:routine-list'),
             {'name': 'mondays', 'exercises': '%d' % exercise.id}
         )
 
@@ -51,7 +51,7 @@ class RoutineTest(BaseTestCase):
         """
         self.authenticate(self.user_basic)
         routine = Routine.objects.create(user=self.user, name='mondays', )
-        response = self.client.delete(reverse('routine-detail', args=(routine.id,)))
+        response = self.client.delete(reverse('v1:routine-detail', args=(routine.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Routine.objects.count(), 0)
@@ -66,11 +66,11 @@ class RoutineTest(BaseTestCase):
         self.authenticate(self.user_basic)
         routine = Routine.objects.create(user=self.user, name='mondays', )
 
-        patch = self.client.patch(reverse('routine-detail', args=(routine.id,)), {'name': 'tuesdays'})
+        patch = self.client.patch(reverse('v1:routine-detail', args=(routine.id,)), {'name': 'tuesdays'})
         patched_routine = Routine.objects.get(id=routine.id)
 
         put = self.client.put(
-            reverse('routine-detail', args=(routine.id,)), {'name': 'sundays', 'exercises': '%d' % exercise.id}
+            reverse('v1:routine-detail', args=(routine.id,)), {'name': 'sundays', 'exercises': '%d' % exercise.id}
         )
 
         self.assertEqual(put.status_code, status.HTTP_200_OK)
@@ -89,10 +89,10 @@ class RoutineTest(BaseTestCase):
         routine = Routine.objects.create(user=self.user, name='mondays', )
 
         self.authenticate(self.user_basic)
-        delete = self.client.delete(reverse('routine-detail', args=(routine.id,)))
-        patch = self.client.patch(reverse('routine-detail', args=(routine.id,)), {'name': 'wednesdays'})
+        delete = self.client.delete(reverse('v1:routine-detail', args=(routine.id,)))
+        patch = self.client.patch(reverse('v1:routine-detail', args=(routine.id,)), {'name': 'wednesdays'})
         put = self.client.put(
-            reverse('routine-detail', args=(routine.id,)), {'name': 'tuesdays', 'exercises': '%d' % exercise.id}
+            reverse('v1:routine-detail', args=(routine.id,)), {'name': 'tuesdays', 'exercises': '%d' % exercise.id}
         )
 
         self.assertEqual(delete.status_code, status.HTTP_404_NOT_FOUND)
@@ -111,7 +111,7 @@ class PublicRoutineTest(BaseTestCase):
         Routine.objects.create(user=self.user, name='wednesdays', is_public=False)
 
         self.authenticate(self.user_basic)
-        response = self.client.get(reverse('public-routine-list'))
+        response = self.client.get(reverse('v1:public-routine-list'))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Routine.objects.count(), 3)
@@ -123,8 +123,8 @@ class PublicRoutineTest(BaseTestCase):
         """
         self.authenticate(self.user_admin)
         routine = Routine.objects.create(user=self.user, name='mondays', is_public=True)
-        public_routine_list = self.client.get(reverse('public-routine-list'))
-        detail = self.client.get(reverse('public-routine-detail', args=(routine.id,)))
+        public_routine_list = self.client.get(reverse('v1:public-routine-list'))
+        detail = self.client.get(reverse('v1:public-routine-detail', args=(routine.id,)))
 
         self.assertEqual(public_routine_list.status_code, status.HTTP_200_OK)
         self.assertEqual(detail.status_code, status.HTTP_200_OK)
@@ -137,14 +137,17 @@ class PublicRoutineTest(BaseTestCase):
         exercise = Exercise.objects.create(name='squats', description='squat', )
         routine = Routine.objects.create(user=self.user, name='mondays', is_public=True)
 
-        post = self.client.post(reverse('public-routine-list'),  {'name': 'tuesdays', 'exercises': '%d' % exercise.id})
-        delete = self.client.delete(reverse('public-routine-detail', args=(routine.id,)))
+        post = self.client.post(
+            reverse('v1:public-routine-list'),
+            {'name': 'tuesdays', 'exercises': '%d' % exercise.id}
+        )
+        delete = self.client.delete(reverse('v1:public-routine-detail', args=(routine.id,)))
         patch = self.client.patch(
-            reverse('public-routine-detail', args=(routine.id,)),
+            reverse('v1:public-routine-detail', args=(routine.id,)),
             {'name': 'wednesdays'}
         )
         put = self.client.put(
-            reverse('public-routine-detail', args=(routine.id,)),
+            reverse('v1:public-routine-detail', args=(routine.id,)),
             {'name': 'thursdays', 'exercises': '%d' % exercise.id}
         )
 

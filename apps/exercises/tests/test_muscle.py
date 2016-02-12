@@ -19,7 +19,7 @@ class MuscleTest(BaseTestCase):
         Ensure a muscle object can be added by an admin user
         """
         self.authenticate(self.user_admin)
-        response = self.client.post(reverse('muscle-list'), {'name': 'bicep'})
+        response = self.client.post(reverse('v1:muscle-list'), {'name': 'bicep'})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Muscle.objects.count(), 1)
@@ -32,7 +32,7 @@ class MuscleTest(BaseTestCase):
         muscle = Muscle.objects.create(name='bicep')
 
         self.authenticate(self.user_admin)
-        response = self.client.delete(reverse('muscle-detail', args=(muscle.id, )))
+        response = self.client.delete(reverse('v1:muscle-detail', args=(muscle.id, )))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Muscle.objects.count(), 0)
@@ -45,9 +45,9 @@ class MuscleTest(BaseTestCase):
         muscle = Muscle.objects.create(name='bicep')
 
         self.authenticate(self.user_admin)
-        put = self.client.put(reverse('muscle-detail', args=(muscle.id, )), {'name': 'tricep'})
+        put = self.client.put(reverse('v1:muscle-detail', args=(muscle.id, )), {'name': 'tricep'})
         muscle_put = Muscle.objects.get(id=muscle.id)
-        patch = self.client.patch(reverse('muscle-detail', args=(muscle.id, )), {'name': 'chest'})
+        patch = self.client.patch(reverse('v1:muscle-detail', args=(muscle.id, )), {'name': 'chest'})
         muscle_patch = Muscle.objects.get(id=muscle.id)
 
         self.assertEqual(patch.status_code, status.HTTP_200_OK)
@@ -61,12 +61,12 @@ class MuscleTest(BaseTestCase):
         Ensure a muscle object can be retrieved by a non admin user
         """
         self.authenticate(self.user_admin)
-        self.client.post(reverse('muscle-list'), {'name': 'bicep'})
+        self.client.post(reverse('v1:muscle-list'), {'name': 'bicep'})
 
         self.authenticate(self.user_basic)
         muscle = Muscle.objects.get(name='bicep')
-        muscle_list = self.client.get(reverse('muscle-list'))
-        detail = self.client.get(reverse('muscle-detail', args=(muscle.id,)))
+        muscle_list = self.client.get(reverse('v1:muscle-list'))
+        detail = self.client.get(reverse('v1:muscle-detail', args=(muscle.id,)))
 
         self.assertEqual(muscle_list.status_code, status.HTTP_200_OK)
         self.assertEqual(detail.status_code, status.HTTP_200_OK)
@@ -78,10 +78,10 @@ class MuscleTest(BaseTestCase):
         muscle = Muscle.objects.create(name='bicep')
 
         self.authenticate(self.user_basic)
-        post = self.client.post(reverse('muscle-list'), {'name': 'tricep'})
-        put = self.client.put(reverse('muscle-detail', args=(muscle.id,)), {'name': 'quad'})
-        patch = self.client.patch(reverse('muscle-detail', args=(muscle.id,)), {'name': 'quad'})
-        delete = self.client.delete(reverse('muscle-detail', args=(muscle.id,)))
+        post = self.client.post(reverse('v1:muscle-list'), {'name': 'tricep'})
+        put = self.client.put(reverse('v1:muscle-detail', args=(muscle.id,)), {'name': 'quad'})
+        patch = self.client.patch(reverse('v1:muscle-detail', args=(muscle.id,)), {'name': 'quad'})
+        delete = self.client.delete(reverse('v1:muscle-detail', args=(muscle.id,)))
 
         self.assertEqual(post.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(put.status_code, status.HTTP_403_FORBIDDEN)

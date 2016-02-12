@@ -19,7 +19,7 @@ class EquipmentTest(BaseTestCase):
         Ensure an equipment object can be added by an admin user
         """
         self.authenticate(self.user_admin)
-        response = self.client.post(reverse('equipment-list'), {'name': 'barbell'})
+        response = self.client.post(reverse('v1:equipment-list'), {'name': 'barbell'})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Equipment.objects.count(), 1)
@@ -31,7 +31,7 @@ class EquipmentTest(BaseTestCase):
         """
         self.authenticate(self.user_admin)
         equipment = Equipment.objects.create(name='barbell')
-        response = self.client.delete(reverse('equipment-detail', args=(equipment.id, )))
+        response = self.client.delete(reverse('v1:equipment-detail', args=(equipment.id, )))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Equipment.objects.count(), 0)
@@ -44,9 +44,9 @@ class EquipmentTest(BaseTestCase):
         equipment = Equipment.objects.create(name='barbell')
 
         self.authenticate(self.user_admin)
-        put = self.client.put(reverse('equipment-detail', args=(equipment.id, )), {'name': 'dumbbell'})
+        put = self.client.put(reverse('v1:equipment-detail', args=(equipment.id, )), {'name': 'dumbbell'})
         equipment_updated = Equipment.objects.get(id=equipment.id)
-        patch = self.client.patch(reverse('equipment-detail', args=(equipment.id, )), {'name': 'mat'})
+        patch = self.client.patch(reverse('v1:equipment-detail', args=(equipment.id, )), {'name': 'mat'})
         equipment_patched = Equipment.objects.get(id=equipment.id)
 
         self.assertEqual(patch.status_code, status.HTTP_200_OK)
@@ -60,12 +60,12 @@ class EquipmentTest(BaseTestCase):
         Ensure an equipment object can be retrieved by a non admin user
         """
         self.authenticate(self.user_admin)
-        self.client.post(reverse('equipment-list'), {'name': 'barbell'})
+        self.client.post(reverse('v1:equipment-list'), {'name': 'barbell'})
 
         self.authenticate(self.user_basic)
         equipment = Equipment.objects.get(name='barbell')
-        equipment_listing = self.client.get(reverse('equipment-list'))
-        detail = self.client.get(reverse('equipment-detail', args=(equipment.id, )))
+        equipment_listing = self.client.get(reverse('v1:equipment-list'))
+        detail = self.client.get(reverse('v1:equipment-detail', args=(equipment.id, )))
 
         self.assertEqual(equipment_listing.status_code, status.HTTP_200_OK)
         self.assertEqual(detail.status_code, status.HTTP_200_OK)
@@ -77,9 +77,9 @@ class EquipmentTest(BaseTestCase):
         equipment = Equipment.objects.create(name='barbell')
 
         self.authenticate(self.user_basic)
-        post = self.client.post(reverse('equipment-list'), {'name': 'dumbbell'})
-        put = self.client.put(reverse('equipment-detail', args=(equipment.id,)), {'name': 'ball'})
-        delete = self.client.delete(reverse('equipment-detail', args=(equipment.id,)))
+        post = self.client.post(reverse('v1:equipment-list'), {'name': 'dumbbell'})
+        put = self.client.put(reverse('v1:equipment-detail', args=(equipment.id,)), {'name': 'ball'})
+        delete = self.client.delete(reverse('v1:equipment-detail', args=(equipment.id,)))
 
         self.assertEqual(post.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(put.status_code, status.HTTP_403_FORBIDDEN)
