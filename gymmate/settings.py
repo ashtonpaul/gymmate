@@ -142,6 +142,14 @@ REST_FRAMEWORK = {
     'DEFAULT_VERSIONING_CLASS': ('rest_framework.versioning.NamespaceVersioning'),
     'ALLOWED_VERSIONS': ('v1'),
     'PAGE_SIZE': 10,
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '120/minute',
+        'user': '120/minute'
+    }
 }
 
 
