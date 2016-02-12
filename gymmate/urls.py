@@ -36,7 +36,7 @@ urlpatterns += [
 
 # Documentaton views for API
 urlpatterns += [
-    url(r'^docs/', include('rest_framework_swagger.urls', namespace='rest_framework_swagger')),
+    url(r'^v1/docs/', include('rest_framework_swagger.urls', namespace='rest_framework_swagger')),
 ]
 
 # Oauth endpoint
