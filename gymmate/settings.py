@@ -157,7 +157,7 @@ REST_FRAMEWORK = {
 # http://django-rest-swagger.readthedocs.org/en/latest/settings.html
 
 SWAGGER_SETTINGS = {
-    'api_version': '0.5',
+    'api_version': '1.0',
     'api_key': '',
     'info': {
         'contact': 'ashton@ashtonpaul.com',
