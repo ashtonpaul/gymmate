@@ -26,4 +26,5 @@ def deploy(project_name=None):
         run("git clone -b develop git@bitbucket.org:ashtonpaul/{0}.git".format(project_name))
         run("{0}_env/bin/pip install -r {0}/requirements.txt".format(project_name))
         run("python {0}/manage.py migrate".format(project_name))
+        run("python {0}/manage.py collectstatic --no-input".format(project_name))
         disconnect_all()
