@@ -194,13 +194,14 @@ OAUTH2_PROVIDER = {
     'ACCESS_TOKEN_EXPIRE_SECONDS': 36000
 }
 
+log_format = '[%(date)s] %(user)s %(ip)s %(method)s %(path)s %(params)s %(status_code)d %(response_time)dms %(data)s'
 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'simple': {
-            'format': '%(levelname)s %(message)s',
+            'format': log_format,
         },
     },
     'handlers': {
