@@ -23,3 +23,6 @@ Thumbs.db
 
 # Code Coverage
 .coverage
+
+# Log files
+*.log

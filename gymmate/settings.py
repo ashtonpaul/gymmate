@@ -193,3 +193,29 @@ OAUTH2_PROVIDER = {
     },
     'ACCESS_TOKEN_EXPIRE_SECONDS': 36000
 }
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '%(levelname)s %(message)s',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/gymmate.log',
+            'formatter': 'simple',
+        }
+    },
+    'loggers': {
+        'apps.core.loggers': {
+            'handlers': ['file'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
+    },
+}

@@ -3,13 +3,14 @@ from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope
 from rest_framework import viewsets
 
 from ..core.permissions import IsAdminOrReadOnly
+from ..core.loggers import LoggingMixin
 
 from .models import Muscle, ExerciseCategory, Equipment, Exercise
 from .filters import MuscleFilter, ExerciseCategoryFilter, EquipmentFilter, ExerciseFilter
 from .serializers import MuscleSerializer, ExerciseCategorySerializer, EquipmentSerializer, ExerciseSerializer
 
 
-class MuscleViewSet(viewsets.ModelViewSet):
+class MuscleViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     List/Detail of all available muscles
     """
@@ -20,7 +21,7 @@ class MuscleViewSet(viewsets.ModelViewSet):
     filter_class = MuscleFilter
 
 
-class ExerciseCategoryViewSet(viewsets.ModelViewSet):
+class ExerciseCategoryViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     List/Detail of all exercises groups/categories
     """
@@ -31,7 +32,7 @@ class ExerciseCategoryViewSet(viewsets.ModelViewSet):
     filter_class = ExerciseCategoryFilter
 
 
-class EquipmentViewSet(viewsets.ModelViewSet):
+class EquipmentViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     List/Detail eqiupment in the gym
     """
@@ -42,7 +43,7 @@ class EquipmentViewSet(viewsets.ModelViewSet):
     filter_class = EquipmentFilter
 
 
-class ExerciseViewSet(viewsets.ModelViewSet):
+class ExerciseViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     List/Detail all the exercises able to be performed
     """
