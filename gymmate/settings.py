@@ -194,29 +194,56 @@ OAUTH2_PROVIDER = {
     'ACCESS_TOKEN_EXPIRE_SECONDS': 36000
 }
 
-log_format = '[%(date)s] %(user)s %(ip)s %(method)s %(path)s %(params)s %(status_code)d %(response_time)dms %(data)s'
+
+# system and app logging formats
+# https://docs.python.org/2/library/logging.html#formatter-objects
+
+gymmate_log = '[%(stamp)s] %(user)s %(ip)s %(method)s %(path)s %(params)s %(status_code)d %(response_time)dms %(data)s'
+django_log = '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+
+
+# logging setup for the codebase for errors and apps for requests
+# https://gist.github.com/JasonGiedymin/887364
 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'simple': {
-            'format': log_format,
+        'api': {
+            'format': gymmate_log,
+        },
+        'django': {
+            'format': django_log,
         },
     },
     'handlers': {
-        'file': {
+        'request': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
             'filename': 'logs/gymmate.log',
-            'formatter': 'simple',
+            'when': 'midnight',
+            'formatter': 'api',
+            'backupCount': '365',
+        },
+        'code': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': 'logs/django.log',
+            'when': 'midnight',
+            'formatter': 'django',
+            'backupCount': '365',
         }
     },
     'loggers': {
         'apps.core.loggers': {
-            'handlers': ['file'],
+            'handlers': ['request'],
             'propagate': True,
             'level': 'DEBUG',
+        },
+        'django': {
+            'handlers': ['code'],
+            'propagate': True,
+            'level': 'ERROR',
         },
     },
 }
