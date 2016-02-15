@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from ..core.permissions import IsAdminOrReadOnly
+from ..core.loggers import LoggingMixin
 from ..accounts.models import AccountUser
 
 from .models import Metric, MetricType, MetricTypeGroup
@@ -11,7 +12,7 @@ from .filters import MetricFilter, MetricTypeFilter, MetricTypeGroupFilter
 from .serializers import MetricSerializer, MetricTypeSerializer, MetricTypeGroupSerializer
 
 
-class MetricTypeGroupViewSet(viewsets.ModelViewSet):
+class MetricTypeGroupViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     List/Detail for Measurement group types
     """
@@ -22,7 +23,7 @@ class MetricTypeGroupViewSet(viewsets.ModelViewSet):
     filter_class = MetricTypeGroupFilter
 
 
-class MetricTypeViewSet(viewsets.ModelViewSet):
+class MetricTypeViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     List/Detail for Metric Types
     """
@@ -33,7 +34,7 @@ class MetricTypeViewSet(viewsets.ModelViewSet):
     filter_class = MetricTypeFilter
 
 
-class MetricViewSet(viewsets.ModelViewSet):
+class MetricViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     User body measurment viewset
     """

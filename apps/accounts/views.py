@@ -5,13 +5,14 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
 from ..core.permissions import IsCreateOnly
+from ..core.loggers import LoggingMixin
 
 from .models import AccountUser
 from .filters import UserFilter
 from .serializers import UserSerializer, SignUpSerializer
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed
     """
@@ -60,7 +61,7 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class SignUpViewSet(viewsets.ModelViewSet):
+class SignUpViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     API endpoint to allow users to sign up
     """

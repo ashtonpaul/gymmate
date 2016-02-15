@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from ..core.permissions import IsAdminOrReadOnly
+from ..core.loggers import LoggingMixin
 from ..accounts.models import AccountUser
 
 from .serializers import DayOfWeekSerializer, PublicRoutineSerializer, RoutineSerializer, ProgressSerializer
@@ -11,7 +12,7 @@ from .filters import DayOfWeekFilter, RoutineFilter, ProgressFilter
 from .models import DayOfWeek, Routine, Progress
 
 
-class DayOfWeekViewSet(viewsets.ModelViewSet):
+class DayOfWeekViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     Generic class view to show days of week
     """
@@ -22,7 +23,7 @@ class DayOfWeekViewSet(viewsets.ModelViewSet):
     filter_class = DayOfWeekFilter
 
 
-class PublicRoutineViewSet(viewsets.ModelViewSet):
+class PublicRoutineViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     List/Details of publically shared routines
     """
@@ -40,7 +41,7 @@ class PublicRoutineViewSet(viewsets.ModelViewSet):
         return Routine.objects.filter(is_public=True)
 
 
-class RoutineViewSet(viewsets.ModelViewSet):
+class RoutineViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     List/Detail of a user's routine(s)
     """
@@ -71,7 +72,7 @@ class RoutineViewSet(viewsets.ModelViewSet):
         serializer.save(user=user)
 
 
-class ProrgressViewSet(viewsets.ModelViewSet):
+class ProrgressViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     List/Detail of a user's workout progression
     """
