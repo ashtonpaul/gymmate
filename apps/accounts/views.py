@@ -20,6 +20,7 @@ class UserViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = AccountUser.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     filter_class = UserFilter
+    http_method_names = ['get', 'delete', 'put', 'patch', 'head', 'options']
 
     def create(self, request, *args, **kwargs):
         """
