@@ -1,6 +1,6 @@
 import logging
 
-from django.utils.timezone import now
+from django.utils.timezone import now, localtime
 
 
 class LogEntry(object):
@@ -37,7 +37,7 @@ class LoggingMixin(object):
 
         details = {
             'response_time': int((now() - self.request.log.timestamp).total_seconds() * 1000),
-            'stamp': self.request.log.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            'stamp': localtime(self.request.log.timestamp).strftime('%Y-%m-%d %H:%M:%S'),
             'user': request.user,
             'ip': self.request.log.ip,
             'path': self.request.log.path,
