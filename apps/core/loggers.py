@@ -26,6 +26,7 @@ class LoggingMixin(object):
         self.request.log.params = request.query_params.dict()
         self.request.log.data = data
         self.request.log.timestamp = now()
+
         super(LoggingMixin, self).initial(request, *args, **kwargs)
 
     def finalize_response(self, request, response, *args, **kwargs):
