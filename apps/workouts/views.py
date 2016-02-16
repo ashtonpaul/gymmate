@@ -45,7 +45,7 @@ class RoutineViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     List/Detail of a user's routine(s)
     """
-    permission_classes = [IsAuthenticated,  TokenHasReadWriteScope]
+    permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
     required_scopes = ['workouts']
     queryset = Routine.objects.all()
     serializer_class = RoutineSerializer
@@ -76,7 +76,7 @@ class ProrgressViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     List/Detail of a user's workout progression
     """
-    permission_classes = [IsAuthenticated,  TokenHasReadWriteScope]
+    permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
     required_scopes = ['workouts']
     queryset = Progress.objects.all()
     serializer_class = ProgressSerializer
