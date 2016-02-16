@@ -16,6 +16,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+# Base settings shared by all other environments
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
@@ -23,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '#lx+c73f*e77eo3^_zv=dboje-1_qz#+)r_=ftr-tubvj0d5f8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -37,10 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
-    'django_filters',
     'rest_framework',
     'rest_framework_swagger',
+    'django_filters',
     'oauth2_provider',
     'apps.accounts',
     'apps.metrics',
@@ -85,9 +85,13 @@ WSGI_APPLICATION = 'gymmate.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'sqlite3.db',
-    },
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'gymmate',
+        'USER': 'django',
+        'PASSWORD': 'django',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
 }
 
 
@@ -169,16 +173,6 @@ SWAGGER_SETTINGS = {
     'token_type': 'Bearer'
 }
 
-
-# Set callable toolbar callback to shor Django debug toolbar
-# https://stackoverflow.com/questions/10517765/django-debug-toolbar-not-showing-up/10518040#10518040
-
-def show_toolbar(request):
-    return True
-
-DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": show_toolbar,
-}
 
 # this is the list of available scopes
 # https://django-oauth-toolkit.readthedocs.org/en/latest/rest-framework/getting_started.html
