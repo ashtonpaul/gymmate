@@ -62,7 +62,7 @@ class UserViewSet(LoggingMixin, viewsets.ModelViewSet):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class SignUpViewSet(LoggingMixin, viewsets.ModelViewSet):
+class SignUpViewSet(viewsets.ModelViewSet):
     """
     API endpoint to allow users to sign up
     """
