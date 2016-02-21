@@ -109,6 +109,9 @@ DATABASES = {
         'PASSWORD': get_secret("DATABASE_PASSWORD"),
         'HOST': get_secret("DATABASE_HOST"),
         'PORT': get_secret("DATABASE_PORT"),
+        'TEST': {
+            'NAME': 'test_database',
+        },
     }
 }
 
