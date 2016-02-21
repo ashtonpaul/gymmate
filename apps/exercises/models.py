@@ -55,6 +55,7 @@ class Exercise(models.Model):
     muscles_secondary = models.ManyToManyField(Muscle, blank=True,
                                                related_name='secondary_muscles', verbose_name="Secondary muscles", )
     equipment = models.ManyToManyField(Equipment, blank=True, )
+    video = models.URLField(blank=True, )
     date_created = models.DateTimeField(auto_now_add=True)
     is_cardio = models.BooleanField(default=False)
 
