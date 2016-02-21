@@ -134,6 +134,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
+
+# Media files (Images, Documents, Media)
+# https://docs.djangoproject.com/en/1.9/topics/files/
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
 # Django REST framework (API)
 # http://django-rest-framework.com
 
