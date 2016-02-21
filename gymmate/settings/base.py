@@ -10,18 +10,36 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
-import os
+import os, json
+
+from django.core.exceptions import ImproperlyConfigured
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# JSON-based secrets module
+with open("secrets.json") as f:
+    secrets = json.loads(f.read())
+
+# Get settings file secrets from json file to avoid secrets in repo
+# Two Scoops of Django 1.8 - Section 5.4.1
+def get_secret(setting, secrets=secrets):
+    """
+    Get the secret variable or return explicit exception.
+    """
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {0} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
 
 # Base settings shared by all other environments
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#lx+c73f*e77eo3^_zv=dboje-1_qz#+)r_=ftr-tubvj0d5f8'
+SECRET_KEY = get_secret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -86,11 +104,11 @@ WSGI_APPLICATION = 'gymmate.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'gymmate',
-        'USER': 'django',
-        'PASSWORD': 'django',
-        'HOST': 'localhost',
-        'PORT': '',
+        'NAME': get_secret("DATABASE_NAME"),
+        'USER': get_secret("DATABASE_USER"),
+        'PASSWORD': get_secret("DATABASE_PASSWORD"),
+        'HOST': get_secret("DATABASE_HOST"),
+        'PORT': get_secret("DATABASE_PORT"),
     }
 }
 
