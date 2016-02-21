@@ -10,7 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
-import os, json
+import os
+import json
 
 from django.core.exceptions import ImproperlyConfigured
 
@@ -21,6 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # JSON-based secrets module
 with open("secrets.json") as f:
     secrets = json.loads(f.read())
+
 
 # Get settings file secrets from json file to avoid secrets in repo
 # Two Scoops of Django 1.8 - Section 5.4.1
