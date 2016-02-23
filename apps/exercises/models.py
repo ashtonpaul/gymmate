@@ -77,9 +77,13 @@ class ExerciseImage(models.Model):
     """
     Exercise images for individual exercises
     """
-    exercise = models.ForeignKey(Exercise)
+    exercise = models.ForeignKey(Exercise, related_name='images')
     image = models.ImageField(blank=False, upload_to=upload_to, )
     is_main = models.BooleanField(default=False, )
 
     class Meta:
         ordering = ['-is_main', 'id']
+
+    def __str__(self):
+        exercise = Exercise.objects.get(id=self.exercise.id)
+        return '{0} - {1}'.format(exercise, self.image)

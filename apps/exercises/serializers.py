@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Muscle, ExerciseCategory, Equipment, Exercise
+from .models import Muscle, ExerciseCategory, Equipment, Exercise, ExerciseImage
 
 
 class MuscleSerializer(serializers.ModelSerializer):
@@ -27,9 +27,20 @@ class EquipmentSerializer(serializers.ModelSerializer):
         model = Equipment
 
 
+class ExerciseImageSerializer(serializers.ModelSerializer):
+    """
+    Gym equipment serializer
+    """
+    class Meta:
+        model = ExerciseImage
+        fields = ('image', 'is_main', )
+
+
 class ExerciseSerializer(serializers.ModelSerializer):
     """
     Exercises serializer
     """
+    images = ExerciseImageSerializer(many=True)
+
     class Meta:
         model = Exercise
