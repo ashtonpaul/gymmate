@@ -32,4 +32,4 @@ Thumbs.db
 *.json
 
 # uploaded media
-*/media/*
+media/*

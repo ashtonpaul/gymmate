@@ -10,14 +10,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
-import os
+from os.path import join, abspath, dirname
 import json
 
 from django.core.exceptions import ImproperlyConfigured
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+here = lambda *dirs: join(abspath(dirname(__file__)), *dirs)
+BASE_DIR = here("..","..")
+root = lambda *dirs: join(abspath(BASE_DIR), *dirs)
 
 # JSON-based secrets module
 with open("secrets.json") as f:
@@ -155,14 +157,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = root("static")
 
 
 # Media files (Images, Documents, Media)
 # https://docs.djangoproject.com/en/1.9/topics/files/
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = root("media")
 
 
 # Django REST framework (API)
