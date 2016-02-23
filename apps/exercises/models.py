@@ -64,3 +64,22 @@ class Exercise(models.Model):
 
     def __str__(self):
         return self.name
+
+
+def upload_to(instance, filename):
+    '''
+    Returns the upload target for exercise images
+    '''
+    return "exercise-images/{0}/{1}".format(instance.exercise.id, filename)
+
+
+class ExerciseImage(models.Model):
+    """
+    Exercise images for individual exercises
+    """
+    exercise = models.ForeignKey(Exercise)
+    image = models.ImageField(blank=False, upload_to=upload_to, )
+    is_main = models.BooleanField(default=False, )
+
+    class Meta:
+        ordering = ['-is_main', 'id']
