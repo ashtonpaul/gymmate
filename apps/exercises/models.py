@@ -84,7 +84,7 @@ class ExerciseImage(models.Model):
     is_main = models.BooleanField(default=False, )
 
     class Meta:
-        ordering = ['-is_main', 'id']
+        ordering = ['exercise', '-is_main']
         verbose_name_plural = 'Exercise Images'
 
     def __str__(self):
@@ -96,7 +96,7 @@ class ExerciseImage(models.Model):
         Only one is_main image can exist per exercise
         """
         if self.is_main and ExerciseImage.objects.filter(exercise=self.exercise, is_main=True).count():
-            self.is_main = False
+            ExerciseImage.objects.filter(exercise=self.exercise).update(is_main=False)
 
         super(ExerciseImage, self).save(*args, **kwargs)
         check_is_main(self.exercise.id)
