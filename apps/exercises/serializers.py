@@ -40,7 +40,7 @@ class ExerciseSerializer(serializers.ModelSerializer):
     """
     Exercises serializer
     """
-    images = ExerciseImageSerializer(many=True)
+    images = ExerciseImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Exercise
