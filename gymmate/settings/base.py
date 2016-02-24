@@ -17,9 +17,15 @@ from django.core.exceptions import ImproperlyConfigured
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-here = lambda *dirs: join(abspath(dirname(__file__)), *dirs)
-BASE_DIR = here("..","..")
-root = lambda *dirs: join(abspath(BASE_DIR), *dirs)
+BASE_DIR = dirname(dirname(dirname(__file__)))
+
+
+def root(dir):
+    """
+    Create a directory path using base dir
+    """
+    return join(abspath(BASE_DIR), dir)
+
 
 # JSON-based secrets module
 with open("secrets.json") as f:
