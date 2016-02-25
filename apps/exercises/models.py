@@ -116,7 +116,7 @@ def check_is_main(exercise):
 @receiver(post_delete, sender=ExerciseImage)
 def exercise_image_post_delete(sender, **kwargs):
     """
-    Post delete hook to delete the physical file
+    Post delete hook to remove the physical file
     """
     file = kwargs['instance']
     storage = file.image.storage
