@@ -51,6 +51,13 @@ def get_secret(setting, secrets=secrets):
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_secret("SECRET_KEY")
 
+
+# SparkPost transactional email provider backend
+# https://github.com/SparkPost/python-sparkpost/blob/master/README.rst
+SPARKPOST_API_KEY = get_secret("SPARKPOST_API_KEY")
+EMAIL_BACKEND = 'sparkpost.django.email_backend.SparkPostEmailBackend'
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -70,6 +77,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'django_filters',
     'oauth2_provider',
+    'sparkpost',
     'apps.accounts',
     'apps.metrics',
     'apps.exercises',
@@ -280,8 +288,3 @@ LOGGING = {
         },
     },
 }
-
-
-SPARKPOST_API_KEY = get_secret("SPARKPOST_API_KEY")
-EMAIL_BACKEND = 'sparkpost.django.email_backend.SparkPostEmailBackend'
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

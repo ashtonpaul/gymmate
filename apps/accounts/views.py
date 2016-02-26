@@ -1,6 +1,9 @@
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope
 
 from django.core.mail import send_mail
+from django.conf import settings
+
+from sparkpost import SparkPost
 
 from rest_framework import status, viewsets
 from rest_framework.response import Response
@@ -77,18 +80,28 @@ class SignUpViewSet(viewsets.ModelViewSet):
         """
         On create, remove password hash in response and email user
         """
-        send_mail(
-            subject='hello from sparkpost',
-            message='Hello Rock stars!',
-            from_email='ashton@ashtonpaul.com',
-            recipient_list=['ashton.paul@gmail.com'],
-            html_message='<p>Hello Rock stars!</p>',
-        )
-
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         success_message = {"detail": u"User successfully created."}
+
+        # Transactional email setup
+        user_email = serializer.data["email"]
+        sp = SparkPost(settings.SPARKPOST_API_KEY)
+        template_data = {
+            "substitution_data": {
+                "email": "{0}".format(user_email)
+            }
+        }
+        template = sp.templates.preview('gymmate-welcome', template_data)
+
+        send_mail(
+            subject='{0}'.format(template["subject"]),
+            message='{0}'.format(template["text"]),
+            from_email='{0} <{1}>'.format(template["from"]["name"], template["from"]["email"]),
+            recipient_list=['{0}'.format(user_email)],
+            html_message='{0}'.format(template["html"]),
+        )
 
         return Response(success_message, status=status.HTTP_201_CREATED, headers=headers)
