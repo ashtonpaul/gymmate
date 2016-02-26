@@ -280,3 +280,8 @@ LOGGING = {
         },
     },
 }
+
+
+SPARKPOST_API_KEY = get_secret("SPARKPOST_API_KEY")
+EMAIL_BACKEND = 'sparkpost.django.email_backend.SparkPostEmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
