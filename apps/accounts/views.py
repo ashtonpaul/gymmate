@@ -1,16 +1,12 @@
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope
 
-from django.core.mail import send_mail
-from django.conf import settings
-
-from sparkpost import SparkPost
-
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
 from ..core.permissions import IsCreateOnly
 from ..core.loggers import LoggingMixin
+from ..core.mail import send_email
 
 from .models import AccountUser
 from .filters import UserFilter
@@ -85,23 +81,13 @@ class SignUpViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         success_message = {"detail": u"User successfully created."}
-
-        # Transactional email setup
+        
         user_email = serializer.data["email"]
-        sp = SparkPost(settings.SPARKPOST_API_KEY)
         template_data = {
             "substitution_data": {
                 "email": "{0}".format(user_email)
             }
         }
-        template = sp.templates.preview('gymmate-welcome', template_data)
-
-        send_mail(
-            subject='{0}'.format(template["subject"]),
-            message='{0}'.format(template["text"]),
-            from_email='{0} <{1}>'.format(template["from"]["name"], template["from"]["email"]),
-            recipient_list=['{0}'.format(user_email)],
-            html_message='{0}'.format(template["html"]),
-        )
+        send_email(user_email, 'gymmate-welcome', template_data,)
 
         return Response(success_message, status=status.HTTP_201_CREATED, headers=headers)
