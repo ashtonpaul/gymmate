@@ -81,9 +81,13 @@ class SignUpViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         success_message = {"detail": u"User successfully created."}
-
+        
         user_email = serializer.data["email"]
-        template_data = {"email": user_email}
+        uuid = str(AccountUser.objects.get(email=user_email).uuid)
+        template_data = {
+            "email": user_email,
+            "uuid": uuid
+        }
         send_email(user_email, 'gymmate-welcome', template_data,)
 
         return Response(success_message, status=status.HTTP_201_CREATED, headers=headers)
