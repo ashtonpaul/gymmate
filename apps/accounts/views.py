@@ -78,7 +78,7 @@ class SignUpViewSet(viewsets.ModelViewSet):
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        # self.perform_create(serializer)
+        self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         success_message = {"detail": u"User successfully created."}
 
