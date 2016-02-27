@@ -30,3 +30,6 @@ Thumbs.db
 
 # config files
 *.json
+
+# uploaded media
+media/*

@@ -16,3 +16,5 @@ pyflakes
 flake8
 MySQL-python
 coverage
+Pillow
+sparkpost

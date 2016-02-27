@@ -6,6 +6,7 @@ from rest_framework.permissions import AllowAny
 
 from ..core.permissions import IsCreateOnly
 from ..core.loggers import LoggingMixin
+from ..core.mail import send_email
 
 from .models import AccountUser
 from .filters import UserFilter
@@ -70,3 +71,19 @@ class SignUpViewSet(viewsets.ModelViewSet):
     queryset = AccountUser.objects.all()
     serializer_class = SignUpSerializer
     http_method_names = ['post', 'head', 'options']
+
+    def create(self, request, *args, **kwargs):
+        """
+        On create, remove password hash in response and email user
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        success_message = {"detail": u"User successfully created."}
+
+        user_email = serializer.data["email"]
+        template_data = {"email": user_email}
+        send_email(user_email, 'gymmate-welcome', template_data,)
+
+        return Response(success_message, status=status.HTTP_201_CREATED, headers=headers)

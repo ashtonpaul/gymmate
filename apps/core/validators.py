@@ -17,3 +17,18 @@ class FutureDateValidator(object):
         if value > date.today():
             print self.message
             raise serializers.ValidationError(self.message)
+
+
+class PasswordValidator(object):
+    """
+    Validate user passwords
+    """
+    def __init__(self, message=None):
+        if not message:
+            self.message = 'Password must be at least 6 characters'
+        else:
+            self.message = message
+
+    def __call__(self, value):
+        if len(value) < 6:
+            raise serializers.ValidationError(self.message)

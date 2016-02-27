@@ -10,14 +10,22 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
-import os
+from os.path import join, abspath, dirname
 import json
 
 from django.core.exceptions import ImproperlyConfigured
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = dirname(dirname(dirname(__file__)))
+
+
+def root(dir):
+    """
+    Create a directory path using base dir
+    """
+    return join(abspath(BASE_DIR), dir)
+
 
 # JSON-based secrets module
 with open("secrets.json") as f:
@@ -43,6 +51,13 @@ def get_secret(setting, secrets=secrets):
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_secret("SECRET_KEY")
 
+
+# SparkPost transactional email provider backend
+# https://github.com/SparkPost/python-sparkpost/blob/master/README.rst
+SPARKPOST_API_KEY = get_secret("SPARKPOST_API_KEY")
+EMAIL_BACKEND = 'sparkpost.django.email_backend.SparkPostEmailBackend'
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -62,6 +77,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'django_filters',
     'oauth2_provider',
+    'sparkpost',
     'apps.accounts',
     'apps.metrics',
     'apps.exercises',
@@ -155,14 +171,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = root("static")
 
 
 # Media files (Images, Documents, Media)
 # https://docs.djangoproject.com/en/1.9/topics/files/
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = root("media")
 
 
 # Django REST framework (API)

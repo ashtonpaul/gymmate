@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
+from ..core.validators import PasswordValidator
+
 from .models import AccountUser
 
 
@@ -54,6 +56,10 @@ class SignUpSerializer(BaseAccountSerializer):
         validators=[UniqueValidator(
             queryset=AccountUser.objects.all(),
             message='Email already in use by another account')]
+    )
+    password = serializers.CharField(
+        style={'input_type': 'password'},
+        validators=[PasswordValidator()]
     )
 
     class Meta:
