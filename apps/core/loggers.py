@@ -14,9 +14,16 @@ class LoggingMixin(object):
     """
     Custom logging mixin to save logs to file
     """
+    logging_exclude = None
+
     def initial(self, request, *args, **kwargs):
         ip = request.META.get('HTTP_X_FORWARDED_FOR') or request.META.get('REMOTE_ADDR')
         data = request.data if type(request.data).__name__ == 'dict' else request.data.dict()
+
+        # exclusion of fields in log data e.g passwords
+        if self.logging_exclude:
+            for key in self.logging_exclude:
+                data.pop(key, None)
 
         self.request.log = LogEntry()
         self.request.log.logger = logging.getLogger(__name__)

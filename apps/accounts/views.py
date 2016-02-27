@@ -63,7 +63,7 @@ class UserViewSet(LoggingMixin, viewsets.ModelViewSet):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class SignUpViewSet(viewsets.ModelViewSet):
+class SignUpViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     API endpoint to allow users to sign up
     """
@@ -71,6 +71,7 @@ class SignUpViewSet(viewsets.ModelViewSet):
     queryset = AccountUser.objects.all()
     serializer_class = SignUpSerializer
     http_method_names = ['post', 'head', 'options']
+    logging_exclude = ['password']
 
     def create(self, request, *args, **kwargs):
         """
