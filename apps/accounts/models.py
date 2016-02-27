@@ -63,5 +63,4 @@ class AccountUser(User):
         """
         storage, path = self.profile_picture.storage, self.profile_picture.path
         super(AccountUser, self).delete(*args, **kwargs)
-
         storage.delete(path)
