@@ -76,12 +76,12 @@ class SignUpViewSet(viewsets.ModelViewSet):
         """
         On create, remove password hash in response and email user
         """
+        # save user to database
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        success_message = {"detail": u"User successfully created."}
-        
+
+        # send out welcome/actication email to user
         user_email = serializer.data["email"]
         uuid = str(AccountUser.objects.get(email=user_email).uuid)
         template_data = {
@@ -90,4 +90,7 @@ class SignUpViewSet(viewsets.ModelViewSet):
         }
         send_email(user_email, 'gymmate-welcome', template_data,)
 
+        # return success message in signup response
+        success_message = {"detail": u"User successfully created."}
+        headers = self.get_success_headers(serializer.data)
         return Response(success_message, status=status.HTTP_201_CREATED, headers=headers)
