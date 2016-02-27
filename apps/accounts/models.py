@@ -30,7 +30,7 @@ class AccountUser(User):
     gender = models.CharField(max_length=2, choices=GENDER_CHOICES, blank=True)
     gym = models.CharField(max_length=200, blank=True)
     date_of_birth = models.DateField(blank=True, null=True,)
-    profile_picture = models.ImageField(blank=True, upload_to=upload_to, )
+    profile_picture = models.ImageField(blank=True, null=True, upload_to=upload_to, )
 
     objects = UserManager()
 
@@ -59,8 +59,11 @@ class AccountUser(User):
 
     def delete(self, *args, **kwargs):
         """
-        Delete image file upon object deletion
+        If profile picture exists delete before entry removal
         """
-        storage, path = self.profile_picture.storage, self.profile_picture.path
+        try:
+            storage, path = self.profile_picture.storage, self.profile_picture.path
+            storage.delete(path)
+        except:
+            pass
         super(AccountUser, self).delete(*args, **kwargs)
-        storage.delete(path)
