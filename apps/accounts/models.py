@@ -1,5 +1,4 @@
 import uuid
-import hashlib
 from os.path import splitext
 
 from django.contrib.auth.models import User, UserManager
@@ -11,7 +10,7 @@ def upload_to(instance, filename):
     Returns the upload target for profile pictures
     '''
     filename, file_extension = splitext(filename)
-    folder = hashlib.md5(instance.uuid.hex).hexdigest()
+    folder = instance.uuid.hex
     filename = str(uuid.uuid4()) + file_extension
     return "profile-pictures/{0}/{1}".format(folder, filename)
 
