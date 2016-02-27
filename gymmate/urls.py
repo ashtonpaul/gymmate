@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 from django.contrib import admin
 
-from rest_framework import routers
+from apps.core.routers import CustomRouter
 
 from apps.accounts.views import UserViewSet, SignUpViewSet
 from apps.metrics.views import MetricViewSet, MetricTypeViewSet, MetricTypeGroupViewSet
@@ -9,7 +9,7 @@ from apps.exercises.views import MuscleViewSet, ExerciseCategoryViewSet, Equipme
 from apps.workouts.views import DayOfWeekViewSet, PublicRoutineViewSet, RoutineViewSet, ProrgressViewSet
 
 
-router = routers.DefaultRouter()
+router = CustomRouter()
 router.register(r'daysofweek', DayOfWeekViewSet, 'dayofweek')
 router.register(r'equipment', EquipmentViewSet, 'equipment')
 router.register(r'exercises', ExerciseViewSet, 'exercise')
