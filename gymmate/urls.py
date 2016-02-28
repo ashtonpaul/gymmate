@@ -3,7 +3,7 @@ from django.contrib import admin
 
 from apps.core.routers import CustomRouter
 
-from apps.accounts.views import UserViewSet, SignUpViewSet, ForgotPasswordViewSet
+from apps.accounts.views import UserViewSet, SignUpViewSet, ForgotPasswordViewSet, ResetPasswordViewSet
 from apps.metrics.views import MetricViewSet, MetricTypeViewSet, MetricTypeGroupViewSet
 from apps.exercises.views import MuscleViewSet, ExerciseCategoryViewSet, EquipmentViewSet, ExerciseViewSet
 from apps.workouts.views import DayOfWeekViewSet, PublicRoutineViewSet, RoutineViewSet, ProrgressViewSet
@@ -21,9 +21,12 @@ router.register(r'muscles', MuscleViewSet, 'muscle')
 router.register(r'progress', ProrgressViewSet, 'progress')
 router.register(r'public-routines', PublicRoutineViewSet, 'public-routine')
 router.register(r'routines', RoutineViewSet, 'routine')
+router.register(r'users', UserViewSet, 'user')
+
+# user account/password handling
 router.register(r'signup', SignUpViewSet, 'signup')
 router.register(r'forgot-password', ForgotPasswordViewSet, 'forgot-password')
-router.register(r'users', UserViewSet, 'user')
+router.register(r'reset-password', ResetPasswordViewSet, 'reset-password')
 
 # Wire up our API using automatic URL routing.
 urlpatterns = [

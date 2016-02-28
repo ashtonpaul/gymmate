@@ -1,3 +1,5 @@
+import uuid
+
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope
 
 from rest_framework import status, viewsets
@@ -10,7 +12,7 @@ from ..core.mail import send_email
 
 from .models import AccountUser
 from .filters import UserFilter
-from .serializers import UserSerializer, SignUpSerializer, ForgotPasswordSerializer
+from .serializers import UserSerializer, SignUpSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
 
 
 class UserViewSet(LoggingMixin, viewsets.ModelViewSet):
@@ -85,10 +87,7 @@ class SignUpViewSet(LoggingMixin, viewsets.ModelViewSet):
         # send out welcome/actication email to user
         user_email = serializer.data["email"]
         uuid = str(AccountUser.objects.get(email=user_email).uuid)
-        template_data = {
-            "email": user_email,
-            "uuid": uuid
-        }
+        template_data = {"email": user_email, "uuid": uuid}
         send_email(user_email, 'gymmate-welcome', template_data,)
 
         # return success message in signup response
@@ -110,7 +109,6 @@ class ForgotPasswordViewSet(LoggingMixin, viewsets.ModelViewSet):
         """
         Send email to user with reset url
         """
-
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -121,10 +119,64 @@ class ForgotPasswordViewSet(LoggingMixin, viewsets.ModelViewSet):
 
         # TODO
         # Create unique reset string
-        # Send email
-
-        print user
+        if user:
+            user.uuid = uuid.uuid4()
+            user.save()
+            template_data = {"email": user.email, "uuid": str(user.uuid)}
+            send_email(user.email, 'gymmate-forgot', template_data)
 
         message = {"detail": "Password reset instructions have been sent to your email"}
         headers = self.get_success_headers(serializer.data)
         return Response(message, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class ResetPasswordViewSet(LoggingMixin, viewsets.ModelViewSet):
+    """
+    Allow a user to be able to reset their password
+    """
+    permission_classes = (AllowAny, )
+    queryset = AccountUser.objects.all()
+    serializer_class = ResetPasswordSerializer
+    http_method_names = ['post']
+
+    def create(self, request, *args, **kwargs):
+        """
+        Ability to reset a user password
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        headers = self.get_success_headers(serializer.data)
+        message = {"detail": "Your password has sucessfully been updated"}
+        status_code = status.HTTP_200_OK
+
+        try:
+            user = AccountUser.objects.get(email=serializer.data["email"])
+        except:
+            user = None
+
+        # if user not found
+        if not user:
+            message = {"detail": "User not found"}
+            status_code = status.HTTP_400_BAD_REQUEST
+
+        # if the reset_code doesn't match the email
+        if user and str(user.uuid) != request.META.get('HTTP_RESET_CODE'):
+            message = {"detail": "Not authorized to reset password for this account"}
+            status_code = status.HTTP_400_BAD_REQUEST
+
+        # if the passwords do not match
+        if serializer.data["password"] != serializer.data["confirm_password"]:
+            message = {"detail": "Password(s) entered do no match"}
+            status_code = status.HTTP_400_BAD_REQUEST
+
+        # Reset password if validated and notify user
+        if user and status_code == status.HTTP_200_OK:
+            user.set_password(serializer.data["password"])
+            user.is_activated = True
+            user.uuid = uuid.uuid4()
+            user.save()
+
+            template_data = {"email": user.email}
+            send_email(user.email, 'gymmate-reset', template_data)
+
+        return Response(message, status=status_code, headers=headers)
