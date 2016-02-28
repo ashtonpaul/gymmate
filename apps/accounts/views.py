@@ -10,7 +10,7 @@ from ..core.mail import send_email
 
 from .models import AccountUser
 from .filters import UserFilter
-from .serializers import UserSerializer, SignUpSerializer
+from .serializers import UserSerializer, SignUpSerializer, ForgotPasswordSerializer
 
 
 class UserViewSet(LoggingMixin, viewsets.ModelViewSet):
@@ -95,3 +95,36 @@ class SignUpViewSet(LoggingMixin, viewsets.ModelViewSet):
         success_message = {"detail": u"User successfully created."}
         headers = self.get_success_headers(serializer.data)
         return Response(success_message, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class ForgotPasswordViewSet(LoggingMixin, viewsets.ModelViewSet):
+    """
+    Allow a user to request a password reset url
+    """
+    permission_classes = (AllowAny, )
+    queryset = AccountUser.objects.all()
+    serializer_class = ForgotPasswordSerializer
+    http_method_names = ['post']
+
+    def create(self, request, *args, **kwargs):
+        """
+        Send email to user with reset url
+        """
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            user = AccountUser.objects.get(email=serializer.data["email"])
+        except:
+            user = None
+
+        # TODO
+        # Create unique reset string
+        # Send email
+
+        print user
+
+        message = {"detail": "Password reset instructions have been sent to your email"}
+        headers = self.get_success_headers(serializer.data)
+        return Response(message, status=status.HTTP_201_CREATED, headers=headers)

@@ -45,7 +45,7 @@ class AccountUser(User):
 
     def save(self, *args, **kwargs):
         """
-        Save profille picture, if update remove old file
+        Save profile picture, if update remove old file
         """
         try:
             this = AccountUser.objects.get(id=self.id)

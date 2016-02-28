@@ -66,3 +66,14 @@ class SignUpSerializer(BaseAccountSerializer):
         model = AccountUser
         fields = ('email', 'password')
         write_only_fields = ('password',)
+
+
+class ForgotPasswordSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Serializer to accept email for forgotten password
+    """
+    email = serializers.EmailField(required=True)
+
+    class Meta:
+        model = AccountUser
+        fields = ('email', )
