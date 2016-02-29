@@ -29,7 +29,7 @@ class AccountUser(User):
     gender = models.CharField(max_length=2, choices=GENDER_CHOICES, blank=True)
     gym = models.CharField(max_length=200, blank=True)
     date_of_birth = models.DateField(blank=True, null=True,)
-    profile_picture = models.ImageField(blank=True, null=True, upload_to=upload_to, )
+    avatar = models.ImageField(blank=True, null=True, upload_to=upload_to, )
 
     objects = UserManager()
 
@@ -49,8 +49,8 @@ class AccountUser(User):
         """
         try:
             this = AccountUser.objects.get(id=self.id)
-            if this.profile_picture != self.profile_picture:
-                this.profile_picture.delete(save=False)
+            if this.avatar != self.avatar:
+                this.avatar.delete(save=False)
         except:
             pass
 
@@ -61,7 +61,7 @@ class AccountUser(User):
         If profile picture exists delete before entry removal
         """
         try:
-            storage, path = self.profile_picture.storage, self.profile_picture.path
+            storage, path = self.avatar.storage, self.avatar.path
             storage.delete(path)
         except:
             pass
