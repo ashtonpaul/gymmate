@@ -4,7 +4,7 @@ from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope
 
 from rest_framework import status, viewsets
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from ..core.permissions import IsCreateOnly
 from ..core.loggers import LoggingMixin
@@ -19,7 +19,8 @@ class UserViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed
     """
-    permission_classes = (AllowAny, TokenHasReadWriteScope)
+    permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
+    required_scopes = ['accounts']
     queryset = AccountUser.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     filter_class = UserFilter
