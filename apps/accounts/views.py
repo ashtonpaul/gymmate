@@ -37,7 +37,8 @@ class UserViewSet(LoggingMixin, viewsets.ModelViewSet):
         if not request.user.username:
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         else:
-            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            message = {"detail":"Not allowed to create new users"}
+            return Response(message, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def destroy(self, request, *args, **kwargs):
         """
@@ -48,7 +49,8 @@ class UserViewSet(LoggingMixin, viewsets.ModelViewSet):
             self.perform_destroy(instance)
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
-            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            message = {"detail":"Not allowed to delete a different user's profile"}
+            return Response(message, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def update(self, request, *args, **kwargs):
         """
@@ -63,7 +65,8 @@ class UserViewSet(LoggingMixin, viewsets.ModelViewSet):
             self.perform_update(serializer)
             return Response(serializer.data)
         else:
-            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            message = {"detail":"Not allowed to update a different user's profile"}
+            return Response(message, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class SignUpViewSet(LoggingMixin, viewsets.ModelViewSet):
