@@ -42,7 +42,8 @@ class UserSerializer(BaseAccountSerializer):
 
     class Meta:
         model = AccountUser
-        fields = ('id', 'username', 'password', 'gender', 'email', 'first_name', 'last_name', 'date_joined', 'avatar', )
+        fields = ('id', 'username', 'password', 'gender', 'email',
+                  'first_name', 'last_name', 'date_joined', 'avatar', )
         read_only_fields = ('date_joined', )
         extra_kwargs = {'password': {'write_only': True}}
 
