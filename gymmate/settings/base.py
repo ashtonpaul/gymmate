@@ -228,6 +228,7 @@ OAUTH2_PROVIDER = {
     'SCOPES': {
         'read': 'Read scope',
         'write': 'Write scope',
+        'accounts': 'Accounts scope',
         'exercises': 'Exercise scope',
         'metrics': 'Metric scope',
         'workouts': 'Workout scope',

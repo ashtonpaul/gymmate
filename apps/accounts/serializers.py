@@ -42,7 +42,8 @@ class UserSerializer(BaseAccountSerializer):
 
     class Meta:
         model = AccountUser
-        fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name', 'date_joined', )
+        fields = ('id', 'username', 'password', 'gender', 'email',
+                  'first_name', 'last_name', 'date_joined', 'avatar', )
         read_only_fields = ('date_joined', )
         extra_kwargs = {'password': {'write_only': True}}
 
@@ -66,3 +67,33 @@ class SignUpSerializer(BaseAccountSerializer):
         model = AccountUser
         fields = ('email', 'password')
         write_only_fields = ('password',)
+
+
+class ForgotPasswordSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Serializer to accept email for forgotten password
+    """
+    email = serializers.EmailField(required=True)
+
+    class Meta:
+        model = AccountUser
+        fields = ('email', )
+
+
+class ResetPasswordSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Reset a user password w/ correct uuid
+    """
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(
+        style={'input_type': 'password'},
+        validators=[PasswordValidator()]
+    )
+    confirm_password = serializers.CharField(
+        style={'input_type': 'password'},
+        validators=[PasswordValidator()]
+    )
+
+    class Meta:
+        model = AccountUser
+        fields = ('email', 'password', 'confirm_password')

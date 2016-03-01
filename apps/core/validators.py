@@ -15,7 +15,6 @@ class FutureDateValidator(object):
 
     def __call__(self, value):
         if value > date.today():
-            print self.message
             raise serializers.ValidationError(self.message)
 
 
