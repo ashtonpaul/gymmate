@@ -51,29 +51,22 @@ class PublicRoutineViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     permission_classes = [AllowAny, TokenHasReadWriteScope]
     required_scopes = ['workouts']
-    queryset = Routine.objects.all()
+    queryset = Routine.objects.public()
     serializer_class = PublicRoutineSerializer
     filter_class = RoutineFilter
     http_method_names = ['get', 'head', 'options']
-
-    def get_queryset(self):
-        """
-        Filter all routines that are marked for public viewing
-        """
-        return Routine.objects.filter(is_public=True)
 
 
 class RoutineViewSet(WorkoutMixin):
     """
     List/Detail of a user's routine(s)
     """
-    queryset = Routine.objects.all()
     serializer_class = RoutineSerializer
     filter_class = RoutineFilter
 
     def get_queryset(self):
         """
-        Filter only current user's routine(s)
+        Filter only current user's progress logs
         """
         return Routine.objects.filter(user=self.request.user)
 
