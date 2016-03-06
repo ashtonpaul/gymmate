@@ -14,6 +14,17 @@ class DayOfWeek(models.Model):
         return self.day
 
 
+class RoutineManager(models.Manager):
+    """
+    Custom Routine manager
+    """
+    def public(self):
+        """
+        Filter all routines that are marked for public viewing
+        """
+        return self.filter(is_public=True)
+
+
 class Routine(models.Model):
     """
     Allow users to group exercises into routines
@@ -25,6 +36,8 @@ class Routine(models.Model):
     exercises = models.ManyToManyField(Exercise)
     days = models.ManyToManyField(DayOfWeek, blank=True)
     is_public = models.BooleanField(default=False)
+
+    objects = RoutineManager()
 
     class Meta:
         ordering = ['name', ]
