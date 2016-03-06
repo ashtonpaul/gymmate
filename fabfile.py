@@ -11,7 +11,7 @@ logging.getLogger('paramiko.transport').addHandler(logging.StreamHandler())
 
 code_path = "~/www/html"
 
-env.hosts = ["staging.dnsdynamic.com"]
+env.hosts = ["staging.jusdev.com"]
 env.user = "pi"
 env.password = "fuckdying1"
 
