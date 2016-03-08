@@ -33,3 +33,6 @@ Thumbs.db
 
 # uploaded media
 media/*
+
+# settings files
+gymmate/settings/*
