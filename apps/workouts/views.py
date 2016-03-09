@@ -12,6 +12,28 @@ from .filters import DayOfWeekFilter, RoutineFilter, ProgressFilter
 from .models import DayOfWeek, Routine, Progress
 
 
+class WorkoutMixin(LoggingMixin, viewsets.ModelViewSet):
+    """
+    Abstract base class for workouts
+    """
+    permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
+    required_scopes = ['workouts']
+
+    def perform_create(self, serializer):
+        """
+        Automatically assign requesting user to models user field
+        """
+        user = AccountUser.objects.get(id=self.request.user.id)
+        serializer.save(user=user)
+
+    def perform_update(self, serializer):
+        """
+        Automatically assign requesting user to models user field
+        """
+        user = AccountUser.objects.get(id=self.request.user.id)
+        serializer.save(user=user)
+
+
 class DayOfWeekViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     Generic class view to show days of week
@@ -29,55 +51,30 @@ class PublicRoutineViewSet(LoggingMixin, viewsets.ModelViewSet):
     """
     permission_classes = [AllowAny, TokenHasReadWriteScope]
     required_scopes = ['workouts']
-    queryset = Routine.objects.all()
+    queryset = Routine.objects.public()
     serializer_class = PublicRoutineSerializer
     filter_class = RoutineFilter
     http_method_names = ['get', 'head', 'options']
 
-    def get_queryset(self):
-        """
-        Filter all routines that are marked for public viewing
-        """
-        return Routine.objects.filter(is_public=True)
 
-
-class RoutineViewSet(LoggingMixin, viewsets.ModelViewSet):
+class RoutineViewSet(WorkoutMixin):
     """
     List/Detail of a user's routine(s)
     """
-    permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
-    required_scopes = ['workouts']
-    queryset = Routine.objects.all()
     serializer_class = RoutineSerializer
     filter_class = RoutineFilter
 
     def get_queryset(self):
         """
-        Filter only current user's routine(s)
+        Filter only current user's progress logs
         """
         return Routine.objects.filter(user=self.request.user)
 
-    def perform_create(self, serializer):
-        """
-        Automatically assign requesting user to models user field
-        """
-        user = AccountUser.objects.get(id=self.request.user.id)
-        serializer.save(user=user)
 
-    def perform_update(self, serializer):
-        """
-        Automatically assign requesting user to models user field
-        """
-        user = AccountUser.objects.get(id=self.request.user.id)
-        serializer.save(user=user)
-
-
-class ProrgressViewSet(LoggingMixin, viewsets.ModelViewSet):
+class ProrgressViewSet(WorkoutMixin):
     """
     List/Detail of a user's workout progression
     """
-    permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
-    required_scopes = ['workouts']
     queryset = Progress.objects.all()
     serializer_class = ProgressSerializer
     filter_class = ProgressFilter
@@ -87,17 +84,3 @@ class ProrgressViewSet(LoggingMixin, viewsets.ModelViewSet):
         Filter only current user's progress logs
         """
         return Progress.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        """
-        Automatically assign requesting user to models user field
-        """
-        user = AccountUser.objects.get(id=self.request.user.id)
-        serializer.save(user=user)
-
-    def perform_update(self, serializer):
-        """
-        Automatically assign requesting user to models user field
-        """
-        user = AccountUser.objects.get(id=self.request.user.id)
-        serializer.save(user=user)

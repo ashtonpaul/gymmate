@@ -8,7 +8,7 @@ class Muscle(models.Model):
     Model for muscles storing location and latin name also
     """
     latin_name = models.CharField(max_length=50, blank=True, help_text="Latin representation", )
-    name = models.CharField(max_length=50, blank=False, help_text="Muscle name e.g biceps", )
+    name = models.CharField(max_length=50, help_text="Muscle name e.g biceps", )
     is_front = models.BooleanField(default=True)
 
     class Meta:
@@ -22,7 +22,7 @@ class ExerciseCategory(models.Model):
     """
     Different exercise categories to subclass exercises
     """
-    name = models.CharField(max_length=50, blank=False, )
+    name = models.CharField(max_length=50, )
 
     class Meta:
         ordering = ['name', ]
@@ -36,7 +36,7 @@ class Equipment(models.Model):
     """
     Equipment that can usually be found in a gym
     """
-    name = models.CharField(max_length=100, blank=False, )
+    name = models.CharField(max_length=100, )
 
     class Meta:
         ordering = ['name', ]
@@ -80,7 +80,7 @@ class ExerciseImage(models.Model):
     Exercise images for individual exercises
     """
     exercise = models.ForeignKey(Exercise, related_name='images')
-    image = models.ImageField(blank=False, upload_to=upload_to, )
+    image = models.ImageField(upload_to=upload_to, )
     is_main = models.BooleanField(default=False, )
 
     class Meta:

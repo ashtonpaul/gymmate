@@ -2,6 +2,8 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from apps.core.routers import CustomRouter
+from rest_framework_swagger import urls as documentaton
+from oauth2_provider import urls as authentication
 
 from apps.accounts.views import UserViewSet, SignUpViewSet, ForgotPasswordViewSet, ResetPasswordViewSet
 from apps.metrics.views import MetricViewSet, MetricTypeViewSet, MetricTypeGroupViewSet
@@ -40,10 +42,10 @@ urlpatterns += [
 
 # Documentaton views for API
 urlpatterns += [
-    url(r'^v1/docs/', include('rest_framework_swagger.urls', namespace='rest_framework_swagger')),
+    url(r'^v1/docs/', include(documentaton, namespace='rest_framework_swagger')),
 ]
 
 # Oauth endpoint
 urlpatterns += [
-    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    url(r'^o/', include(authentication, namespace='oauth2_provider')),
 ]

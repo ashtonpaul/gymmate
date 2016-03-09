@@ -37,7 +37,7 @@ class Metric(models.Model):
     """
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(AccountUser)
-    value = models.FloatField(blank=False)
+    value = models.FloatField()
     metric_type = models.ForeignKey(MetricType)
 
     class Meta:

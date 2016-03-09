@@ -29,7 +29,7 @@ class AccountUser(User):
     gender = models.CharField(max_length=2, choices=GENDER_CHOICES, blank=True)
     gym = models.CharField(max_length=200, blank=True)
     date_of_birth = models.DateField(blank=True, null=True,)
-    avatar = models.ImageField(blank=True, null=True, upload_to=upload_to, )
+    avatar = models.ImageField(blank=True, upload_to=upload_to, )
 
     objects = UserManager()
 

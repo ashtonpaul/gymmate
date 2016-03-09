@@ -8,23 +8,36 @@ class DayOfWeek(models.Model):
     """
     Days of the week
     """
-    day = models.CharField(max_length=9, blank=False, null=False, unique=True)
+    day = models.CharField(max_length=9, unique=True)
 
     def __str__(self):
         return self.day
+
+
+class RoutineManager(models.Manager):
+    """
+    Custom Routine manager
+    """
+    def public(self):
+        """
+        Filter all routines that are marked for public viewing
+        """
+        return self.filter(is_public=True)
 
 
 class Routine(models.Model):
     """
     Allow users to group exercises into routines
     """
-    user = models.ForeignKey(AccountUser)
-    name = models.CharField(max_length=100, blank=False)
+    user = models.ForeignKey(AccountUser, null=True)
+    name = models.CharField(max_length=100, )
     description = models.TextField(max_length=300, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     exercises = models.ManyToManyField(Exercise)
     days = models.ManyToManyField(DayOfWeek, blank=True)
     is_public = models.BooleanField(default=False)
+
+    objects = RoutineManager()
 
     class Meta:
         ordering = ['name', ]
@@ -37,8 +50,8 @@ class Progress(models.Model):
     """
     Track user progress for exercises completed
     """
-    exercise = models.ForeignKey(Exercise, null=False)
-    user = models.ForeignKey(AccountUser, null=False)
+    exercise = models.ForeignKey(Exercise)
+    user = models.ForeignKey(AccountUser)
     date = models.DateField(auto_now_add=False)
     duration = models.IntegerField(null=True)
     sets = models.IntegerField(null=True)

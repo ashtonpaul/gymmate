@@ -1,6 +1,5 @@
 # OS-specific
 .DS_Store
-Thumbs.db
 
 # Vagrant
 .vagrant/

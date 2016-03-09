@@ -1,4 +1,4 @@
-import time
+from datetime import datetime
 
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -18,8 +18,9 @@ class MetricTest(MetricsTestCase):
         group = MetricTypeGroup.objects.create(name='height')
         type = MetricType.objects.create(group=group, name='inch', unit='in')
         metric = Metric.objects.create(user=self.user, metric_type=type, value='75')
+        now = datetime.utcnow()
 
-        self.assertEqual(str(metric), '%s - 75in' % time.strftime('%m/%d/%Y'))
+        self.assertEqual(str(metric), '%s - 75in' % now.strftime('%m/%d/%Y'))
 
     def test_get_metric(self):
         """
