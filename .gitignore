@@ -32,6 +32,3 @@
 
 # uploaded media
 media/*
-
-# settings files
-**/**/settings/*.py
