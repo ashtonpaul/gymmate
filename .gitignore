@@ -34,4 +34,4 @@
 media/*
 
 # settings files
-**/settings/*.py
+**/**/settings/*.py
