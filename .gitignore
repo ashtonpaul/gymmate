@@ -1,6 +1,5 @@
 # OS-specific
 .DS_Store
-Thumbs.db
 
 # Vagrant
 .vagrant/
@@ -35,4 +34,4 @@ Thumbs.db
 media/*
 
 # settings files
-gymmate/settings/*
+**/settings/*.py
