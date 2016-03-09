@@ -10,10 +10,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
-from os.path import join, abspath, dirname
 import json
+import djcelery
+from os.path import join, abspath, dirname
 
 from django.core.exceptions import ImproperlyConfigured
+
+
+# Django Celery setup - Configuring Django for Celery
+# https://www.caktusgroup.com/blog/2014/06/23/scheduling-tasks-celery/
+djcelery.setup_loader()
+BROKER_URL = 'django://'
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)

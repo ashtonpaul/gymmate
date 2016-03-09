@@ -18,3 +18,4 @@ MySQL-python
 coverage
 Pillow
 sparkpost
+django-celery

@@ -5,7 +5,11 @@ from .base import *
 DEBUG = True
 
 # Installed apps particualr to local/dev
-INSTALLED_APPS += ("debug_toolbar", )
+INSTALLED_APPS += (
+    "debug_toolbar",
+    "djcelery",
+    "kombu.transport.django",
+)
 
 
 # Set callable toolbar callback to shor Django debug toolbar
