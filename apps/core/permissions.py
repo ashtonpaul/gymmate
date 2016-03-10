@@ -3,6 +3,7 @@ from rest_framework.permissions import BasePermission
 SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS']
 CREATE_ONLY_METHODS = ['POST', 'HEAD', 'OPTIONS']
 
+
 class IsAdminOrReadOnly(BasePermission):
     """
     The request is authenticated as an admin, or is a read-only request.
