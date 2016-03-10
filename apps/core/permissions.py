@@ -1,7 +1,7 @@
 from rest_framework.permissions import BasePermission
 
 SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS']
-
+CREATE_ONLY_METHODS = ['POST', 'HEAD', 'OPTIONS']
 
 class IsAdminOrReadOnly(BasePermission):
     """
@@ -21,7 +21,7 @@ class IsCreateOnly(BasePermission):
     The request is by a user looking to sign up to the API
     """
     def has_permission(self, request, view):
-        if request.method == 'POST':
+        if request.method in CREATE_ONLY_METHODS:
             return True
         else:
             return False
