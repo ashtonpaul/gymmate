@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     'django_filters',
     'oauth2_provider',
     'sparkpost',
+    'djcelery',
     'apps.accounts',
     'apps.metrics',
     'apps.exercises',

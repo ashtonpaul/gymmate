@@ -7,7 +7,6 @@ DEBUG = True
 # Installed apps particualr to local/dev
 INSTALLED_APPS += (
     "debug_toolbar",
-    "djcelery",
     "kombu.transport.django",
 )
 
