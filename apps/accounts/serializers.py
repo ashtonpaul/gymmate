@@ -14,7 +14,7 @@ class ThumbnailSerializer(serializers.ImageField):
     http://stackoverflow.com/questions/35834664/django-rest-framework-with-easy-thumbnails
     """
     def to_representation(self, instance):
-        return thumbnail_url(instance, 'avatar')
+        return thumbnail_url(instance, 'small')
 
 
 class BaseAccountSerializer(serializers.HyperlinkedModelSerializer):
@@ -44,7 +44,7 @@ class UserSerializer(BaseAccountSerializer):
     Generic user serializer
     """
     username = serializers.CharField(required=True, validators=[UniqueValidator(queryset=AccountUser.objects.all())])
-    thumb = serializers.ImageField(source="avatar")
+    thumb = ThumbnailSerializer(source="avatar")
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(
