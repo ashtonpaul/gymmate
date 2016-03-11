@@ -1,4 +1,5 @@
 django
+requests==2.5.3
 south
 django-debug-toolbar
 six

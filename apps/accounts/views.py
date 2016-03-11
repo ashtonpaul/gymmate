@@ -8,8 +8,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from ..core.permissions import IsCreateOnly
 from ..core.loggers import LoggingMixin
-from ..core.mail import send_email
 
+from .tasks import send_email
 from .models import AccountUser
 from .filters import UserFilter
 from .serializers import UserSerializer, SignUpSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
@@ -92,7 +92,7 @@ class SignUpViewSet(LoggingMixin, viewsets.ModelViewSet):
         user_email = serializer.data["email"]
         uuid = str(AccountUser.objects.get(email=user_email).uuid)
         template_data = {"email": user_email, "uuid": uuid}
-        send_email(user_email, 'gymmate-welcome', template_data,)
+        send_email.delay(user_email, 'gymmate-welcome', template_data,)
 
         # return success message in signup response
         success_message = {"detail": u"User successfully created."}
@@ -127,7 +127,7 @@ class ForgotPasswordViewSet(LoggingMixin, viewsets.ModelViewSet):
             user.uuid = uuid.uuid4()
             user.save()
             template_data = {"email": user.email, "uuid": str(user.uuid)}
-            send_email(user.email, 'gymmate-forgot', template_data)
+            send_email.delay(user.email, 'gymmate-forgot', template_data)
 
         message = {"detail": "Password reset instructions have been sent to your email"}
         headers = self.get_success_headers(serializer.data)
@@ -181,6 +181,6 @@ class ResetPasswordViewSet(LoggingMixin, viewsets.ModelViewSet):
             user.save()
 
             template_data = {"email": user.email}
-            send_email(user.email, 'gymmate-reset', template_data)
+            send_email.delay(user.email, 'gymmate-reset', template_data)
 
         return Response(message, status=status_code, headers=headers)

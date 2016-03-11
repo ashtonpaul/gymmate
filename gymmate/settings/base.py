@@ -20,7 +20,6 @@ from django.core.exceptions import ImproperlyConfigured
 # Django Celery setup - Configuring Django for Celery
 # https://www.caktusgroup.com/blog/2014/06/23/scheduling-tasks-celery/
 djcelery.setup_loader()
-BROKER_URL = 'django://'
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
