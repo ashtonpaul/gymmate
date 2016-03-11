@@ -1,9 +1,20 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
+from easy_thumbnails.templatetags.thumbnail import thumbnail_url
+
 from ..core.validators import PasswordValidator
 
 from .models import AccountUser
+
+
+class ThumbnailSerializer(serializers.ImageField):
+    """
+    Custom thumbnail serializer to return thumbnail url
+    http://stackoverflow.com/questions/35834664/django-rest-framework-with-easy-thumbnails
+    """
+    def to_representation(self, instance):
+        return thumbnail_url(instance, 'avatar')
 
 
 class BaseAccountSerializer(serializers.HyperlinkedModelSerializer):
@@ -33,6 +44,7 @@ class UserSerializer(BaseAccountSerializer):
     Generic user serializer
     """
     username = serializers.CharField(required=True, validators=[UniqueValidator(queryset=AccountUser.objects.all())])
+    thumb = serializers.ImageField(source="avatar")
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(
@@ -43,7 +55,7 @@ class UserSerializer(BaseAccountSerializer):
     class Meta:
         model = AccountUser
         fields = ('id', 'username', 'password', 'gender', 'email',
-                  'first_name', 'last_name', 'date_joined', 'avatar', )
+                  'first_name', 'last_name', 'date_joined', 'avatar', 'thumb')
         read_only_fields = ('date_joined', )
         extra_kwargs = {'password': {'write_only': True}}
 

@@ -1,8 +1,14 @@
 import uuid
 from os.path import splitext
 
+from django.dispatch import receiver
 from django.contrib.auth.models import User, UserManager
 from django.db import models
+
+from easy_thumbnails.fields import ThumbnailerImageField
+from easy_thumbnails.signals import saved_file
+
+from .tasks import generate_thumbnails
 
 
 def upload_to(instance, filename):
@@ -29,7 +35,7 @@ class AccountUser(User):
     gender = models.CharField(max_length=2, choices=GENDER_CHOICES, blank=True)
     gym = models.CharField(max_length=200, blank=True)
     date_of_birth = models.DateField(blank=True, null=True,)
-    avatar = models.ImageField(blank=True, upload_to=upload_to, )
+    avatar = ThumbnailerImageField(blank=True, upload_to=upload_to, )
 
     objects = UserManager()
 
@@ -66,3 +72,12 @@ class AccountUser(User):
         except:
             pass
         super(AccountUser, self).delete(*args, **kwargs)
+
+
+@receiver(saved_file, sender=AccountUser)
+def generate_thumbnails_async(sender, filefield, **kwargs):
+    generate_thumbnails.delay(
+        model=sender,
+        pk=filefield.instance.pk,
+        field=filefield.field.name
+    )
