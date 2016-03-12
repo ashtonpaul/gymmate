@@ -10,13 +10,20 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
-from os.path import join, abspath, dirname
 import json
+import djcelery
+from os.path import join, abspath, dirname
 
 from django.core.exceptions import ImproperlyConfigured
 
 
+# Django Celery setup - Configuring Django for Celery
+# https://www.caktusgroup.com/blog/2014/06/23/scheduling-tasks-celery/
+djcelery.setup_loader()
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
 BASE_DIR = dirname(dirname(dirname(__file__)))
 
 
@@ -34,6 +41,7 @@ with open("secrets.json") as f:
 
 # Get settings file secrets from json file to avoid secrets in repo
 # Two Scoops of Django 1.8 - Section 5.4.1
+
 def get_secret(setting, secrets=secrets):
     """
     Get the secret variable or return explicit exception.
@@ -48,12 +56,15 @@ def get_secret(setting, secrets=secrets):
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
+
 # SECURITY WARNING: keep the secret key used in production secret!
+
 SECRET_KEY = get_secret("SECRET_KEY")
 
 
 # SparkPost transactional email provider backend
 # https://github.com/SparkPost/python-sparkpost/blob/master/README.rst
+
 SPARKPOST_API_KEY = get_secret("SPARKPOST_API_KEY")
 EMAIL_BACKEND = 'sparkpost.django.email_backend.SparkPostEmailBackend'
 
@@ -78,6 +89,8 @@ INSTALLED_APPS = [
     'django_filters',
     'oauth2_provider',
     'sparkpost',
+    'djcelery',
+    'easy_thumbnails',
     'apps.accounts',
     'apps.metrics',
     'apps.exercises',
@@ -287,5 +300,14 @@ LOGGING = {
             'propagate': True,
             'level': 'ERROR',
         },
+    },
+}
+
+# default thumbdnail sizes for avatar and image negeration
+# https://github.com/SmileyChris/easy-thumbnails#using-a-predefined-alias
+
+THUMBNAIL_ALIASES = {
+    '': {
+        'avatar': {'size': (150, 150), 'crop': True},
     },
 }

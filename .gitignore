@@ -32,3 +32,6 @@
 
 # uploaded media
 media/*
+
+# static files
+static/*

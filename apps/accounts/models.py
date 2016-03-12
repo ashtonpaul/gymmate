@@ -4,6 +4,8 @@ from os.path import splitext
 from django.contrib.auth.models import User, UserManager
 from django.db import models
 
+from easy_thumbnails.fields import ThumbnailerImageField
+
 
 def upload_to(instance, filename):
     '''
@@ -29,7 +31,7 @@ class AccountUser(User):
     gender = models.CharField(max_length=2, choices=GENDER_CHOICES, blank=True)
     gym = models.CharField(max_length=200, blank=True)
     date_of_birth = models.DateField(blank=True, null=True,)
-    avatar = models.ImageField(blank=True, upload_to=upload_to, )
+    avatar = ThumbnailerImageField(blank=True, upload_to=upload_to, )
 
     objects = UserManager()
 
