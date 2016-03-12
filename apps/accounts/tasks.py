@@ -3,6 +3,7 @@ from django.core.mail import send_mail
 
 from celery import task
 from easy_thumbnails.files import generate_all_aliases
+from easy_thumbnails.files import get_thumbnailer
 from sparkpost import SparkPost
 
 
@@ -31,3 +32,8 @@ def generate_thumbnails(model, pk, field):
     instance = model.__default_manager.get(pk=pk)
     filefield = getattr(instance, field)
     generate_all_aliases(filefield, include_global=True)
+
+
+@task()
+def generate_thumbnail(obj, relative_name=None):
+    return get_thumbnailer(obj, relative_name)['avatar'].url

@@ -72,12 +72,3 @@ class AccountUser(User):
         except:
             pass
         super(AccountUser, self).delete(*args, **kwargs)
-
-
-@receiver(saved_file, sender=AccountUser)
-def generate_thumbnails_async(sender, filefield, **kwargs):
-    generate_thumbnails.delay(
-        model=sender,
-        pk=filefield.instance.pk,
-        field=filefield.field.name
-    )
