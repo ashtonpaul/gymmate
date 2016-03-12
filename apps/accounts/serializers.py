@@ -13,7 +13,8 @@ class ThumbnailSerializer(serializers.ImageField):
     http://stackoverflow.com/questions/35834664/django-rest-framework-with-easy-thumbnails
     """
     def to_representation(self, instance):
-        return generate_thumbnail(instance)
+        if instance:
+            return generate_thumbnail(instance)
 
 
 class BaseAccountSerializer(serializers.HyperlinkedModelSerializer):
