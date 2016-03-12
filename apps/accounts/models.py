@@ -1,14 +1,10 @@
 import uuid
 from os.path import splitext
 
-from django.dispatch import receiver
 from django.contrib.auth.models import User, UserManager
 from django.db import models
 
 from easy_thumbnails.fields import ThumbnailerImageField
-from easy_thumbnails.signals import saved_file
-
-from .tasks import generate_thumbnails
 
 
 def upload_to(instance, filename):
