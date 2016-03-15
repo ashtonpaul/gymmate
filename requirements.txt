@@ -21,4 +21,3 @@ Pillow
 sparkpost
 django-celery
 easy-thumbnails
-gunicorn
