@@ -11,7 +11,7 @@ ALLOWED_HOSTS = [".herokuapp.com", ".jusdev.com"]
 # http://stackoverflow.com/questions/21141315/django-static-files-on-heroku
 
 STATICFILES_DIRS = (
-    join(BASE_DIR, '/static'),
+    join(BASE_DIR, 'static'),
 )
 
 
