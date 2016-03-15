@@ -40,7 +40,7 @@ try:
     with open("secrets.json") as f:
         secrets = json.loads(f.read())
 except:
-    pass
+    secrets = {}
 
 
 # Get settings file secrets from json file to avoid secrets in repo
