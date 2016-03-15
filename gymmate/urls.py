@@ -1,4 +1,5 @@
 from django.conf.urls import url, include, patterns
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 from django.conf import settings
 
@@ -52,6 +53,5 @@ urlpatterns += [
 ]
 
 # status files
-urlpatterns += patterns('',
-        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
-    )
+urlpatterns += staticfiles_urlpatterns()
+
