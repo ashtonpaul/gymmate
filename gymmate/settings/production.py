@@ -7,14 +7,6 @@ from .base import *
 ALLOWED_HOSTS = [".herokuapp.com", ".jusdev.com"]
 
 
-# production static file settings
-# http://stackoverflow.com/questions/21141315/django-static-files-on-heroku
-
-STATICFILES_DIRS = (
-    join(BASE_DIR, 'static'),
-)
-
-
 # RabbitMQ Broker settings
 # http://www.marinamele.com/2014/02/how-to-install-celery-on-django-and.html
 BROKER_URL =  get_secret("CLOUDAMQP_URL")

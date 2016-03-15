@@ -1,5 +1,6 @@
-from django.conf.urls import url, include
+from django.conf.urls import url, include, patterns
 from django.contrib import admin
+from django.conf import settings
 
 from apps.core.routers import CustomRouter
 from rest_framework_swagger import urls as documentaton
@@ -49,3 +50,8 @@ urlpatterns += [
 urlpatterns += [
     url(r'^o/', include(authentication, namespace='oauth2_provider')),
 ]
+
+# status files
+urlpatterns += patterns('',
+        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+    )
