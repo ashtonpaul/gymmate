@@ -21,3 +21,4 @@ Pillow
 sparkpost
 django-celery
 easy-thumbnails
+dj-database-url
