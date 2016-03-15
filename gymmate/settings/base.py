@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import json
 import djcelery
+from os import environ
 from os.path import join, abspath, dirname
 
 from django.core.exceptions import ImproperlyConfigured
@@ -49,7 +50,7 @@ def get_secret(setting, secrets=secrets):
     try:
         return secrets[setting]
     except KeyError:
-        return os.environ[setting]
+        return environ[setting]
     except KeyError:
         error_msg = "Set the {0} environment variable".format(setting)
         raise ImproperlyConfigured(error_msg)
