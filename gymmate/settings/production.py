@@ -7,3 +7,5 @@ BROKER_URL =  get_secret("CLOUDAMQP_URL")
 
 CELERY_BACKEND = "amqp" 
 CELERY_RESULT_DBURI = ""
+
+ALLOWED_HOSTS = [".herokuapp.com", ".jusdev.com"]
