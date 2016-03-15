@@ -284,7 +284,7 @@ LOGGING = {
             'filename': 'logs/gymmate.log',
             'when': 'midnight',
             'formatter': 'api',
-            'backupCount': '365',
+            'backupCount': '7',
         },
         'code': {
             'level': 'ERROR',
@@ -292,7 +292,7 @@ LOGGING = {
             'filename': 'logs/django.log',
             'when': 'midnight',
             'formatter': 'django',
-            'backupCount': '365',
+            'backupCount': '7',
         }
     },
     'loggers': {
