@@ -36,8 +36,11 @@ def root(dir):
 
 
 # JSON-based secrets module
-with open("secrets.json") as f:
-    secrets = json.loads(f.read())
+try:
+    with open("secrets.json") as f:
+        secrets = json.loads(f.read())
+except:
+    pass
 
 
 # Get settings file secrets from json file to avoid secrets in repo
@@ -62,7 +65,7 @@ def get_secret(setting, secrets=secrets):
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = "#lx+c73f*e77eo3^_zv=dboje-1_qz#+)r_=ftr-tubvj0d5f8"
+SECRET_KEY = get_secret("SECRET_KEY")
 
 
 # SparkPost transactional email provider backend
