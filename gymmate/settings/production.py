@@ -11,5 +11,6 @@ ALLOWED_HOSTS = [".herokuapp.com", ".jusdev.com"]
 # http://www.marinamele.com/2014/02/how-to-install-celery-on-django-and.html
 BROKER_URL =  get_secret("CLOUDAMQP_URL")
 
-CELERY_BACKEND = "amqp" 
-CELERY_RESULT_DBURI = ""
+CELERY_RESULT_BACKEND = "amqp://"
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
