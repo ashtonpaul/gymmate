@@ -10,7 +10,7 @@ ALLOWED_HOSTS = [".herokuapp.com", ".jusdev.com"]
 # production static file settings
 # http://stackoverflow.com/questions/21141315/django-static-files-on-heroku
 
-STATICFILES_DIRS = (join(BASE_DIR, '../gymmate/static')
+STATICFILES_DIRS = join(BASE_DIR, '../gymmate/static')
 
 
 # RabbitMQ Broker settings
@@ -19,4 +19,3 @@ BROKER_URL =  get_secret("CLOUDAMQP_URL")
 
 CELERY_BACKEND = "amqp" 
 CELERY_RESULT_DBURI = ""
-
