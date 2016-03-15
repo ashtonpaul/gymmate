@@ -10,7 +10,9 @@ ALLOWED_HOSTS = [".herokuapp.com", ".jusdev.com"]
 # production static file settings
 # http://stackoverflow.com/questions/21141315/django-static-files-on-heroku
 
-STATICFILES_DIRS = join(BASE_DIR, '../gymmate/static')
+STATICFILES_DIRS = (
+    join(BASE_DIR, '../gymmate/static'),
+)
 
 
 # RabbitMQ Broker settings
