@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Gymmate - Password Reset
+{% endblock %}
+
+{% block user_info %}
+<h3>Password Reset</h3>
+<div class="user-email">{{ email }}</div>
+{% endblock %}
+
+{% block content %}
+<form action="{{ action }}" method=post>
+    {% csrf_token %}
+    
+    {% if form.errors %}
+        {{ form.confirm_password.errors }}
+    {% endif %}
+    
+    <div class="group">
+        <input type="password" id="password" name="password">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+    <label>Password</label>
+    </div>
+    <div class="group">
+        <input type="password" id="confirm_password" name="confirm_password">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+    <label>Confirm Password</label>
+  </div>
+    <button type="submit" class="button buttonBlue">Reset Password
+        <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+    </button>
+</form>
+{% endblock %}

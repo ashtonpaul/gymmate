@@ -1,0 +1,25 @@
+{% load staticfiles %}
+<link rel="stylesheet" href="{% static 'css/gymmate.css' %}">
+<html>
+    <head>
+        <title>
+            {% block title %}GymMate{% endblock %}
+        </title>
+    </head>
+    <body>
+        <hgroup>
+            <h1>GymMate</h1>
+            {% block user_info %}{% endblock %}
+        </hgroup>
+        {% block content %}
+        {% endblock %}
+        <footer>
+            <a href="http://www.jusdev.com/" target="_blank">
+                <img src="http://static.jusdev.com/img/jusdev_logo.jpg">
+            </a>
+          <p>Built by <a href="http://www.jusdev.com/" target="_blank">jusDev</a></p>
+          <script type='text/javascript' src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+          <script type='text/javascript' src="{% static 'js/gymmate.js' %}"></script>
+        </footer>        
+    </body>
+</html>

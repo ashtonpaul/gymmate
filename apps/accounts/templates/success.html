@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Gymmate - Password Reset Success
+{% endblock %}
+
+{% block user_info %}
+<div class="user-email">
+    {{ email }}
+</div>
+{% endblock %}
+
+{% block content %}
+<p class='notification'>
+    <span class="success">Success</span>
+    Your password has successfully been reset. Thanks for using GymMate.
+</p>
+{% endblock %}

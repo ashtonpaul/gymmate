@@ -6,7 +6,7 @@ from apps.core.routers import CustomRouter
 from rest_framework_swagger import urls as documentaton
 from oauth2_provider import urls as authentication
 
-from apps.accounts.views import UserViewSet, SignUpViewSet, ForgotPasswordViewSet, ResetPasswordViewSet
+from apps.accounts.views import UserViewSet, SignUpViewSet, ForgotPasswordViewSet, ActivateView, ResetView
 from apps.metrics.views import MetricViewSet, MetricTypeViewSet, MetricTypeGroupViewSet
 from apps.exercises.views import MuscleViewSet, ExerciseCategoryViewSet, EquipmentViewSet, ExerciseViewSet
 from apps.workouts.views import DayOfWeekViewSet, PublicRoutineViewSet, RoutineViewSet, ProrgressViewSet
@@ -29,7 +29,6 @@ router.register(r'users', UserViewSet, 'user')
 # user account/password handling
 router.register(r'signup', SignUpViewSet, 'signup')
 router.register(r'forgot-password', ForgotPasswordViewSet, 'forgot-password')
-router.register(r'reset-password', ResetPasswordViewSet, 'reset-password')
 
 # Wire up our API using automatic URL routing.
 urlpatterns = [
@@ -49,6 +48,12 @@ urlpatterns += [
 # Oauth endpoint
 urlpatterns += [
     url(r'^o/', include(authentication, namespace='oauth2_provider')),
+]
+
+# activate and reset password urls
+urlpatterns += [
+    url(r'^a/(?P<uuid>[^/]+)/$', ActivateView, name='activate_view'),
+    url(r'^r/(?P<uuid>[^/]+)/$', ResetView, name='reset_view'),
 ]
 
 # status files

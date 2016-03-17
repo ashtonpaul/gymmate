@@ -1,5 +1,7 @@
 import uuid
 
+from django.shortcuts import render
+from django.core.urlresolvers import reverse
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope
 
 from rest_framework import status, viewsets
@@ -10,6 +12,7 @@ from ..core.permissions import IsCreateOnly
 from ..core.loggers import LoggingMixin
 
 from .tasks import send_email
+from .forms import PasswordResetForm
 from .models import AccountUser
 from .filters import UserFilter
 from .serializers import UserSerializer, SignUpSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
@@ -184,3 +187,69 @@ class ResetPasswordViewSet(LoggingMixin, viewsets.ModelViewSet):
             send_email.delay(user.email, 'gymmate-reset', template_data)
 
         return Response(message, status=status_code, headers=headers)
+
+
+def ActivateView(request, **kwargs):
+    # if user is associated with given uuid
+    try:
+        url_uuid = kwargs.pop('uuid')
+        url_email = request.GET.get('q', '')
+        user = AccountUser.objects.get(uuid=url_uuid)
+    except:
+        return ResetNoUser(request, 'activate')
+
+    # uuid and email match user to prevent random email reset
+    if user.email != url_email:
+        return ResetNoUser(request, 'activate')
+
+    user.is_activated = True
+    user.uuid = uuid.uuid4()
+    user.save()
+
+    return render(request, 'activate.html', {'email': user.email})
+
+
+def ResetNoUser(request, method):
+    return render(request, 'error.html', {'method': method})
+
+
+def ResetSuccess(request, email):
+    return render(request, 'success.html', {'email': email})
+
+
+def ResetView(request, **kwargs):
+    """
+    Allow a user to be able to reset their password
+    """
+    # if user is associated with given uuid
+    try:
+        url_uuid = kwargs.pop('uuid')
+        url_email = request.GET.get('q', '')
+        user = AccountUser.objects.get(uuid=url_uuid)
+    except:
+        return ResetNoUser(request, 'reset')
+
+    # uuid and email match user to prevent random email reset
+    if user.email != url_email:
+        return ResetNoUser(request, 'reset')
+
+    action = reverse('reset_view', kwargs={'uuid': url_uuid}) + '?q=' + url_email
+
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            password = form.cleaned_data['password']
+            user.set_password(password)
+            user.is_activated = True
+            user.uuid = uuid.uuid4()
+            user.save()
+
+            template_data = {"email": user.email}
+            send_email.delay(user.email, 'gymmate-reset', template_data)
+
+            return ResetSuccess(request, user.email)
+    else:
+        form = PasswordResetForm()
+
+    context = {'form': form, 'email': user.email, 'uuid': url_uuid, 'action': action}
+    return render(request, 'reset.html', context)
