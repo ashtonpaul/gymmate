@@ -136,71 +136,28 @@ class ForgotPasswordViewSet(LoggingMixin, viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(message, status=status.HTTP_201_CREATED, headers=headers)
 
-
-class ResetPasswordViewSet(LoggingMixin, viewsets.ModelViewSet):
+def AccountError(request, method):
     """
-    Allow a user to be able to reset their password
+    Template view for handling user errors
     """
-    permission_classes = (AllowAny, )
-    queryset = AccountUser.objects.all()
-    serializer_class = ResetPasswordSerializer
-    http_method_names = ['post']
-
-    def create(self, request, *args, **kwargs):
-        """
-        Ability to reset a user password
-        """
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        headers = self.get_success_headers(serializer.data)
-        message = {"detail": "Your password has sucessfully been updated"}
-        status_code = status.HTTP_200_OK
-
-        try:
-            user = AccountUser.objects.get(email=serializer.data["email"])
-        except:
-            user = None
-
-        # if user not found
-        if not user:
-            message = {"detail": "User not found"}
-            status_code = status.HTTP_400_BAD_REQUEST
-
-        # if the reset_code doesn't match the email
-        if user and str(user.uuid) != request.META.get('HTTP_RESET_CODE'):
-            message = {"detail": "Not authorized to reset password for this account"}
-            status_code = status.HTTP_400_BAD_REQUEST
-
-        # if the passwords do not match
-        if serializer.data["password"] != serializer.data["confirm_password"]:
-            message = {"detail": "Password(s) entered do no match"}
-            status_code = status.HTTP_400_BAD_REQUEST
-
-        # Reset password if validated and notify user
-        if user and status_code == status.HTTP_200_OK:
-            user.set_password(serializer.data["password"])
-            user.is_activated = True
-            user.uuid = uuid.uuid4()
-            user.save()
-
-            template_data = {"email": user.email}
-            send_email.delay(user.email, 'gymmate-reset', template_data)
-
-        return Response(message, status=status_code, headers=headers)
+    return render(request, 'error.html', {'method': method})
 
 
 def ActivateView(request, **kwargs):
+    """
+    Template view to allow users to activate their account
+    """
     # if user is associated with given uuid
     try:
         url_uuid = kwargs.pop('uuid')
         url_email = request.GET.get('q', '')
         user = AccountUser.objects.get(uuid=url_uuid)
     except:
-        return ResetNoUser(request, 'activate')
+        return AccountError(request, 'activate')
 
     # uuid and email match user to prevent random email reset
     if user.email != url_email:
-        return ResetNoUser(request, 'activate')
+        return AccountError(request, 'activate')
 
     user.is_activated = True
     user.uuid = uuid.uuid4()
@@ -209,8 +166,6 @@ def ActivateView(request, **kwargs):
     return render(request, 'activate.html', {'email': user.email})
 
 
-def ResetNoUser(request, method):
-    return render(request, 'error.html', {'method': method})
 
 
 def ResetSuccess(request, email):
@@ -227,11 +182,11 @@ def ResetView(request, **kwargs):
         url_email = request.GET.get('q', '')
         user = AccountUser.objects.get(uuid=url_uuid)
     except:
-        return ResetNoUser(request, 'reset')
+        return AccountError(request, 'reset')
 
     # uuid and email match user to prevent random email reset
     if user.email != url_email:
-        return ResetNoUser(request, 'reset')
+        return AccountError(request, 'reset')
 
     action = reverse('reset_view', kwargs={'uuid': url_uuid}) + '?q=' + url_email
 
