@@ -37,7 +37,7 @@ class SetSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Set
-        fields = ('id', 'reps', 'weight', 'duration')
+        fields = ('id', 'progress', 'reps', 'weight', 'duration')
 
 
 class ProgressSerializer(serializers.ModelSerializer):

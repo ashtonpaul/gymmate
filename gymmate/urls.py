@@ -39,7 +39,7 @@ nested_router.register(r'sets', SetViewSet, base_name='progress-sets')
 # Wire up our API using automatic URL routing.
 urlpatterns = [
     url(r'^v1/', include(router.urls, namespace='v1')),
-    url(r'^v1/', include(nested_router.urls)),
+    url(r'^v1/', include(nested_router.urls, namespace='v1')),
 ]
 
 # Administrative panel
