@@ -90,22 +90,3 @@ class ForgotPasswordSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = AccountUser
         fields = ('email', )
-
-
-class ResetPasswordSerializer(serializers.HyperlinkedModelSerializer):
-    """
-    Reset a user password w/ correct uuid
-    """
-    email = serializers.EmailField(required=True)
-    password = serializers.CharField(
-        style={'input_type': 'password'},
-        validators=[PasswordValidator()]
-    )
-    confirm_password = serializers.CharField(
-        style={'input_type': 'password'},
-        validators=[PasswordValidator()]
-    )
-
-    class Meta:
-        model = AccountUser
-        fields = ('email', 'password', 'confirm_password')

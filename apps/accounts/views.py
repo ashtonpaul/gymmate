@@ -15,7 +15,7 @@ from .tasks import send_email
 from .forms import PasswordResetForm
 from .models import AccountUser
 from .filters import UserFilter
-from .serializers import UserSerializer, SignUpSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
+from .serializers import UserSerializer, SignUpSerializer, ForgotPasswordSerializer
 
 
 class UserViewSet(LoggingMixin, viewsets.ModelViewSet):
@@ -136,6 +136,7 @@ class ForgotPasswordViewSet(LoggingMixin, viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(message, status=status.HTTP_201_CREATED, headers=headers)
 
+
 def AccountError(request, method):
     """
     Template view for handling user errors
@@ -166,9 +167,10 @@ def ActivateView(request, **kwargs):
     return render(request, 'activate.html', {'email': user.email})
 
 
-
-
 def ResetSuccess(request, email):
+    """
+    Template view to show user has successfully update password
+    """
     return render(request, 'success.html', {'email': email})
 
 
