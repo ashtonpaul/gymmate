@@ -43,11 +43,12 @@ class ProgressTest(BaseTestCase):
         self.authenticate(self.user_basic)
         response = self.client.post(
             reverse('v1:progress-list'),
-            {'user': self.user.id, 'exercise': exercise.id, 'duration': '767', 'date': datetime.date.today()}
+            {'user': self.user.id, 'exercise': exercise.id, 'date': datetime.date.today()}
         )
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Progress.objects.count(), 1)
-        self.assertEqual(Progress.objects.get().duration, 767)
+        self.assertEqual(Progress.objects.get().date, datetime.date.today())
 
     def test_delete_progress_non_admin(self):
         """
@@ -87,19 +88,22 @@ class ProgressTest(BaseTestCase):
 
         self.authenticate(self.user_basic)
         progress = Progress.objects.create(user=self.user, exercise=exercise,
-                                           date=datetime.date.today(), duration=767)
+                                           date=datetime.date.today())
         put = self.client.put(
             reverse('v1:progress-detail', args=(progress.id,)),
-            {'duration': '940', 'date': datetime.date.today(), 'exercise': exercise.id}
+            {'date': datetime.date.today() - datetime.timedelta(days=1), 'exercise': exercise.id}
         )
-        put_duration = Progress.objects.get().duration
+        put_date = Progress.objects.get().date
 
-        patch = self.client.patch(reverse('v1:progress-detail', args=(progress.id,)), {'duration': '214'})
+        patch = self.client.patch(
+            reverse('v1:progress-detail', args=(progress.id,)),
+            {'date': datetime.date.today() - datetime.timedelta(days=2)}
+        )
 
         self.assertEqual(put.status_code, status.HTTP_200_OK)
         self.assertEqual(patch.status_code, status.HTTP_200_OK)
-        self.assertEqual(put_duration, 940)
-        self.assertEqual(Progress.objects.get().duration, 214)
+        self.assertEqual(put_date, datetime.date.today() - datetime.timedelta(days=1))
+        self.assertEqual(Progress.objects.get().date, datetime.date.today() - datetime.timedelta(days=2))
         self.assertEqual(Progress.objects.count(), 1)
 
     def test_update_by_other_user(self):
@@ -108,22 +112,22 @@ class ProgressTest(BaseTestCase):
         """
         self.authenticate(self.user_admin)
         exercise = Exercise.objects.create(name='squats', description='squat', )
-        progress = Progress.objects.create(user=self.user, exercise=exercise, date=datetime.date.today(), duration=767)
+        progress = Progress.objects.create(user=self.user, exercise=exercise, date=datetime.date.today())
 
         self.authenticate(self.user_basic)
         patch = self.client.patch(
             reverse('v1:progress-detail', args=(progress.id,)),
-            {'duration': '214'}
+            {'date': '2015-01-01'}
         )
         patched_progress = Progress.objects.get(id=progress.id)
 
         put = self.client.put(
             reverse('v1:progress-detail', args=(progress.id,)),
-            {'duration': '940', 'date': datetime.date.today(), 'exercise': exercise.id}
+            {'date': datetime.date.today() + datetime.timedelta(days=1), 'exercise': exercise.id}
         )
 
         self.assertEqual(put.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(patch.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertNotEqual(patched_progress, 214)
-        self.assertEqual(progress.duration, 767)
+        self.assertNotEqual(patched_progress.date, '2015-01-01')
+        self.assertEqual(progress.date, datetime.date.today())
         self.assertEqual(Progress.objects.count(), 1)
