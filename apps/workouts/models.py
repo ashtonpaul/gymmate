@@ -53,13 +53,19 @@ class Progress(models.Model):
     exercise = models.ForeignKey(Exercise)
     user = models.ForeignKey(AccountUser)
     date = models.DateField(auto_now_add=False)
-    duration = models.IntegerField(null=True)
-    sets = models.IntegerField(null=True)
-    reps = models.IntegerField(null=True)
-    weight = models.IntegerField(null=True)
 
     class Meta:
         ordering = ['date', 'exercise']
 
     def __str__(self):
         return ('%s - %s' % (self.exercise, self.date.strftime('%m/%d/%Y')))
+
+
+class Set(models.Model):
+    """
+    Dynamic sets for each progress
+    """
+    progress = models.ForeignKey(Progress)
+    duration = models.IntegerField(null=True)
+    reps = models.IntegerField(null=True)
+    weight = models.IntegerField(null=True)

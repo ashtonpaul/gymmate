@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from ..core.validators import FutureDateValidator
 
-from .models import DayOfWeek, Routine, Progress
+from .models import DayOfWeek, Routine, Progress, Set
 
 
 class DayOfWeekSerializer(serializers.ModelSerializer):
@@ -31,6 +31,15 @@ class RoutineSerializer(serializers.ModelSerializer):
         exclude = ('user', )
 
 
+class SetSerializer(serializers.ModelSerializer):
+    """
+    Sub serializer for sets that belong to progress
+    """
+    class Meta:
+        model = Set
+        fields = ('id', 'reps', 'weight', 'duration')
+
+
 class ProgressSerializer(serializers.ModelSerializer):
     """
     User progress serializer
@@ -39,4 +48,4 @@ class ProgressSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Progress
-        exclude = ('user', )
+        fields = ('id', 'date', 'exercise')

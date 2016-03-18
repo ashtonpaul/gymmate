@@ -4,12 +4,13 @@ from django.conf import settings
 
 from apps.core.routers import CustomRouter
 from rest_framework_swagger import urls as documentaton
+from rest_framework_nested.routers import NestedSimpleRouter
 from oauth2_provider import urls as authentication
 
 from apps.accounts.views import UserViewSet, SignUpViewSet, ForgotPasswordViewSet, ActivateView, ResetView
 from apps.metrics.views import MetricViewSet, MetricTypeViewSet, MetricTypeGroupViewSet
 from apps.exercises.views import MuscleViewSet, ExerciseCategoryViewSet, EquipmentViewSet, ExerciseViewSet
-from apps.workouts.views import DayOfWeekViewSet, PublicRoutineViewSet, RoutineViewSet, ProrgressViewSet
+from apps.workouts.views import DayOfWeekViewSet, PublicRoutineViewSet, RoutineViewSet, ProrgressViewSet, SetViewSet
 
 
 router = CustomRouter()
@@ -21,18 +22,24 @@ router.register(r'metrics', MetricViewSet, 'metric')
 router.register(r'metric-types', MetricTypeViewSet, 'metric-type')
 router.register(r'metric-type-groups', MetricTypeGroupViewSet, 'metric-group')
 router.register(r'muscles', MuscleViewSet, 'muscle')
-router.register(r'progress', ProrgressViewSet, 'progress')
 router.register(r'public-routines', PublicRoutineViewSet, 'public-routine')
 router.register(r'routines', RoutineViewSet, 'routine')
 router.register(r'users', UserViewSet, 'user')
+router.register(r'progress', ProrgressViewSet, 'progress')
 
 # user account/password handling
 router.register(r'signup', SignUpViewSet, 'signup')
 router.register(r'forgot-password', ForgotPasswordViewSet, 'forgot-password')
 
+# nested router setup
+nested_router = NestedSimpleRouter(router, r'progress', lookup='progress')
+nested_router.register(r'sets', SetViewSet, base_name='progress-sets')
+
+
 # Wire up our API using automatic URL routing.
 urlpatterns = [
     url(r'^v1/', include(router.urls, namespace='v1')),
+    url(r'^v1/', include(nested_router.urls)),
 ]
 
 # Administrative panel

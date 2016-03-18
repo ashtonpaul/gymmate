@@ -7,9 +7,15 @@ from ..core.permissions import IsAdminOrReadOnly
 from ..core.loggers import LoggingMixin
 from ..accounts.models import AccountUser
 
-from .serializers import DayOfWeekSerializer, PublicRoutineSerializer, RoutineSerializer, ProgressSerializer
+from .serializers import (
+    DayOfWeekSerializer,
+    PublicRoutineSerializer,
+    RoutineSerializer,
+    ProgressSerializer,
+    SetSerializer
+)
 from .filters import DayOfWeekFilter, RoutineFilter, ProgressFilter
-from .models import DayOfWeek, Routine, Progress
+from .models import DayOfWeek, Routine, Progress, Set
 
 
 class WorkoutMixin(LoggingMixin, viewsets.ModelViewSet):
@@ -84,3 +90,17 @@ class ProrgressViewSet(WorkoutMixin):
         Filter only current user's progress logs
         """
         return Progress.objects.filter(user=self.request.user)
+
+
+class SetViewSet(LoggingMixin, viewsets.ModelViewSet):
+    """
+    List/Detail of sets that belong to a particular progress
+    """
+    serializer_class = SetSerializer
+
+    def get_queryset(self, **kwargs):
+        """
+        Filter only current user's progress sets
+        """
+        progress_pk = self.kwargs.pop('progress_pk')
+        return Set.objects.filter(progress=progress_pk)
