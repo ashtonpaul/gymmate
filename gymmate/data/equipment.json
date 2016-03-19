@@ -1,0 +1,274 @@
+[
+{
+  "model": "exercises.equipment",
+  "pk": 1,
+  "fields": {
+    "name": "Barbell",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 2,
+  "fields": {
+    "name": "Dumbbell",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 3,
+  "fields": {
+    "name": "Bodyweight",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 4,
+  "fields": {
+    "name": "Cables and Pulleys",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 5,
+  "fields": {
+    "name": "Stability Ball",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 6,
+  "fields": {
+    "name": "EZ Bar",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 7,
+  "fields": {
+    "name": "Kettlebell",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 8,
+  "fields": {
+    "name": "Medicine Ball",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 9,
+  "fields": {
+    "name": " Flat Bench",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 10,
+  "fields": {
+    "name": "Squat Station",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 11,
+  "fields": {
+    "name": "Pullup Bar",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 12,
+  "fields": {
+    "name": "Foam Roller",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 13,
+  "fields": {
+    "name": "Roman Chair/Hyper Extension Bench",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 14,
+  "fields": {
+    "name": "Dipping Bars",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 15,
+  "fields": {
+    "name": "Gym Mat",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 16,
+  "fields": {
+    "name": "Incline bench",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 17,
+  "fields": {
+    "name": "Decline Bench",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 18,
+  "fields": {
+    "name": "Preacher Bench",
+    "is_machine": false
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 19,
+  "fields": {
+    "name": "Leg Press Machine",
+    "is_machine": true
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 20,
+  "fields": {
+    "name": "Hack Squat Machine",
+    "is_machine": true
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 21,
+  "fields": {
+    "name": "Leg Extension Machine",
+    "is_machine": true
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 22,
+  "fields": {
+    "name": "Leg Curl Machine",
+    "is_machine": true
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 23,
+  "fields": {
+    "name": "Calf Extension Machine",
+    "is_machine": true
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 24,
+  "fields": {
+    "name": "Leg Adduction/Abduction Machine",
+    "is_machine": true
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 25,
+  "fields": {
+    "name": "Lat Pull Down Machine",
+    "is_machine": true
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 26,
+  "fields": {
+    "name": "Butterfly Machine",
+    "is_machine": true
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 27,
+  "fields": {
+    "name": "Row Machine",
+    "is_machine": true
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 28,
+  "fields": {
+    "name": "Treadmill",
+    "is_machine": true
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 29,
+  "fields": {
+    "name": "Stair Stepper",
+    "is_machine": true
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 30,
+  "fields": {
+    "name": "Upright Cycle",
+    "is_machine": true
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 31,
+  "fields": {
+    "name": "Recumbent Cycle",
+    "is_machine": true
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 32,
+  "fields": {
+    "name": "Eliptical",
+    "is_machine": true
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 33,
+  "fields": {
+    "name": "Indoor Cycle",
+    "is_machine": true
+  }
+},
+{
+  "model": "exercises.equipment",
+  "pk": 34,
+  "fields": {
+    "name": "Smith Machine",
+    "is_machine": true
+  }
+},
+]

@@ -1,0 +1,119 @@
+[
+{
+  "model": "exercises.muscle",
+  "pk": 1,
+  "fields": {
+    "name": "Abs",
+    "latin_name": "Rectus abdominis",
+    "is_front": true
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 2,
+  "fields": {
+    "name": "Biceps",
+    "latin_name": "Biceps brachii",
+    "is_front": true
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 3,
+  "fields": {
+    "name": "Calves",
+    "latin_name": "Gastrocnemius/Soleus",
+    "is_front": false
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 4,
+  "fields": {
+    "name": "Chest",
+    "latin_name": "Pectoralis major",
+    "is_front": true
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 5,
+  "fields": {
+    "name": "Forearms",
+    "latin_name": "Antebrachium",
+    "is_front": true
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 6,
+  "fields": {
+    "name": "Glutes",
+    "latin_name": "Gluteus maximus",
+    "is_front": false
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 7,
+  "fields": {
+    "name": "Hamstrings",
+    "latin_name": "Biceps femoris",
+    "is_front": false
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 8,
+  "fields": {
+    "name": "Lower Back",
+    "latin_name": "Lattissimus Dorsi",
+    "is_front": false
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 9,
+  "fields": {
+    "name": "Quads",
+    "latin_name": "Quadriceps femoris",
+    "is_front": true
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 10,
+  "fields": {
+    "name": "Shoulders",
+    "latin_name": "Deltoid",
+    "is_front": true
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 11,
+  "fields": {
+    "name": "Traps",
+    "latin_name": "Trapezius",
+    "is_front": true
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 12,
+  "fields": {
+    "name": "Triceps",
+    "latin_name": "Triceps brachii",
+    "is_front": false
+  }
+},
+{
+  "model": "exercises.muscle",
+  "pk": 13,
+  "fields": {
+    "name": "Upper Back",
+    "latin_name": "Latissimus dorsi/Rhomboids",
+    "is_front": false
+  }
+}
+]
