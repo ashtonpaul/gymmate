@@ -28,7 +28,7 @@
 *.log.*
 
 # config files
-*.json
+secrets.json
 
 # uploaded media
 media/*
