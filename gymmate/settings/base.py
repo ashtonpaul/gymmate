@@ -201,6 +201,11 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = root("media")
 
 
+# Data Fixtures - inital data for models
+# https://docs.djangoproject.com/en/1.9/howto/initial-data/
+FIXTURE_DIRS = (root("gymmate/data/"),)
+
+
 # Django REST framework (API)
 # http://django-rest-framework.com
 
