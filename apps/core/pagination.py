@@ -28,6 +28,7 @@ class LinkHeaderPagination(PageNumberPagination):
 
         return Response(data, headers=headers)
 
+
 class LargerLinkHeaderPagination(LinkHeaderPagination):
     """
     Same as above just for a larger page size of 100
