@@ -1,0 +1,51 @@
+[
+{
+  "model": "exercises.exercisecategory",
+  "pk": 1,
+  "fields": {
+    "name": "Arms"
+  }
+},
+{
+  "model": "exercises.exercisecategory",
+  "pk": 2,
+  "fields": {
+    "name": "Legs"
+  }
+},
+{
+  "model": "exercises.exercisecategory",
+  "pk": 3,
+  "fields": {
+    "name": "Chest"
+  }
+},
+{
+  "model": "exercises.exercisecategory",
+  "pk": 4,
+  "fields": {
+    "name": "Back"
+  }
+},
+{
+  "model": "exercises.exercisecategory",
+  "pk": 5,
+  "fields": {
+    "name": "Abs"
+  }
+},
+{
+  "model": "exercises.exercisecategory",
+  "pk": 6,
+  "fields": {
+    "name": "Shoulders"
+  }
+},
+{
+  "model": "exercises.exercisecategory",
+  "pk": 7,
+  "fields": {
+    "name": "Cardio"
+  }
+}
+]

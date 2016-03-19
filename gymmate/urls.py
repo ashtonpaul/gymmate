@@ -27,13 +27,13 @@ router.register(r'routines', RoutineViewSet, 'routine')
 router.register(r'users', UserViewSet, 'user')
 router.register(r'progress', ProrgressViewSet, 'progress')
 
-# user account/password handling
-router.register(r'signup', SignUpViewSet, 'signup')
-router.register(r'forgot-password', ForgotPasswordViewSet, 'forgot-password')
-
 # nested router setup
 nested_router = NestedSimpleRouter(router, r'progress', lookup='progress')
 nested_router.register(r'sets', SetViewSet, base_name='progress-sets')
+
+# user account/password handling
+router.register(r'signup', SignUpViewSet, 'signup')
+router.register(r'forgot-password', ForgotPasswordViewSet, 'forgot-password')
 
 
 # Wire up our API using automatic URL routing.
@@ -42,14 +42,14 @@ urlpatterns = [
     url(r'^v1/', include(nested_router.urls, namespace='v1')),
 ]
 
-# Administrative panel
-urlpatterns += [
-    url(r'^admin/', include(admin.site.urls)),
-]
-
 # Documentaton views for API
 urlpatterns += [
     url(r'^v1/docs/', include(documentaton, namespace='rest_framework_swagger')),
+]
+
+# Administrative panel
+urlpatterns += [
+    url(r'^admin/', include(admin.site.urls)),
 ]
 
 # Oauth endpoint
