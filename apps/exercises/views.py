@@ -4,6 +4,7 @@ from rest_framework import viewsets
 
 from ..core.permissions import IsAdminOrReadOnly
 from ..core.loggers import LoggingMixin
+from ..core.pagination import LargerLinkHeaderPagination
 
 from .models import Muscle, ExerciseCategory, Equipment, Exercise
 from .filters import MuscleFilter, ExerciseCategoryFilter, EquipmentFilter, ExerciseFilter
@@ -41,6 +42,7 @@ class EquipmentViewSet(LoggingMixin, viewsets.ModelViewSet):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
     filter_class = EquipmentFilter
+    pagination_class = LargerLinkHeaderPagination
 
 
 class ExerciseViewSet(LoggingMixin, viewsets.ModelViewSet):

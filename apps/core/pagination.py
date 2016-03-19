@@ -27,3 +27,9 @@ class LinkHeaderPagination(PageNumberPagination):
         headers.update({'X-Total-Count': self.page.paginator.count})
 
         return Response(data, headers=headers)
+
+class LargerLinkHeaderPagination(LinkHeaderPagination):
+    """
+    Same as above just for a larger page size of 100
+    """
+    page_size = 100

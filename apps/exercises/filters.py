@@ -31,10 +31,11 @@ class EquipmentFilter(FilterSet):
     Filter set for exercise categories
     """
     name = CharFilter(lookup_type='icontains')
+    is_machine = BooleanFilter()
 
     class Meta:
         model = Equipment
-        fields = ['name', ]
+        fields = ['name', 'is_machine']
 
 
 class ExerciseFilter(FilterSet):
