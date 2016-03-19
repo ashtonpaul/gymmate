@@ -37,6 +37,7 @@ class Equipment(models.Model):
     Equipment that can usually be found in a gym
     """
     name = models.CharField(max_length=100, )
+    is_machine = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['name', ]
