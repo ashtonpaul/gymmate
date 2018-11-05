@@ -10,7 +10,7 @@ django-oauth-toolkit==0.10.0
 Markdown==2.6.5
 django-filter==0.13.0
 gunicorn==19.4.5
-uWSGI==2.0.12
+uWSGI==2.0.17.1
 Fabric==1.10.2
 pyflakes==1.1.0
 flake8==2.5.4
