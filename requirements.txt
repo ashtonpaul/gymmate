@@ -18,7 +18,7 @@ MySQL-python==1.2.5
 coverage==4.0.3
 Pillow==3.1.1
 sparkpost==1.0.4
-django-celery==3.1.17
+django-celery==3.2.2
 easy-thumbnails==2.3
 drf-nested-routers==0.11.1
 psycopg2==2.7.5
