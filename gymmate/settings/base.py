@@ -141,7 +141,7 @@ WSGI_APPLICATION = 'gymmate.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': get_secret("DATABASE_ENGINE"),
         'NAME': get_secret("DATABASE_NAME"),
         'USER': get_secret("DATABASE_USER"),
         'PASSWORD': get_secret("DATABASE_PASSWORD"),
