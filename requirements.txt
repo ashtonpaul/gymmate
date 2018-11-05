@@ -21,3 +21,4 @@ sparkpost==1.0.4
 django-celery==3.1.17
 easy-thumbnails==2.3
 drf-nested-routers==0.11.1
+psycopg2==2.7.1
